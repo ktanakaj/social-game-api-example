@@ -14,3 +14,9 @@ playbook.retry
 vendor
 node_modules
 !.gitkeep
+/game_svr/public/hot
+/game_svr/public/storage
+/game_svr/storage/*.key
+Homestead.json
+Homestead.yaml
+.env
