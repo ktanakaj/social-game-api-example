@@ -1,0 +1,99 @@
+---
+- hosts: default
+  vars:
+    timezone: "Asia/Tokyo"
+    remi_repository: http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+    remi_repository_name: remi-php71
+    composer_phar_url: https://getcomposer.org/download/1.2.1/composer.phar
+    phpdoc_phar_url: http://www.phpdoc.org/phpDocumentor.phar
+    phpunit_phar_url: https://phar.phpunit.de/phpunit.phar
+    app_apache_conf_src: "/vagrant/vagrant_conf/apache.conf"
+    app_apache_conf_dest: /etc/httpd/conf.d/vagrant.conf
+  tasks:
+    - block:
+      - block:
+        - name: Check timezone
+          shell: timedatectl | grep -e {{ timezone }}
+          register: timedatectl_timezone
+          check_mode: no
+          changed_when: false
+          failed_when: false
+        - name: Set timezone
+          shell: timedatectl set-timezone {{ timezone }}
+          when: timedatectl_timezone.stdout == ""
+      - block:
+        - name: Install Remi repository
+          yum: name={{ remi_repository }}
+        - name: Install the latest version of yum-utils
+          yum: name=yum-utils state=latest
+        - name: Check PHP version
+          shell: yum info php | grep -e "Version\s*:\s*7\."
+          register: php_version
+          check_mode: no
+          changed_when: false
+          failed_when: false
+        - name: Enable Remi repository
+          shell: yum-config-manager --enable "{{ remi_repository_name }}"
+          when: php_version.stdout == ""
+        - name: Upgrade all packages
+          yum: name=* state=latest
+      - block:
+        - name: Install the latest version of PHP7
+          yum: name=php state=latest
+        - name: Install the latest version of php-pdo
+          yum: name=php-pdo state=latest
+        - name: Install the latest version of php-mysqlnd
+          yum: name=php-mysqlnd state=latest
+        - name: Install the latest version of php-mbstring
+          yum: name=php-mbstring state=latest
+        - name: Install the latest version of php-xml
+          yum: name=php-xml state=latest
+        - name: Install the latest version of php-intl
+          yum: name=php-intl state=latest
+        - name: Install the latest version of Apache
+          yum: name=httpd state=latest
+        - name: Install the latest version of MariaDB
+          yum: name=mariadb state=latest
+        - name: Install the latest version of MariaDB server
+          yum: name=mariadb-server state=latest
+        - name: Install the latest version of MySQL-python
+          yum: name=MySQL-python state=latest
+        - name: Install the latest version of unzip
+          yum: name=unzip state=latest
+      - block:
+        - name: Install Composer
+          get_url:
+            url: "{{ composer_phar_url }}"
+            dest: /usr/local/bin/composer
+            mode: 0555
+        - name: Install the latest version of phpDocumentor
+          get_url:
+            url: "{{ phpdoc_phar_url }}"
+            dest: /usr/local/bin/phpdoc
+            mode: 0555
+        - name: Install the latest version of PHPUnit
+          get_url:
+            url: "{{ phpunit_phar_url }}"
+            dest: /usr/local/bin/phpunit
+            mode: 0555
+      - block:
+        - name: Action to enable service mariadb
+          service: name=mariadb state=started enabled=yes
+        - name: Copy the web app configuration to Apache
+          copy: src={{ app_apache_conf_src }} dest={{ app_apache_conf_dest }} force=no
+        - name: Action to enable service Apache
+          service: name=httpd state=restarted enabled=yes
+      - block:
+        - name: Action to disable SELinux for Apache
+          selinux: state=permissive policy=targeted
+        - name: Action to enable service firewalld
+          service: name=firewalld state=started enabled=yes
+        - name: Open port for HTTP
+          firewalld: service=http permanent=true state=enabled
+        - name: Open port for MariaDB only internal zone
+          firewalld: service=mysql permanent=true state=enabled zone=internal
+        - name: Set private ip addresses to internal zone
+          firewalld: source='172.16.0.0/12' zone=internal state=enabled
+        - name: Action to reload service firewalld
+          service: name=firewalld state=reloaded enabled=yes
+      become: true
