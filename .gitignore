@@ -16,6 +16,8 @@ node_modules
 !.gitkeep
 /game_svr/public/hot
 /game_svr/public/storage
+/game_svr/public/swagger
+/game_svr/public/api-docs.json
 /game_svr/storage/*.key
 Homestead.json
 Homestead.yaml

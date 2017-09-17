@@ -7,8 +7,17 @@
     composer_phar_url: https://getcomposer.org/download/1.2.1/composer.phar
     phpdoc_phar_url: http://www.phpdoc.org/phpDocumentor.phar
     phpunit_phar_url: https://phar.phpunit.de/phpunit.phar
+    swaggeruisource: https://github.com/swagger-api/swagger-ui/archive/v3.2.1.tar.gz
+    swaggeruidest: /vagrant/game_svr/public/swagger
     app_apache_conf_src: "/vagrant/vagrant_conf/apache.conf"
     app_apache_conf_dest: /etc/httpd/conf.d/vagrant.conf
+    app_dir: "/vagrant/game_svr"
+    app_db:
+      - game_db
+    app_db_users:
+      - user: game_usr
+        password: game001
+        privilege: "game_db.*:ALL"
   tasks:
     - block:
       - block:
@@ -96,4 +105,32 @@
           firewalld: source='172.16.0.0/12' zone=internal state=enabled
         - name: Action to reload service firewalld
           service: name=firewalld state=reloaded enabled=yes
+      - block:
+        - name: Create the application database
+          mysql_db: name={{ item }} encoding=utf8 state=present
+          with_items: "{{ app_db }}"
+        - name: Craete the application db user
+          mysql_user: name={{ item[1].user }} password={{ item[1].password }} host={{ item[0] }} priv={{ item[1].privilege }} state=present
+          with_nested:
+            - [ 'localhost', '%' ]
+            - "{{ app_db_users }}"
+      - block:
+        - name: Create Swagger-UI directory
+          file: path={{ swaggeruidest }} state=directory owner=root group=root mode=0755
+          register: swaggerui_installed
+        - name: Install Swagger-UI from an archive
+          shell: curl -sL "{{ swaggeruisource }}" | tar xz -C {{ swaggeruidest }} --strip=2 '*/dist' --no-same-owner --no-same-permissions
+          when: swaggerui_installed.changed == true
       become: true
+
+    - block:
+      - block:
+        - name: Install composer packages for the server application
+          composer:
+            command: install
+            working_dir: "{{ app_dir }}"
+      - block:
+        - name: Copy configuration file for the server application
+          copy:
+            src: "{{ app_dir }}/.env.example"
+            dest: "{{ app_dir }}/.env"
