@@ -134,3 +134,14 @@
           copy:
             src: "{{ app_dir }}/.env.example"
             dest: "{{ app_dir }}/.env"
+          register: copy_result
+        - name: Generate application key to the configuration file
+          shell: php artisan key:generate
+          args:
+            chdir: "{{ app_dir }}"
+          when: copy_result|succeeded
+      - block:
+        - name: Create tables to the db
+          shell: php artisan migrate
+          args:
+            chdir: "{{ app_dir }}"
