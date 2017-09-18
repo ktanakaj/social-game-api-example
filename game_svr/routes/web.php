@@ -11,6 +11,7 @@
 |
 */
 
+// ※ APIのみなのでデバッグページに飛ばしておく
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/swagger/?url=/api-docs.json');
 });

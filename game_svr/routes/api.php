@@ -13,6 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//TODO: 未認証・ユーザー認証・管理者認証の3パターンを想定
+
+Route::get('users', 'UserController@index');
+Route::get('users/{id}', 'UserController@show');
+Route::get('users/{id}/items', 'UserItemController@index');
+Route::get('users/{id}/gifts', 'UserGiftController@index');
+
+Route::get('masters/events', 'MasterController@getEvents');
+Route::get('masters/gift_messages', 'MasterController@getGiftMessages');
+Route::get('masters/items', 'MasterController@getItems');
+Route::get('masters/item_properties', 'MasterController@getItemProperties');
+Route::get('masters/news', 'MasterController@getNews');
