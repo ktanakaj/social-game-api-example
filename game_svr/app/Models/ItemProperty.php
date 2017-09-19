@@ -29,6 +29,7 @@ class ItemProperty extends Model
      */
     protected $casts = [
         'name' => 'array',
+        'enable' => 'boolean',
         'use_effect' => 'array',
         'equipping_effect' => 'array',
         'material_effect' => 'array',

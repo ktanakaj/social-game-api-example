@@ -128,6 +128,7 @@
         - name: Install composer packages for the server application
           composer:
             command: install
+            no_dev: no
             working_dir: "{{ app_dir }}"
       - block:
         - name: Copy configuration file for the server application
@@ -143,5 +144,10 @@
       - block:
         - name: Create tables to the db
           shell: php artisan migrate
+          args:
+            chdir: "{{ app_dir }}"
+      - block:
+        - name: Create Swagger JSON file
+          shell: ./vendor/bin/swagger -o ./public/api-docs.json ./app/
           args:
             chdir: "{{ app_dir }}"
