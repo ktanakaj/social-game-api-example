@@ -17,7 +17,10 @@ use Illuminate\Http\Request;
 
 Route::get('users', 'UserController@index');
 Route::get('users/{id}', 'UserController@show');
+Route::post('users', 'UserController@store');
+
 Route::get('users/{id}/items', 'UserItemController@index');
+
 Route::get('users/{id}/gifts', 'UserGiftController@index');
 
 Route::get('masters/events', 'MasterController@getEvents');

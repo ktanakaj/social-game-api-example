@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 
@@ -75,6 +76,8 @@ use App\Http\Controllers\Controller;
  *     "free_special_coin",
  *     "level",
  *     "exp",
+ *     "created_at",
+ *     "updated_at",
  *   },
  * )
  */
@@ -190,8 +193,8 @@ class UserController extends Controller
      *     @SWG\Schema(
      *       type="object",
      *       @SWG\Property(
-     *           property="user",
-     *           ref="#/definitions/User"
+     *         property="user",
+     *         ref="#/definitions/User"
      *       ),
      *       required={
      *         "user",
@@ -199,13 +202,82 @@ class UserController extends Controller
      *     ),
      *   ),
      *   @SWG\Response(
-     *       response=404,
-     *       description="取得失敗",
+     *     response=404,
+     *     description="取得失敗",
      *   ),
      * )
      */
     public function show($id)
     {
         return ['user' => User::findOrFail($id)];
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users",
+     *   summary="ユーザー登録",
+     *   description="ユーザーを登録する。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="パラメータ",
+     *     required=true,
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="name",
+     *         description="ユーザー名",
+     *         type="string",
+     *       ),
+     *       @SWG\Property(
+     *         property="email",
+     *         description="メールアドレス",
+     *         type="string",
+     *       ),
+     *       @SWG\Property(
+     *         property="password",
+     *         description="パスワード",
+     *         type="string",
+     *       ),
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="user",
+     *         ref="#/definitions/User"
+     *       ),
+     *       required={
+     *         "user",
+     *       },
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="バリデーションNG",
+     *   ),
+     * )
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+        ]);
+
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = $request->input('password');
+        $user->save();
+
+        return ['user' => $user];
     }
 }
