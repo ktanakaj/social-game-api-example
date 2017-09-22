@@ -16,6 +16,22 @@ class UserGift extends Model
     use SoftDeletes;
 
     /**
+     * 属性に設定するデフォルト値。
+     * @var array
+     */
+    protected $attributes = [
+        'data' => '{}',
+    ];
+
+    /**
+     * ネイティブなタイプへキャストする属性。
+     * @var array
+     */
+    protected $casts = [
+        'data' => 'array',
+    ];
+
+    /**
      * `updated_at`の自動挿入の無効化。
      * @param mixed $value 更新日時。
      * @return UserGift $this

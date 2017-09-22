@@ -24,24 +24,29 @@ use App\Http\Controllers\Controller;
  *     type="number",
  *   ),
  *   @SWG\Property(
- *     property="type",
- *     description="ギフト種別",
- *     type="string",
- *   ),
- *   @SWG\Property(
- *     property="gift_id",
- *     description="ギフトID",
- *     type="number",
- *   ),
- *   @SWG\Property(
- *     property="count",
- *     description="個数",
- *     type="number",
- *   ),
- *   @SWG\Property(
  *     property="message_id",
  *     description="ギフトメッセージID",
  *     type="number",
+ *   ),
+ *   @SWG\Property(
+ *     property="data",
+ *     type="object",
+ *     description="ギフト情報",
+ *     @SWG\Property(
+ *       property="type",
+ *       description="ギフト種別",
+ *       type="string",
+ *     ),
+ *     @SWG\Property(
+ *       property="object_id",
+ *       description="ギフトID",
+ *       type="number",
+ *     ),
+ *     @SWG\Property(
+ *       property="count",
+ *       description="個数",
+ *       type="number",
+ *     ),
  *   ),
  *   @SWG\Property(
  *     property="created_at",
@@ -56,9 +61,8 @@ use App\Http\Controllers\Controller;
  *   required={
  *     "id",
  *     "user_id",
- *     "type",
- *     "count",
  *     "message_id",
+ *     "data",
  *   },
  * )
  */
@@ -130,8 +134,8 @@ class UserGiftController extends Controller
      *         type="string",
      *       ),
      *       @SWG\Property(
-     *         property="gift_id",
-     *         description="ギフトID",
+     *         property="object_id",
+     *         description="ギフトオブジェクトID",
      *         type="number",
      *       ),
      *       @SWG\Property(
@@ -190,7 +194,13 @@ class UserGiftController extends Controller
         $giftId = $request->input('gift_id');
         if ($giftId !== null && $giftId !== '') {
             $userGift->gift_id = $giftId;
+        ];
+        $objectId = $request->input('object_id');
+        if ($objectId !== null && $objectId !== '') {
+            $data['object_id'] = $objectId;
         }
+
+        $userGift->data = $data;
         $userGift->save();
 
         return ['userGift' => $userGift];

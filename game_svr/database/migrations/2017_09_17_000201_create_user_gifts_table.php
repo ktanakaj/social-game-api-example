@@ -17,16 +17,12 @@ class CreateUserGiftsTable extends Migration
         Schema::create('user_gifts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
-            // ※ typeはenumだが頻繁に追加される想定なのでVARCHARで定義
-            $table->string('type', 32);
-            $table->bigInteger('gift_id')->nullable();
-            $table->bigInteger('count');
-            $table->integer('message_id');
+            $table->unsignedInteger('message_id');
+            $table->text('data');
             $table->dateTime('created_at');
             $table->softDeletes();
 
             $table->index(['user_id', 'created_at']);
-            $table->index(['type', 'created_at']);
         });
 
         // 時系列で肥大化する想定なのでパーティション化する
