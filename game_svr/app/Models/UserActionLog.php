@@ -26,6 +26,16 @@ class UserActionLog extends Model
     ];
 
     /**
+     * `updated_at`の自動挿入の無効化。
+     * @param mixed $value 更新日時。
+     * @return UserGift $this
+     */
+    public function setUpdatedAt($value) : UserGift
+    {
+        return $this;
+    }
+
+    /**
      * ログのユーザーを取得する。
      * @return User ユーザー。
      */

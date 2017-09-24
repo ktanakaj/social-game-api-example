@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserGift;
+use App\Services\UserService;
 use App\Http\Controllers\Controller;
 
 /**
@@ -72,6 +74,20 @@ use App\Http\Controllers\Controller;
  */
 class UserGiftController extends Controller
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * サービスをDIしてコントローラを作成する。
+     * @param UserService $userService ユーザー関連サービス。
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * @SWG\Get(
      *   path="/users/{id}/gifts",
@@ -213,5 +229,45 @@ class UserGiftController extends Controller
         ]);
 
         return ['userGift' => $userGift];
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/me/gifts/{userGiftId}/recv",
+     *   summary="ユーザーギフト受取",
+     *   description="ユーザーのギフトを受け取る。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   @SWG\Parameter(
+     *     in="path",
+     *     name="userGiftId",
+     *     type="number",
+     *     description="ユーザーギフトID",
+     *     required=true,
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="取得失敗",
+     *   ),
+     *   @SWG\Response(
+     *     response=404,
+     *     description="ギフトが存在しない",
+     *   ),
+     * )
+     */
+    public function receive(Request $request, $userGiftId)
+    {
+        DB::transaction(function () use ($userGiftId, &$result) {
+            $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
+            $this->userService->addObject($userGift->user_id, $userGift->data);
+            $userGift->delete();
+            $result = ['userGift' => $userGift];
+        });
+        return $result;
     }
 }

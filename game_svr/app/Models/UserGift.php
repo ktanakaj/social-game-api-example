@@ -16,6 +16,12 @@ class UserGift extends Model
     use SoftDeletes;
 
     /**
+     * タイムスタンプ更新を無効化。
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * 属性に設定するデフォルト値。
      * @var array
      */
@@ -42,13 +48,14 @@ class UserGift extends Model
     ];
 
     /**
-     * `updated_at`の自動挿入の無効化。
-     * @param mixed $value 更新日時。
-     * @return UserGift $this
+     * モデルを作成する。
      */
-    public function setUpdatedAt($value) : UserGift
+    public function __construct(array $attributes = [])
     {
-        return $this;
+        // ※ updated_at だけがオフで SoftDeletes が有効だとエラーになるので暫定対処
+        //    created_at もオフにして手動で日時指定
+        parent::__construct($attributes);
+        $this->created_at = new \DateTime();
     }
 
     /**
