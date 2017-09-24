@@ -32,6 +32,16 @@ class UserGift extends Model
     ];
 
     /**
+     * 複数代入する属性。
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'message_id',
+        'data',
+    ];
+
+    /**
      * `updated_at`の自動挿入の無効化。
      * @param mixed $value 更新日時。
      * @return UserGift $this

@@ -52,6 +52,12 @@ use App\Http\Controllers\Controller;
  *   ),
  *   required={
  *     "id",
+ *     "user_id",
+ *     "item_id",
+ *     "count",
+ *     "property_ids",
+ *     "created_at",
+ *     "updated_at",
  *   },
  * )
  */
@@ -77,21 +83,24 @@ class UserItemController extends Controller
      *     description="成功",
      *     @SWG\Schema(
      *       type="object",
-     *       @SWG\Property(
-     *         property="data",
-     *         description="データ配列",
-     *         type="array",
-     *         @SWG\Items(ref="#/definitions/UserItem")
-     *       ),
-     *       required={
-     *         "data",
-     *       },
+     *       allOf={
+     *         @SWG\Schema(ref="#definitions/Pagination"),
+     *         @SWG\Schema(
+     *           type="object",
+     *           @SWG\Property(
+     *             property="data",
+     *             description="データ配列",
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/UserItem")
+     *           ),
+     *         ),
+     *       }
      *     ),
      *   ),
      * )
      */
     public function index($id)
     {
-        return ['data' => UserItem::where('user_id', $id)->orderBy('item_id', 'asc')->get()];
+        return UserItem::where('user_id', $id)->orderBy('item_id', 'asc')->paginate(20);
     }
 }

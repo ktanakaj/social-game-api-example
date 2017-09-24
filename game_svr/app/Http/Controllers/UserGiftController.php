@@ -39,7 +39,7 @@ use App\Http\Controllers\Controller;
  *     ),
  *     @SWG\Property(
  *       property="object_id",
- *       description="ギフトID",
+ *       description="ギフトオブジェクトID",
  *       type="number",
  *     ),
  *     @SWG\Property(
@@ -47,6 +47,10 @@ use App\Http\Controllers\Controller;
  *       description="個数",
  *       type="number",
  *     ),
+ *     required={
+ *       "type",
+ *       "count",
+ *     },
  *   ),
  *   @SWG\Property(
  *     property="created_at",
@@ -88,22 +92,25 @@ class UserGiftController extends Controller
      *     description="成功",
      *     @SWG\Schema(
      *       type="object",
-     *       @SWG\Property(
-     *         property="data",
-     *         description="データ配列",
-     *         type="array",
-     *         @SWG\Items(ref="#/definitions/UserGift")
-     *       ),
-     *       required={
-     *         "data",
-     *       },
+     *       allOf={
+     *         @SWG\Schema(ref="#definitions/Pagination"),
+     *         @SWG\Schema(
+     *           type="object",
+     *           @SWG\Property(
+     *             property="data",
+     *             description="データ配列",
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/UserGift")
+     *           ),
+     *         ),
+     *       }
      *     ),
      *   ),
      * )
      */
     public function index($id)
     {
-        return ['data' => UserGift::where('user_id', $id)->orderBy('created_at', 'desc')->get()];
+        return UserGift::where('user_id', $id)->orderBy('created_at', 'desc')->paginate(20);
     }
 
     /**
@@ -129,25 +136,38 @@ class UserGiftController extends Controller
      *     @SWG\Schema(
      *       type="object",
      *       @SWG\Property(
-     *         property="type",
-     *         description="ギフト種別",
-     *         type="string",
-     *       ),
-     *       @SWG\Property(
-     *         property="object_id",
-     *         description="ギフトオブジェクトID",
-     *         type="number",
-     *       ),
-     *       @SWG\Property(
-     *         property="count",
-     *         description="個数",
-     *         type="number",
-     *       ),
-     *       @SWG\Property(
      *         property="message_id",
      *         description="ギフトメッセージID",
      *         type="number",
      *       ),
+     *       @SWG\Property(
+     *         property="data",
+     *         type="object",
+     *         description="ギフト情報",
+     *         @SWG\Property(
+     *           property="type",
+     *           description="ギフト種別",
+     *           type="string",
+     *         ),
+     *         @SWG\Property(
+     *           property="object_id",
+     *           description="ギフトオブジェクトID",
+     *           type="number",
+     *         ),
+     *         @SWG\Property(
+     *           property="count",
+     *           description="個数",
+     *           type="number",
+     *         ),
+     *         required={
+     *           "type",
+     *           "count",
+     *         },
+     *       ),
+     *       required={
+     *         "message_id",
+     *         "data",
+     *       },
      *     ),
      *   ),
      *   @SWG\Response(
@@ -178,30 +198,19 @@ class UserGiftController extends Controller
     {
         User::findOrFail($id);
 
-        // TODO: type, gift_id の有効値チェックする
+        // ※ 現状、typeやobject_idの有効性まではチェックしていない
         $request->validate([
-            'type' => 'required|max:32',
-            'gift_id' => 'integer',
-            'count' => 'required|integer|min:1',
+            'data.type' => 'required|max:32',
+            'data.object_id' => 'integer',
+            'data.count' => 'required|integer|min:1',
             'message_id' => 'required|integer|exists:gift_messages,id',
         ]);
 
-        $userGift = new UserGift();
-        $userGift->user_id = $id;
-        $userGift->type = $request->input('type');
-        $userGift->count = $request->input('count');
-        $userGift->message_id = $request->input('message_id');
-        $giftId = $request->input('gift_id');
-        if ($giftId !== null && $giftId !== '') {
-            $userGift->gift_id = $giftId;
-        ];
-        $objectId = $request->input('object_id');
-        if ($objectId !== null && $objectId !== '') {
-            $data['object_id'] = $objectId;
-        }
-
-        $userGift->data = $data;
-        $userGift->save();
+        $userGift = UserGift::create([
+            'user_id' => $id,
+            'message_id' => $request->input('message_id'),
+            'data' => $request->input('data'),
+        ]);
 
         return ['userGift' => $userGift];
     }
