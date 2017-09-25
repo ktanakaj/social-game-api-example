@@ -16,15 +16,19 @@ use Illuminate\Http\Request;
 //TODO: 未認証・ユーザー認証・管理者認証の3パターンを想定
 
 Route::get('users', 'UserController@index');
+Route::get('users/me', 'UserController@me')->middleware('auth');
 Route::get('users/{id}', 'UserController@show');
 Route::post('users', 'UserController@store');
+
+Route::post('users/login', 'UserController@login');
+Route::post('users/logout', 'UserController@logout');
 
 Route::get('users/{id}/items', 'UserItemController@index');
 
 Route::get('users/{id}/gifts', 'UserGiftController@index');
 Route::post('users/{id}/gifts', 'UserGiftController@store');
-Route::post('users/me/gifts/recv', 'UserGiftController@allReceive');
-Route::post('users/me/gifts/{userGiftId}/recv', 'UserGiftController@receive');
+Route::post('users/me/gifts/recv', 'UserGiftController@allReceive')->middleware('auth');
+Route::post('users/me/gifts/{userGiftId}/recv', 'UserGiftController@receive')->middleware('auth');
 
 Route::get('masters/events', 'MasterController@getEvents');
 Route::get('masters/gift_messages', 'MasterController@getGiftMessages');

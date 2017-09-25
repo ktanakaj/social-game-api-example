@@ -32,6 +32,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
  *     description="マスタAPI",
  *   ),
  * )
+ * @SWG\SecurityScheme(
+ *   securityDefinition="SessionId",
+ *   type="apiKey",
+ *   in="header",
+ *   name="Cookie",
+ *   description="セッションID",
+ * )
  * @SWG\Definition(
  *   definition="Pagination",
  *   type="object",

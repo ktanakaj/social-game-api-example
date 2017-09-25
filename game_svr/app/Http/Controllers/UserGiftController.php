@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\UserGift;
@@ -240,6 +241,9 @@ class UserGiftController extends Controller
      *   tags={
      *     "Users",
      *   },
+     *   security={
+     *     "SessionId",
+     *   },
      *   @SWG\Parameter(
      *     in="path",
      *     name="userGiftId",
@@ -267,6 +271,10 @@ class UserGiftController extends Controller
      *     description="取得失敗",
      *   ),
      *   @SWG\Response(
+     *     response=401,
+     *     description="未認証",
+     *   ),
+     *   @SWG\Response(
      *     response=404,
      *     description="ギフトが存在しない",
      *   ),
@@ -274,9 +282,12 @@ class UserGiftController extends Controller
      */
     public function receive(Request $request, $userGiftId)
     {
-        // TODO: セッションからユーザーIDを取り自分のギフトである事を確認
-        DB::transaction(function () use ($userGiftId, &$result) {
+        $userId = Auth::id();
+        DB::transaction(function () use ($userId, $userGiftId, &$result) {
             $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
+            if ($userGift->user_id != $userId) {
+                throw new \InvalidArgumentException("The user gift is not belong to me");
+            }
             $this->userService->addObject($userGift->user_id, $userGift->data);
             $userGift->delete();
             $result = ['userGift' => $userGift];
@@ -291,6 +302,9 @@ class UserGiftController extends Controller
      *   description="ユーザーの全ギフトを受け取る。",
      *   tags={
      *     "Users",
+     *   },
+     *   security={
+     *     "SessionId",
      *   },
      *   @SWG\Response(
      *     response=200,
@@ -312,12 +326,15 @@ class UserGiftController extends Controller
      *     response=400,
      *     description="取得失敗",
      *   ),
+     *   @SWG\Response(
+     *     response=401,
+     *     description="未認証",
+     *   ),
      * )
      */
     public function allReceive(Request $request)
     {
-        // TODO: セッションからユーザーIDを取る
-        $userId = 1;
+        $userId = Auth::id();
         DB::transaction(function () use ($userId, &$result) {
             $userGifts = UserGift::lockForUpdate()->where(['user_id' => $userId])->get();
             $this->userService->addObjects($userId, $userGifts->map(function ($v) {

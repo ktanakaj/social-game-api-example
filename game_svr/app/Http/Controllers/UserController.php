@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 
@@ -231,9 +232,128 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
-            'password' => $request->input('password'),
+            'password' => bcrypt($request->input('password')),
         ]);
 
         return ['user' => $user];
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/login",
+     *   summary="ログイン",
+     *   description="ログインする。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="パラメータ",
+     *     required=true,
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="email",
+     *         description="メールアドレス",
+     *         type="string",
+     *       ),
+     *       @SWG\Property(
+     *         property="password",
+     *         description="パスワード",
+     *         type="string",
+     *       ),
+     *       required={
+     *         "email",
+     *         "password",
+     *       },
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="user",
+     *         ref="#/definitions/User"
+     *       ),
+     *       required={
+     *         "user",
+     *       },
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=422,
+     *     description="バリデーションNG",
+     *   ),
+     * )
+     */
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+            return ['user' => Auth::user()];
+        }
+        return response('email or password are incorrect', 422);
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/logout",
+     *   summary="ログアウト",
+     *   description="ログアウトする。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *   ),
+     * )
+     */
+    public function logout()
+    {
+        Auth::logout();
+    }
+
+    /**
+     * @SWG\Get(
+     *   path="/users/me",
+     *   summary="ログイン中ユーザー情報",
+     *   description="ログイン中のユーザーの詳細情報を取得する。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   security={
+     *     "SessionId",
+     *   },
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="user",
+     *         ref="#/definitions/User"
+     *       ),
+     *       required={
+     *         "user",
+     *       },
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=401,
+     *     description="未認証",
+     *   ),
+     * )
+     */
+    public function me()
+    {
+        return ['user' => Auth::user()];
     }
 }
