@@ -94,6 +94,7 @@ class UserItem extends Model
     private static function addItem(int $userId, Item $item, int $count) : ?UserItem
     {
         // TODO: 高レアアイテムは受け取った瞬間にランダムで称号が付く
+        // TODO: ジェネレータブルアイテムの対応
         // TODO: アイテムが持てるかの重量チェックとかする
         $userItem = self::lockForUpdate()->where([
             'user_id' => $userId,

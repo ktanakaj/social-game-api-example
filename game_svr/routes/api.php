@@ -23,6 +23,7 @@ Route::get('users/{id}/items', 'UserItemController@index');
 
 Route::get('users/{id}/gifts', 'UserGiftController@index');
 Route::post('users/{id}/gifts', 'UserGiftController@store');
+Route::post('users/me/gifts/recv', 'UserGiftController@allReceive');
 Route::post('users/me/gifts/{userGiftId}/recv', 'UserGiftController@receive');
 
 Route::get('masters/events', 'MasterController@getEvents');

@@ -193,6 +193,7 @@ class UserGiftController extends Controller
      *       type="object",
      *       @SWG\Property(
      *         property="userGift",
+     *         description="付与したギフト",
      *         ref="#/definitions/UserGift"
      *       ),
      *       required={
@@ -249,6 +250,17 @@ class UserGiftController extends Controller
      *   @SWG\Response(
      *     response=200,
      *     description="成功",
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="userGift",
+     *         description="受け取ったギフト",
+     *         ref="#/definitions/UserGift"
+     *       ),
+     *       required={
+     *         "userGift",
+     *       },
+     *     ),
      *   ),
      *   @SWG\Response(
      *     response=400,
@@ -262,11 +274,59 @@ class UserGiftController extends Controller
      */
     public function receive(Request $request, $userGiftId)
     {
+        // TODO: セッションからユーザーIDを取り自分のギフトである事を確認
         DB::transaction(function () use ($userGiftId, &$result) {
             $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
             $this->userService->addObject($userGift->user_id, $userGift->data);
             $userGift->delete();
             $result = ['userGift' => $userGift];
+        });
+        return $result;
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/users/me/gifts/recv",
+     *   summary="全ユーザーギフト受取",
+     *   description="ユーザーの全ギフトを受け取る。",
+     *   tags={
+     *     "Users",
+     *   },
+     *   @SWG\Response(
+     *     response=200,
+     *     description="成功",
+     *     @SWG\Schema(
+     *       type="object",
+     *       @SWG\Property(
+     *         property="userGifts",
+     *         description="受け取ったギフト配列",
+     *         type="array",
+     *         @SWG\Items(ref="#/definitions/UserGift")
+     *       ),
+     *       required={
+     *         "userGifts",
+     *       },
+     *     ),
+     *   ),
+     *   @SWG\Response(
+     *     response=400,
+     *     description="取得失敗",
+     *   ),
+     * )
+     */
+    public function allReceive(Request $request)
+    {
+        // TODO: セッションからユーザーIDを取る
+        $userId = 1;
+        DB::transaction(function () use ($userId, &$result) {
+            $userGifts = UserGift::lockForUpdate()->where(['user_id' => $userId])->get();
+            $this->userService->addObjects($userId, $userGifts->map(function ($v) {
+                return $v->data;
+            })->all());
+            foreach ($userGifts as $userGift) {
+                $userGift->delete();
+            }
+            $result = ['userGifts' => $userGifts];
         });
         return $result;
     }
