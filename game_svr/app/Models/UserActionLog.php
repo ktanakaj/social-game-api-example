@@ -41,6 +41,6 @@ class UserActionLog extends Model
      */
     public function user() : User
     {
-        return $this->belongsTo('App\Model\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

@@ -47,7 +47,7 @@ class UserItem extends Model
      */
     public function user() : User
     {
-        return $this->belongsTo('App\Model\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     /**
@@ -56,7 +56,7 @@ class UserItem extends Model
      */
     public function item() : Item
     {
-        return $this->belongsTo('App\Model\Item');
+        return $this->belongsTo('App\Models\Item');
     }
 
     /**

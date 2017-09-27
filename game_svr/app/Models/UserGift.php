@@ -64,7 +64,7 @@ class UserGift extends Model
      */
     public function user() : User
     {
-        return $this->belongsTo('App\Model\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     /**
@@ -73,6 +73,6 @@ class UserGift extends Model
      */
     public function message() : GiftMessage
     {
-        return $this->belongsTo('App\Model\GiftMessage', 'message_id');
+        return $this->belongsTo('App\Models\GiftMessage', 'message_id');
     }
 }

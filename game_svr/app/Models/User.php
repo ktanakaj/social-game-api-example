@@ -36,7 +36,7 @@ class User extends Authenticatable
      */
     public function userItems() : array
     {
-        return $this->hasMany('App\Model\UserItem');
+        return $this->hasMany('App\Models\UserItem');
     }
 
     /**
@@ -45,7 +45,7 @@ class User extends Authenticatable
      */
     public function userGifts() : array
     {
-        return $this->hasMany('App\Model\UserGift');
+        return $this->hasMany('App\Models\UserGift');
     }
 
     /**
@@ -54,7 +54,7 @@ class User extends Authenticatable
      */
     public function userActionLogs() : array
     {
-        return $this->hasMany('App\Model\UserActionLog');
+        return $this->hasMany('App\Models\UserActionLog');
     }
 
     /**
