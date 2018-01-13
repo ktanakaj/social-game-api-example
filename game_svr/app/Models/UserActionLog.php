@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * ユーザーの行動履歴を扱うモデル。
@@ -37,9 +38,9 @@ class UserActionLog extends Model
 
     /**
      * ログのユーザーを取得する。
-     * @return User ユーザー。
+     * @return BelongsTo ユーザー。
      */
-    public function user() : User
+    public function user() : BelongsTo
     {
         return $this->belongsTo('App\Models\User');
     }

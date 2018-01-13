@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -60,18 +61,18 @@ class UserGift extends Model
 
     /**
      * ギフトを所有するユーザーを取得する。
-     * @return User ユーザー。
+     * @return BelongsTo ユーザー。
      */
-    public function user() : User
+    public function user() : BelongsTo
     {
         return $this->belongsTo('App\Models\User');
     }
 
     /**
      * ギフトメッセージのマスタを取得する。
-     * @return GiftMessage アイテムマスタ。
+     * @return BelongsTo アイテムマスタ。
      */
-    public function message() : GiftMessage
+    public function message() : BelongsTo
     {
         return $this->belongsTo('App\Models\GiftMessage', 'message_id');
     }

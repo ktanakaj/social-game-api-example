@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * ユーザーが持つアイテムを表すモデル。
@@ -43,18 +44,18 @@ class UserItem extends Model
 
     /**
      * アイテムを所有するユーザーを取得する。
-     * @return User ユーザー。
+     * @return BelongsTo ユーザー。
      */
-    public function user() : User
+    public function user() : BelongsTo
     {
         return $this->belongsTo('App\Models\User');
     }
 
     /**
      * アイテムのマスタを取得する。
-     * @return Item アイテムマスタ。
+     * @return BelongsTo アイテムマスタ。
      */
-    public function item() : Item
+    public function item() : BelongsTo
     {
         return $this->belongsTo('App\Models\Item');
     }

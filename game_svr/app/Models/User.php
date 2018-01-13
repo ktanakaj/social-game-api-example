@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -32,27 +33,27 @@ class User extends Authenticatable
 
     /**
      * 所持品を取得する。
-     * @return array ユーザーアイテム配列。
+     * @return HasMany ユーザーアイテム配列。
      */
-    public function userItems() : array
+    public function userItems() : HasMany
     {
         return $this->hasMany('App\Models\UserItem');
     }
 
     /**
      * プレゼントボックスを取得する。
-     * @return array ユーザーギフト配列。
+     * @return HasMany ユーザーギフト配列。
      */
-    public function userGifts() : array
+    public function userGifts() : HasMany
     {
         return $this->hasMany('App\Models\UserGift');
     }
 
     /**
      * 行動履歴を取得する。
-     * @return array 行動履歴配列。
+     * @return HasMany 行動履歴配列。
      */
-    public function userActionLogs() : array
+    public function userActionLogs() : HasMany
     {
         return $this->hasMany('App\Models\UserActionLog');
     }
