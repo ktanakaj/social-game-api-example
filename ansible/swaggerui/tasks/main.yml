@@ -1,0 +1,7 @@
+---
+- name: Create Swagger-UI directory
+  file: path={{ swaggeruidest }} state=directory owner=root group=root mode=0755
+  register: swaggerui_installed
+- name: Install Swagger-UI from an archive
+  shell: curl -sL "{{ swaggeruisource }}" | tar xz -C {{ swaggeruidest }} --strip=2 '*/dist' --no-same-owner --no-same-permissions
+  when: swaggerui_installed.changed == true

@@ -1,0 +1,13 @@
+---
+- hosts: default
+  become: true
+  roles:
+  - timezone
+  - selinux/disable
+  - firewalld
+  - git
+  - apache
+  - mariadb
+  - php
+  - swaggerui
+  - gamesvr

@@ -1,0 +1,7 @@
+php_packages:
+  - php
+  - php-pdo
+  - php-mysqlnd
+  - php-mbstring
+  - php-xml
+  - php-intl

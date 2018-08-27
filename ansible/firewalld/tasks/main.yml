@@ -1,0 +1,13 @@
+---
+- name: Action to enable service firewalld
+  service: name=firewalld state=started enabled=yes
+
+- name: Set private ip addresses 10.0.0.0/8 to internal zone
+  firewalld: source='10.0.0.0/8' permanent=true zone=internal state=enabled
+  notify: Restart firewalld
+- name: Set private ip addresses 172.16.0.0/12 to internal zone
+  firewalld: source='172.16.0.0/12' permanent=true zone=internal state=enabled
+  notify: Restart firewalld
+- name: Set private ip addresses 192.168.0.0/16 to internal zone
+  firewalld: source='192.168.0.0/16' permanent=true zone=internal state=enabled
+  notify: Restart firewalld

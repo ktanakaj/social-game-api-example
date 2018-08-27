@@ -1,0 +1,46 @@
+- block:
+  - name: Copy the web application configuration to Apache
+    template:
+      src: "{{ app_apache_conf_src }}"
+      dest: "{{ app_apache_conf_dest }}"
+      force: no
+    notify: Restart httpd
+
+  - name: Create the web application database
+    mysql_db: name={{ item }} encoding=utf8 state=present
+    with_items: "{{ app_db }}"
+  - name: Craete the web application db user
+    mysql_user: name={{ item[1].user }} password={{ item[1].password }} host={{ item[0] }} priv={{ item[1].privilege }} state=present
+    with_nested:
+      - [ 'localhost', '%' ]
+      - "{{ app_db_users }}"
+
+- block:
+  - block:
+    - name: Install composer packages for the server application
+      composer:
+        command: install
+        no_dev: no
+        working_dir: "{{ app_dir }}"
+  - block:
+    - name: Copy configuration file for the server application
+      copy:
+        src: "{{ app_dir }}/.env.example"
+        dest: "{{ app_dir }}/.env"
+      register: copy_result
+    - name: Generate application key to the configuration file
+      shell: php artisan key:generate
+      args:
+        chdir: "{{ app_dir }}"
+      when: copy_result|succeeded
+  - block:
+    - name: Create tables to the db
+      shell: php artisan migrate
+      args:
+        chdir: "{{ app_dir }}"
+  - block:
+    - name: Create Swagger JSON file
+      shell: ./vendor/bin/swagger -o ./public/api-docs.json ./app/
+      args:
+        chdir: "{{ app_dir }}"
+  become: false

@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "ansible_local" do |ansible|
-    ansible.playbook = "vagrant_conf/playbook.yml"
+    ansible.playbook = "ansible/playbook.yml"
     ansible.provisioning_path = "/vagrant"
   end
 
