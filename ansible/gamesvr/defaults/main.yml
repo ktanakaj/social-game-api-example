@@ -1,9 +1,0 @@
-app_apache_conf_src: "apache.conf.j2"
-app_apache_conf_dest: /etc/httpd/conf.d/vagrant.conf
-app_dir: "/vagrant/game_svr"
-app_db:
-  - game_db
-app_db_users:
-  - user: game_usr
-    password: game001
-    privilege: "game_db.*:ALL"

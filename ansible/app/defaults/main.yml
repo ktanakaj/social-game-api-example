@@ -1,0 +1,11 @@
+app_nginx_conf_src: "nginx.conf.j2"
+app_nginx_conf_dest: "/etc/nginx/default.d/vagrant.conf"
+app_svr_dir: "/vagrant/game_svr"
+app_svr_dist_dir: "{{ app_svr_dir }}/public"
+app_log_dir: "/var/log/local/game_svr"
+app_db:
+  - game_db
+app_db_users:
+  - user: game_usr
+    password: game001
+    privilege: "game_db.*:ALL"

@@ -6,8 +6,9 @@
   - selinux/disable
   - firewalld
   - git
-  - apache
+  - nginx
+  - redis
   - mariadb
   - php
   - swaggerui
-  - gamesvr
+  - app

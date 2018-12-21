@@ -1,0 +1,15 @@
+---
+- name: Install the latest version of nginx
+  yum: name=nginx state=latest
+  notify: Restart nginx
+
+- name: Open port for HTTP
+  firewalld: service=http permanent=true state=enabled
+  notify: Restart firewalld
+
+- name: Remove Default Location on nginx
+  replace:
+    path: "{{ nginx_conf_dest }}"
+    regexp: '^\s*location\s*/\s*{\s*}\s*$'
+    replace: ''
+  notify: Restart nginx

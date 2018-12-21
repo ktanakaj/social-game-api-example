@@ -1,8 +1,0 @@
----
-- name: Install the latest version of Apache
-  yum: name=httpd state=latest
-  notify: Restart httpd
-
-- name: Open port for HTTP
-  firewalld: service=http permanent=true state=enabled
-  notify: Restart firewalld

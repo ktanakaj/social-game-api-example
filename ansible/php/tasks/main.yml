@@ -14,8 +14,9 @@
   when: php_version.stdout == ""
 
 - name: Install the latest version of PHP Packages
-  yum: name={{ item }} state=latest
-  with_items: "{{ php_packages }}"
+  yum:
+    name: "{{ php_packages }}"
+    state: latest
 
 - name: Install Composer
   get_url:
@@ -35,3 +36,23 @@
 
 - name: Install the latest version of unzip for composer
   yum: name=unzip state=latest
+
+- name: Install the latest version of PHP-FPM
+  yum: name=php-fpm state=latest
+  notify: Restart phpfpm
+
+- name: Set user php-fpm.d/www.conf
+  lineinfile:
+    dest: "{{ phpfpm_conf_dest }}"
+    regexp: '^user\s*='
+    insertafter: '^\[www\]'
+    line: "user={{ phpfpm_user }}"
+  notify: Restart phpfpm
+
+- name: Set group php-fpm.d/www.conf
+  lineinfile:
+    dest: "{{ phpfpm_conf_dest }}"
+    regexp: '^group\s*='
+    insertafter: '^\[www\]'
+    line: "group={{ phpfpm_group }}"
+  notify: Restart phpfpm

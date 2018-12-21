@@ -1,0 +1,50 @@
+- block:
+  - name: Copy the web app configuration to nginx
+    template:
+      src: "{{ app_nginx_conf_src }}"
+      dest: "{{ app_nginx_conf_dest }}"
+      force: yes
+    notify: Restart nginx
+
+  - name: Create the web application logging directory
+    file: path={{ app_log_dir }} state=directory mode=1777
+  - name: Create the web application database
+    mysql_db: name={{ item }} encoding=utf8 state=present
+    with_items: "{{ app_db }}"
+    register: app_db_created
+  - name: Craete the web application db user
+    mysql_user: name={{ item[1].user }} password={{ item[1].password }} host={{ item[0] }} priv={{ item[1].privilege }} state=present append_privs=yes
+    with_nested:
+      - [ 'localhost', '%' ]
+      - "{{ app_db_users }}"
+    when: app_db_created.changed
+
+- block:
+  - name: Install composer packages for the server application
+    composer:
+      command: install
+      no_dev: no
+      working_dir: "{{ app_svr_dir }}"
+
+  - name: Copy configuration file for the server application
+    copy:
+      src: "{{ app_svr_dir }}/.env.example"
+      dest: "{{ app_svr_dir }}/.env"
+    register: env_copy_result
+  - name: Generate application key to the configuration file
+    shell: php artisan key:generate
+    args:
+      chdir: "{{ app_svr_dir }}"
+    when: env_copy_result is succeeded
+
+  - name: Create tables to the db
+    shell: php artisan migrate
+    args:
+      chdir: "{{ app_svr_dir }}"
+  - name: Insert initial data to the db
+    shell: php artisan db:seed
+    args:
+      chdir: "{{ app_svr_dir }}"
+    when: env_copy_result is succeeded
+
+  become: false

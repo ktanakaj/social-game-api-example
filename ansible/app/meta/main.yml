@@ -1,5 +1,6 @@
 dependencies:
   - { role: git }
-  - { role: apache }
+  - { role: nginx }
   - { role: php }
   - { role: mariadb }
+  - { role: redis }

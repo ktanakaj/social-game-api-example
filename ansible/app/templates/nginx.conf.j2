@@ -1,0 +1,28 @@
+gzip on;
+gzip_vary on;
+gzip_proxied any;
+gzip_types text/html text/plain text/css application/json text/javascript application/javascript application/x-javascript text/xml application/xml;
+
+client_max_body_size 64m;
+
+location ^~ /swagger/ {
+    root /var/www/;
+    allow 10.0.0.0/8;
+    allow 172.16.0.0/12;
+    allow 192.168.0.0/16;
+    deny all;
+}
+
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+    root {{ app_svr_dist_dir }};
+    index index.php index.html;
+}
+
+location ~ \.php$ {
+    root           {{ app_svr_dist_dir }};
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include        fastcgi_params;
+}
