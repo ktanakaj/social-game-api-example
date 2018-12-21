@@ -5,47 +5,47 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use App\Models\UserGift;
+use App\Models\General\User;
+use App\Models\General\UserGift;
 use App\Services\UserService;
 use App\Http\Controllers\Controller;
 
 /**
  * ユーザーギフトコントローラ。
  *
- * @SWG\Definition(
- *   definition="UserGift",
+ * @OA\Schema(
+ *   schema="UserGift",
  *   type="object",
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="id",
  *     description="ユーザーギフトID",
  *     type="number",
  *   ),
- *   @SWG\Property(
- *     property="user_id",
+ *   @OA\Property(
+ *     property="userId",
  *     description="ユーザーID",
  *     type="number",
  *   ),
- *   @SWG\Property(
- *     property="message_id",
+ *   @OA\Property(
+ *     property="messageId",
  *     description="ギフトメッセージID",
  *     type="number",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="data",
  *     type="object",
  *     description="ギフト情報",
- *     @SWG\Property(
+ *     @OA\Property(
  *       property="type",
  *       description="ギフト種別",
  *       type="string",
  *     ),
- *     @SWG\Property(
- *       property="object_id",
+ *     @OA\Property(
+ *       property="objectId",
  *       description="ギフトオブジェクトID",
  *       type="number",
  *     ),
- *     @SWG\Property(
+ *     @OA\Property(
  *       property="count",
  *       description="個数",
  *       type="number",
@@ -55,20 +55,20 @@ use App\Http\Controllers\Controller;
  *       "count",
  *     },
  *   ),
- *   @SWG\Property(
- *     property="created_at",
+ *   @OA\Property(
+ *     property="createdAt",
  *     description="登録日時",
  *     type="string",
  *   ),
- *   @SWG\Property(
- *     property="deleted_at",
+ *   @OA\Property(
+ *     property="updatedAt",
  *     description="更新日時",
  *     type="string",
  *   ),
  *   required={
  *     "id",
- *     "user_id",
- *     "message_id",
+ *     "userId",
+ *     "messageId",
  *     "data",
  *   },
  * )
@@ -90,34 +90,34 @@ class UserGiftController extends Controller
     }
 
     /**
-     * @SWG\Get(
+     * @OA\Get(
      *   path="/users/{id}/gifts",
      *   summary="ユーザーギフト一覧",
      *   description="ユーザーのギフト一覧を取得する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="path",
      *     name="id",
-     *     type="number",
      *     description="ユーザーID",
      *     required=true,
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
      *       allOf={
-     *         @SWG\Schema(ref="#definitions/Pagination"),
-     *         @SWG\Schema(
+     *         @OA\Schema(ref="#components/schemas/Pagination"),
+     *         @OA\Schema(
      *           type="object",
-     *           @SWG\Property(
+     *           @OA\Property(
      *             property="data",
      *             description="データ配列",
      *             type="array",
-     *             @SWG\Items(ref="#/definitions/UserGift")
+     *             @OA\Items(ref="#/components/schemas/UserGift")
      *           ),
      *         ),
      *       }
@@ -131,47 +131,45 @@ class UserGiftController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users/{id}/gifts",
      *   summary="ユーザーギフト付与",
      *   description="ユーザーにギフトを付与する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="path",
      *     name="id",
-     *     type="number",
      *     description="ユーザーID",
      *     required=true,
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Parameter(
-     *     in="body",
-     *     name="body",
+     *   @OA\RequestBody(
      *     description="パラメータ",
      *     required=true,
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="message_id",
      *         description="ギフトメッセージID",
      *         type="number",
      *       ),
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="data",
      *         type="object",
      *         description="ギフト情報",
-     *         @SWG\Property(
+     *         @OA\Property(
      *           property="type",
      *           description="ギフト種別",
      *           type="string",
      *         ),
-     *         @SWG\Property(
+     *         @OA\Property(
      *           property="object_id",
      *           description="ギフトオブジェクトID",
      *           type="number",
      *         ),
-     *         @SWG\Property(
+     *         @OA\Property(
      *           property="count",
      *           description="個数",
      *           type="number",
@@ -187,28 +185,30 @@ class UserGiftController extends Controller
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="userGift",
      *         description="付与したギフト",
-     *         ref="#/definitions/UserGift"
+     *         ref="#/components/schemas/UserGift"
      *       ),
      *       required={
      *         "userGift",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
-     *     response=422,
+     *   @OA\Response(
+     *     response=400,
      *     description="バリデーションNG",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=404,
      *     description="ユーザー取得失敗",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */
@@ -221,7 +221,7 @@ class UserGiftController extends Controller
             'data.type' => 'required|max:32',
             'data.object_id' => 'integer',
             'data.count' => 'required|integer|min:1',
-            'message_id' => 'required|integer|exists:gift_messages,id',
+            'message_id' => 'required|integer|exists:master.gift_messages,id',
         ]);
 
         $userGift = UserGift::create([
@@ -234,7 +234,7 @@ class UserGiftController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users/me/gifts/{userGiftId}/recv",
      *   summary="ユーザーギフト受取",
      *   description="ユーザーのギフトを受け取る。",
@@ -244,39 +244,42 @@ class UserGiftController extends Controller
      *   security={
      *     "SessionId",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="path",
      *     name="userGiftId",
-     *     type="number",
      *     description="ユーザーギフトID",
      *     required=true,
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="userGift",
      *         description="受け取ったギフト",
-     *         ref="#/definitions/UserGift"
+     *         ref="#/components/schemas/UserGift"
      *       ),
      *       required={
      *         "userGift",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=400,
      *     description="取得失敗",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=401,
      *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=404,
      *     description="ギフトが存在しない",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */
@@ -296,7 +299,7 @@ class UserGiftController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users/me/gifts/recv",
      *   summary="全ユーザーギフト受取",
      *   description="ユーザーの全ギフトを受け取る。",
@@ -306,29 +309,31 @@ class UserGiftController extends Controller
      *   security={
      *     "SessionId",
      *   },
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="userGifts",
      *         description="受け取ったギフト配列",
      *         type="array",
-     *         @SWG\Items(ref="#/definitions/UserGift")
+     *         @OA\Items(ref="#/components/schemas/UserGift")
      *       ),
      *       required={
      *         "userGifts",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=400,
      *     description="取得失敗",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=401,
      *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */

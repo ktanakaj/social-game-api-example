@@ -4,67 +4,73 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Exceptions\BadRequestException;
+use App\Models\General\User;
 use App\Http\Controllers\Controller;
 
 /**
  * ユーザーコントローラ。
  *
- * @SWG\Definition(
- *   definition="User",
+ * @OA\Tag(
+ *   name="Users",
+ *   description="ユーザーAPI",
+ * )
+ *
+ * @OA\Schema(
+ *   schema="User",
  *   type="object",
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="id",
  *     description="ユーザーID",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="name",
  *     description="ユーザー名",
  *     type="string",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="email",
  *     description="メールアドレス",
  *     type="string",
  *   ),
- *   @SWG\Property(
- *     property="game_coin",
+ *   @OA\Property(
+ *     property="gameCoin",
  *     description="ゲームコイン",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
- *     property="special_coin",
+ *   @OA\Property(
+ *     property="specialCoin",
  *     description="課金コイン",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
- *     property="free_special_coin",
+ *   @OA\Property(
+ *     property="freeSpecialCoin",
  *     description="無償課金コイン",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="level",
  *     description="レベル",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="exp",
  *     description="経験値",
- *     type="number",
+ *     type="integer",
  *   ),
- *   @SWG\Property(
- *     property="last_login",
+ *   @OA\Property(
+ *     property="lastLogin",
  *     description="最終ログイン日時",
  *     type="string",
  *   ),
- *   @SWG\Property(
- *     property="created_at",
+ *   @OA\Property(
+ *     property="createdAt",
  *     description="登録日時",
  *     type="string",
  *   ),
- *   @SWG\Property(
- *     property="updated_at",
+ *   @OA\Property(
+ *     property="updatedAt",
  *     description="更新日時",
  *     type="string",
  *   ),
@@ -72,46 +78,46 @@ use App\Http\Controllers\Controller;
  *     "id",
  *     "name",
  *     "email",
- *     "game_coin",
- *     "special_coin",
- *     "free_special_coin",
+ *     "gameCoin",
+ *     "specialCoin",
+ *     "freeSpecialCoin",
  *     "level",
  *     "exp",
- *     "created_at",
- *     "updated_at",
+ *     "createdAt",
+ *     "updatedAt",
  *   },
  * )
  */
 class UserController extends Controller
 {
     /**
-     * @SWG\Get(
+     * @OA\Get(
      *   path="/users",
      *   summary="ユーザー一覧",
      *   description="ユーザー一覧を取得する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="query",
      *     name="page",
-     *     type="number",
      *     description="ページ番号（先頭ページが1）",
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
      *       allOf={
-     *         @SWG\Schema(ref="#definitions/Pagination"),
-     *         @SWG\Schema(
+     *         @OA\Schema(ref="#components/schemas/Pagination"),
+     *         @OA\Schema(
      *           type="object",
-     *           @SWG\Property(
+     *           @OA\Property(
      *             property="data",
      *             description="データ配列",
      *             type="array",
-     *             @SWG\Items(ref="#/definitions/User")
+     *             @OA\Items(ref="#/components/schemas/User")
      *           ),
      *         ),
      *       }
@@ -125,37 +131,38 @@ class UserController extends Controller
     }
 
     /**
-     * @SWG\Get(
+     * @OA\Get(
      *   path="/users/{id}",
      *   summary="ユーザー詳細",
      *   description="ユーザーの詳細情報を取得する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="path",
      *     name="id",
-     *     type="number",
      *     description="ユーザーID",
      *     required=true,
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="user",
-     *         ref="#/definitions/User"
+     *         ref="#/components/schemas/User"
      *       ),
      *       required={
      *         "user",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=404,
      *     description="取得失敗",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */
@@ -165,31 +172,29 @@ class UserController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users",
      *   summary="ユーザー登録",
      *   description="ユーザーを登録する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
-     *     in="body",
-     *     name="body",
+     *   @OA\RequestBody(
      *     description="パラメータ",
      *     required=true,
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="name",
      *         description="ユーザー名",
      *         type="string",
      *       ),
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="email",
      *         description="メールアドレス",
      *         type="string",
      *       ),
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="password",
      *         description="パスワード",
      *         type="string",
@@ -201,23 +206,24 @@ class UserController extends Controller
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="user",
-     *         ref="#/definitions/User"
+     *         ref="#/components/schemas/User"
      *       ),
      *       required={
      *         "user",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
-     *     response=422,
+     *   @OA\Response(
+     *     response=400,
      *     description="バリデーションNG",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */
@@ -239,26 +245,24 @@ class UserController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users/login",
      *   summary="ログイン",
      *   description="ログインする。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
-     *     in="body",
-     *     name="body",
+     *   @OA\RequestBody(
      *     description="パラメータ",
      *     required=true,
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="email",
      *         description="メールアドレス",
      *         type="string",
      *       ),
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="password",
      *         description="パスワード",
      *         type="string",
@@ -269,23 +273,24 @@ class UserController extends Controller
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="user",
-     *         ref="#/definitions/User"
+     *         ref="#/components/schemas/User"
      *       ),
      *       required={
      *         "user",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
-     *     response=422,
+     *   @OA\Response(
+     *     response=400,
      *     description="バリデーションNG",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */
@@ -299,18 +304,18 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             return ['user' => Auth::user()];
         }
-        return response('email or password are incorrect', 422);
+        throw new BadRequestException('email or password are incorrect');
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *   path="/users/logout",
      *   summary="ログアウト",
      *   description="ログアウトする。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
      *   ),
@@ -322,7 +327,7 @@ class UserController extends Controller
     }
 
     /**
-     * @SWG\Get(
+     * @OA\Get(
      *   path="/users/me",
      *   summary="ログイン中ユーザー情報",
      *   description="ログイン中のユーザーの詳細情報を取得する。",
@@ -332,23 +337,24 @@ class UserController extends Controller
      *   security={
      *     "SessionId",
      *   },
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
-     *       @SWG\Property(
+     *       @OA\Property(
      *         property="user",
-     *         ref="#/definitions/User"
+     *         ref="#/components/schemas/User"
      *       ),
      *       required={
      *         "user",
      *       },
      *     ),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=401,
      *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
      */

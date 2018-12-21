@@ -4,8 +4,9 @@ app_svr_dir: "/vagrant/game_svr"
 app_svr_dist_dir: "{{ app_svr_dir }}/public"
 app_log_dir: "/var/log/local/game_svr"
 app_db:
-  - game_db
+  - game_master_db
+  - game_global_db
 app_db_users:
   - user: game_usr
     password: game001
-    privilege: "game_db.*:ALL"
+    privilege: "game_master_db.*:ALL/game_global_db.*:ALL" # FIXME: この書き方だと二度目以降のansibleでエラーになる模様

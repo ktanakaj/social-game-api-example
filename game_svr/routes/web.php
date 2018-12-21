@@ -14,3 +14,8 @@
 // トップへのアクセス。現状APIのみなのでデバッグページに飛ばしておく
 // ※ /swagger/ はLaravel外のためnginxにてルーティング
 Route::redirect('/', '/swagger/?url=/api-docs.json');
+
+// 開発環境用の特殊なAPI
+if (is_callable('\\OpenApi\\scan')) {
+    Route::get('api-docs.json', 'OpenApiController');
+}

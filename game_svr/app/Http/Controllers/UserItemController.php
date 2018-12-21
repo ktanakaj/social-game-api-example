@@ -2,96 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserItem;
+use App\Models\General\UserItem;
 use App\Http\Controllers\Controller;
 
 /**
  * ユーザーアイテムコントローラ。
  *
- * @SWG\Definition(
- *   definition="UserItem",
+ * @OA\Schema(
+ *   schema="UserItem",
  *   type="object",
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="id",
  *     description="ユーザーアイテムID",
  *     type="number",
  *   ),
- *   @SWG\Property(
- *     property="user_id",
+ *   @OA\Property(
+ *     property="userId",
  *     description="ユーザーID",
  *     type="number",
  *   ),
- *   @SWG\Property(
- *     property="item_id",
+ *   @OA\Property(
+ *     property="itemId",
  *     description="アイテムID",
  *     type="number",
  *   ),
- *   @SWG\Property(
+ *   @OA\Property(
  *     property="count",
  *     description="所持数",
  *     type="number",
  *   ),
- *   @SWG\Property(
- *     property="property_ids",
+ *   @OA\Property(
+ *     property="propertyIds",
  *     description="アイテムプロパティID配列",
  *     type="array",
- *     @SWG\Items(
+ *     @OA\Items(
  *       description="アイテムプロパティID",
  *       type="number",
  *     ),
  *   ),
- *   @SWG\Property(
- *     property="created_at",
+ *   @OA\Property(
+ *     property="createdAt",
  *     description="登録日時",
  *     type="string",
  *   ),
- *   @SWG\Property(
- *     property="updated_at",
+ *   @OA\Property(
+ *     property="updatedAt",
  *     description="更新日時",
  *     type="string",
  *   ),
  *   required={
  *     "id",
- *     "user_id",
- *     "item_id",
+ *     "userId",
+ *     "itemId",
  *     "count",
- *     "property_ids",
- *     "created_at",
- *     "updated_at",
+ *     "propertyIds",
+ *     "createdAt",
+ *     "updatedAt",
  *   },
  * )
  */
 class UserItemController extends Controller
 {
     /**
-     * @SWG\Get(
+     * @OA\Get(
      *   path="/users/{id}/items",
      *   summary="ユーザーアイテム一覧",
      *   description="ユーザーのアイテム一覧を取得する。",
      *   tags={
      *     "Users",
      *   },
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *     in="path",
      *     name="id",
-     *     type="number",
      *     description="ユーザーID",
      *     required=true,
+     *     @OA\Schema(type="integer"),
      *   ),
-     *   @SWG\Response(
+     *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @SWG\Schema(
+     *     @OA\JsonContent(
      *       type="object",
      *       allOf={
-     *         @SWG\Schema(ref="#definitions/Pagination"),
-     *         @SWG\Schema(
+     *         @OA\Schema(ref="#components/schemas/Pagination"),
+     *         @OA\Schema(
      *           type="object",
-     *           @SWG\Property(
+     *           @OA\Property(
      *             property="data",
      *             description="データ配列",
      *             type="array",
-     *             @SWG\Items(ref="#/definitions/UserItem")
+     *             @OA\Items(ref="#/components/schemas/UserItem")
      *           ),
      *         ),
      *       }

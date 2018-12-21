@@ -9,10 +9,8 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot() : void
     {
         // DBのインデックス長の設定
         Schema::defaultStringLength(191);
@@ -20,11 +18,12 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register() : void
     {
-        //
+        // 開発用のSQLログ
+        \DB::listen(function ($query) {
+            \Log::debug('SQL: ' . $query->sql . '; bindings=' . \json_encode($query->bindings) . ' time=' . sprintf("%.2fms", $query->time));
+        });
     }
 }
