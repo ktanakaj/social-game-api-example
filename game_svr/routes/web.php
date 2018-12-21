@@ -11,7 +11,6 @@
 |
 */
 
-// ※ APIのみなのでデバッグページに飛ばしておく
-Route::get('/', function () {
-    return redirect('/swagger/?url=/api-docs.json');
-});
+// トップへのアクセス。現状APIのみなのでデバッグページに飛ばしておく
+// ※ /swagger/ はLaravel外のためnginxにてルーティング
+Route::redirect('/', '/swagger/?url=/api-docs.json');
