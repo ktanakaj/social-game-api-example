@@ -7,6 +7,7 @@
 * Vagrant 2.1.1 - 仮想環境管理
     * VirtualBox 5.2.12 - 仮想環境
     * vagrant-vbguest - Vagrantプラグイン
+    * vagrant-winnfsd - 〃
 
 ## 開発メモ
 トップページにアクセスするとSwagger-UIのAPIデバック用ページが表示されます。

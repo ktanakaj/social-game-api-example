@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 80, auto_correct: true
 
   # ホストPCのこのフォルダをマウント
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder ".", "/vagrant", type: "nfs"
 
   # CPU数/メモリサイズ
   config.vm.provider "virtualbox" do |vb|
