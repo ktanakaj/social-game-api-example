@@ -5,6 +5,7 @@ gzip_types text/html text/plain text/css application/json text/javascript applic
 
 client_max_body_size 64m;
 
+# Swagger-UI configuration (for debug)
 location ^~ /swagger/ {
     root /var/www/;
     allow 10.0.0.0/8;
@@ -13,6 +14,11 @@ location ^~ /swagger/ {
     deny all;
 }
 
+location = / {
+    return 302 /swagger/?url=/api-docs.json;
+}
+
+# Laravel Server configuration
 location / {
     try_files $uri $uri/ /index.php?$query_string;
     root {{ app_svr_dist_dir }};

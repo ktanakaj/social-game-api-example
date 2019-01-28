@@ -1,5 +1,2 @@
-remi_repository: http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 remi_repository_name: remi-php73
 composer_phar_url: https://getcomposer.org/download/1.8.0/composer.phar
-phpdoc_phar_url: http://www.phpdoc.org/phpDocumentor.phar
-phpunit_phar_url: https://phar.phpunit.de/phpunit.phar

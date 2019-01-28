@@ -1,0 +1,3 @@
+---
+- name: Install Remi repository
+  yum: name={{ remi_repository }}

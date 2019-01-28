@@ -30,12 +30,13 @@
     copy:
       src: "{{ app_svr_dir }}/.env.example"
       dest: "{{ app_svr_dir }}/.env"
+      force: no
     register: env_copy_result
   - name: Generate application key to the configuration file
     shell: php artisan key:generate
     args:
       chdir: "{{ app_svr_dir }}"
-    when: env_copy_result is succeeded
+    when: env_copy_result is changed
 
   - name: Create tables to the db
     shell: php artisan migrate
@@ -45,6 +46,6 @@
     shell: php artisan db:seed
     args:
       chdir: "{{ app_svr_dir }}"
-    when: env_copy_result is succeeded
+    when: env_copy_result is changed
 
   become: false
