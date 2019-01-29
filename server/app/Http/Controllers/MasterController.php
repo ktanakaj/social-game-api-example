@@ -7,7 +7,6 @@ use App\Models\Masters\GiftMessage;
 use App\Models\Masters\Item;
 use App\Models\Masters\ItemProperty;
 use App\Models\Masters\News;
-use App\Http\Controllers\Controller;
 
 /**
  * マスターコントローラ。
@@ -50,12 +49,12 @@ class MasterController extends Controller
      *             type="string",
      *           ),
      *           @OA\Property(
-     *             property="openDate",
+     *             property="open_date",
      *             description="イベント開始日時",
      *             type="string",
      *           ),
      *           @OA\Property(
-     *             property="closeDate",
+     *             property="close_date",
      *             description="イベント終了日時",
      *             type="number",
      *           ),
@@ -67,8 +66,8 @@ class MasterController extends Controller
      *           required={
      *             "id",
      *             "type",
-     *             "openDate",
-     *             "closeDate",
+     *             "open_date",
+     *             "close_date",
      *             "title",
      *           },
      *         ),
@@ -87,7 +86,7 @@ class MasterController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/masters/gift_messages",
+     *   path="/masters/gift-messages",
      *   summary="ギフトメッセージマスタ取得",
      *   description="ギフトメッセージマスタの一覧を取得する",
      *   tags={
@@ -189,17 +188,17 @@ class MasterController extends Controller
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="useEffect",
+     *             property="use_effect",
      *             description="消費効果",
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="equippingEffect",
+     *             property="equipping_effect",
      *             description="装備効果",
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="materialEffect",
+     *             property="material_effect",
      *             description="素材効果",
      *             type="object",
      *           ),
@@ -211,9 +210,9 @@ class MasterController extends Controller
      *             "weight",
      *             "name",
      *             "flavor",
-     *             "useEffect",
-     *             "equippingEffect",
-     *             "materialEffect",
+     *             "use_effect",
+     *             "equipping_effect",
+     *             "material_effect",
      *           },
      *         ),
      *       ),
@@ -231,7 +230,7 @@ class MasterController extends Controller
 
     /**
      * @OA\Get(
-     *   path="/masters/item_properties",
+     *   path="/masters/item-properties",
      *   summary="アイテムプロパティマスタ取得",
      *   description="アイテムプロパティマスタの一覧を取得する",
      *   tags={
@@ -280,17 +279,17 @@ class MasterController extends Controller
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="useEffect",
+     *             property="use_effect",
      *             description="消費効果",
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="equippingEffect",
+     *             property="equipping_effect",
      *             description="装備効果",
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="materialEffect",
+     *             property="material_effect",
      *             description="素材効果",
      *             type="object",
      *           ),
@@ -301,9 +300,9 @@ class MasterController extends Controller
      *             "rarity",
      *             "enable",
      *             "name",
-     *             "useEffect",
-     *             "equippingEffect",
-     *             "materialEffect",
+     *             "use_effect",
+     *             "equipping_effect",
+     *             "material_effect",
      *           },
      *         ),
      *       ),
@@ -355,12 +354,12 @@ class MasterController extends Controller
      *             type="object",
      *           ),
      *           @OA\Property(
-     *             property="openDate",
+     *             property="open_date",
      *             description="公開開始日時",
      *             type="string",
      *           ),
      *           @OA\Property(
-     *             property="closeDate",
+     *             property="close_date",
      *             description="公開終了日時",
      *             type="number",
      *           ),
@@ -368,8 +367,8 @@ class MasterController extends Controller
      *             "id",
      *             "title",
      *             "body",
-     *             "openDate",
-     *             "closeDate",
+     *             "open_date",
+     *             "close_date",
      *           },
      *         ),
      *       ),

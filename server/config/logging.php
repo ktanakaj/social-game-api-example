@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => 'default',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ return [
     */
 
     'channels' => [
-        'stack' => [
+        'default' => [
             'driver' => 'stack',
             'channels' => ['daily', 'errorlog'],
         ],
@@ -42,34 +42,16 @@ return [
         'single' => [
             'driver' => 'single',
             'path' => env('LOG_DEFAULT_PATH', storage_path('logs/laravel.log')),
-            'level' => 'debug',
+            'level' => env('LOG_DEFAULT_LEVEL', 'info'),
             'permission' => 0666,
         ],
 
         'daily' => [
             'driver' => 'daily',
             'path' => env('LOG_DEFAULT_PATH', storage_path('logs/laravel.log')),
-            'level' => 'debug',
-            'days' => 14,
+            'level' => env('LOG_DEFAULT_LEVEL', 'info'),
+            'days' => env('LOG_DEFAULT_DAYS', 14),
             'permission' => 0666,
-        ],
-
-        'slack' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
-            'emoji' => ':boom:',
-            'level' => 'critical',
-        ],
-
-        'papertrail' => [
-            'driver'  => 'monolog',
-            'level' => 'debug',
-            'handler' => SyslogUdpHandler::class,
-            'handler_with' => [
-                'host' => env('PAPERTRAIL_URL'),
-                'port' => env('PAPERTRAIL_PORT'),
-            ],
         ],
 
         'stderr' => [
@@ -83,12 +65,20 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
-            'level' => 'debug',
+            'level' => env('LOG_DEFAULT_LEVEL', 'info'),
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'error',
+        ],
+
+        'access' => [
+            'driver' => 'daily',
+            'path' => env('LOG_ACCESS_PATH', storage_path('logs/access.log')),
+            'level' => env('LOG_ACCESS_LEVEL', 'info'),
+            'days' => env('LOG_ACCESS_DAYS', 14),
+            'permission' => 0666,
         ],
     ],
 

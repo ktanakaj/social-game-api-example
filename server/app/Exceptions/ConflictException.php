@@ -12,7 +12,8 @@ class ConflictException extends AppException
      * @param string $message エラーメッセージ。
      * @param mixed $data 追加のエラー情報。
      */
-    public function __construct(string $message, $data = null) {
+    public function __construct(string $message, $data = null)
+    {
         parent::__construct($message, 'CONFLICT', $data);
     }
 }

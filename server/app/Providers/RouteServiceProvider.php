@@ -18,56 +18,41 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot() : void
     {
-        //
+        Route::pattern('id', '[0-9]+');
 
         parent::boot();
     }
 
     /**
      * Define the routes for the application.
-     *
-     * @return void
      */
-    public function map()
+    public function map() : void
     {
         $this->mapApiRoutes();
-
-        $this->mapWebRoutes();
-
-        //
+        $this->mapAdminRoutes();
     }
 
     /**
-     * Define the "web" routes for the application.
-     *
-     * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
+     * API用ルートの定義。
      */
-    protected function mapWebRoutes()
+    protected function mapApiRoutes() : void
     {
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
-    }
-
-    /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
-    protected function mapApiRoutes()
-    {
-        Route::prefix('api')
-             ->middleware('api')
+        Route::middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * 管理画面API用ルートの定義。
+     */
+    protected function mapAdminRoutes() : void
+    {
+        Route::prefix('admin')
+             ->middleware('admin')
+             ->namespace($this->namespace . '\Admin')
+             ->group(base_path('routes/admin.php'));
     }
 }

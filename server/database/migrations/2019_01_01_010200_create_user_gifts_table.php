@@ -25,7 +25,7 @@ class CreateUserGiftsTable extends Migration
         });
 
         // 時系列で肥大化する想定なのでパーティション化する
-        DB::statement("ALTER TABLE `user_gifts` DROP PRIMARY KEY, ADD PRIMARY KEY (`id`, `created_at`)");
+        MigrationUtils::changePrimaryKey('user_gifts', ['id', 'created_at']);
         MigrationUtils::createDatePartition('user_gifts', 'created_at');
     }
 

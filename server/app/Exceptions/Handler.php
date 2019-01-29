@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Models\Masters\ErrorCode;
@@ -81,7 +83,13 @@ class Handler extends ExceptionHandler
             // デバッグモードでのWebからのアクセスの場合、開発用に生の例外を出力する
             if ($exception instanceof ValidationException) {
                 // バリデーション例外の場合、LaravelのWebページ用の処理でリダイレクトされてしまうので、変換する
-                $exception = new BadRequestHttpException($appex->getMessage(), $exception);
+                $exception = new BadRequestHttpException($msg, $exception);
+            } elseif ($exception instanceof AuthenticationException) {
+                // 認証NGの場合も、LaravelのWebページ用の処理でリダイレクトされてしまうので、変換する
+                $exception = new UnauthorizedHttpException('', $msg, $exception);
+            } elseif (empty($msg) && $exception instanceof HttpException) {
+                // ルート未存在の場合など、エラーメッセージが空で紛らわしいので、詰めなおす
+                $exception = new HttpException($status, $errorCode->message, $exception, []);
             }
             return parent::render($request, $exception);
         } else {
@@ -95,7 +103,8 @@ class Handler extends ExceptionHandler
      * @param string $code エラーコード。
      * @return ErrorCode エラーコードマスタ。存在しない場合デフォルト値を返す。
      */
-    private function findByErrorCode(string $code) : ErrorCode {
+    private function findByErrorCode(string $code) : ErrorCode
+    {
         $errorCode = null;
         try {
             $errorCode = ErrorCode::find($code);

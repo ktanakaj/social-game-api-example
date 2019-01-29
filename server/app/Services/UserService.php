@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\General\User;
-use App\Models\General\UserItem;
+use App\Models\Globals\User;
+use App\Models\Globals\UserItem;
 
 /**
  * ユーザー関連の処理を担うサービスクラス。

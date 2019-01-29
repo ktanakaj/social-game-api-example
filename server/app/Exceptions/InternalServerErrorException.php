@@ -12,7 +12,8 @@ class InternalServerErrorException extends AppException
      * @param string $message エラーメッセージ。
      * @param \Throwable $previous 元となった例外。
      */
-    public function __construct(string $message, \Throwable $previous = null) {
+    public function __construct(string $message, \Throwable $previous = null)
+    {
         parent::__construct($message, 'INTERNAL_SERVER_ERROR', $previous);
     }
 }

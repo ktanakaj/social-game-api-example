@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\General;
+namespace App\Models\Globals;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,11 +24,21 @@ class UserGift extends Model
     public $timestamps = false;
 
     /**
-     * 属性に設定するデフォルト値。
+     * 複数代入する属性。
      * @var array
      */
-    protected $attributes = [
-        'data' => '{}',
+    protected $fillable = [
+        'user_id',
+        'message_id',
+        'data',
+    ];
+
+    /**
+     * 日付として扱う属性。
+     * @var array
+     */
+    protected $dates = [
+        'deleted_at',
     ];
 
     /**
@@ -39,13 +50,11 @@ class UserGift extends Model
     ];
 
     /**
-     * 複数代入する属性。
+     * 属性に設定するデフォルト値。
      * @var array
      */
-    protected $fillable = [
-        'user_id',
-        'message_id',
-        'data',
+    protected $attributes = [
+        'data' => '{}',
     ];
 
     /**
@@ -56,24 +65,14 @@ class UserGift extends Model
         // ※ updated_at だけがオフで SoftDeletes が有効だとエラーになるので暫定対処
         //    created_at もオフにして手動で日時指定
         parent::__construct($attributes);
-        $this->created_at = new \DateTime();
+        $this->created_at = new Carbon();
     }
 
     /**
-     * ギフトを所有するユーザーを取得する。
-     * @return BelongsTo ユーザー。
+     * ユーザーとのリレーション定義。
      */
     public function user() : BelongsTo
     {
-        return $this->belongsTo('App\Models\General\User');
-    }
-
-    /**
-     * ギフトメッセージのマスタを取得する。
-     * @return BelongsTo アイテムマスタ。
-     */
-    public function message() : BelongsTo
-    {
-        return $this->belongsTo('App\Models\Masters\GiftMessage', 'message_id');
+        return $this->belongsTo('App\Models\Globals\User');
     }
 }

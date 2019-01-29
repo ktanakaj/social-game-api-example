@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\General;
+namespace App\Models\Globals;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,22 +18,6 @@ use App\Models\Masters\ItemProperty;
 class UserItem extends Model
 {
     /**
-     * 属性に設定するデフォルト値。
-     * @var array
-     */
-    protected $attributes = [
-        'property_ids' => '[]',
-    ];
-
-    /**
-     * ネイティブなタイプへキャストする属性。
-     * @var array
-     */
-    protected $casts = [
-        'property_ids' => 'array',
-    ];
-
-    /**
      * 複数代入する属性。
      * @var array
      */
@@ -45,30 +29,27 @@ class UserItem extends Model
     ];
 
     /**
-     * アイテムを所有するユーザーを取得する。
-     * @return BelongsTo ユーザー。
+     * ネイティブなタイプへキャストする属性。
+     * @var array
+     */
+    protected $casts = [
+        'property_ids' => 'array',
+    ];
+
+    /**
+     * 属性に設定するデフォルト値。
+     * @var array
+     */
+    protected $attributes = [
+        'property_ids' => '[]',
+    ];
+
+    /**
+     * ユーザーとのリレーション定義。
      */
     public function user() : BelongsTo
     {
-        return $this->belongsTo('App\Models\General\User');
-    }
-
-    /**
-     * アイテムのマスタを取得する。
-     * @return BelongsTo アイテムマスタ。
-     */
-    public function item() : BelongsTo
-    {
-        return $this->belongsTo('App\Models\Masters\Item');
-    }
-
-    /**
-     * アイテムプロパティのマスタを取得する。
-     * @return array アイテムプロパティマスタ配列。
-     */
-    public function itemProperties() : array
-    {
-        return ItemProperty::whereIn('id', $this->propertyIds)->get();
+        return $this->belongsTo('App\Models\Globals\User');
     }
 
     /**

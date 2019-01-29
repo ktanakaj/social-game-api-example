@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 /**
  * OpenAPI (Swagger) コントローラ。
  *
- * @OA\OpenApi(
- *   @OA\Info(
- *     title="user_model_sandbox API",
- *     version="0.0.1",
- *     description="ゲームのユーザーデータの試験的実装場。"
- *   ),
- *   @OA\Server(
- *     url="/api",
- *   )
+ * @OA\Info(
+ *   title="user-model-sandbox API",
+ *   version="0.0.1",
+ *   description="ゲームのユーザーデータの試験的実装場。"
+ * ),
+ * @OA\Server(
+ *   url="/",
  * )
- *
  *
  * @OA\SecurityScheme(
  *   securityScheme="SessionId",
@@ -23,6 +20,12 @@ namespace App\Http\Controllers;
  *   in="header",
  *   name="Cookie",
  *   description="セッションID",
+ * )
+ *
+ * @OA\Schema(
+ *   schema="IntBoolean",
+ *   type="integer",
+ *   enum={0, 1}
  * )
  *
  * @OA\Schema(
@@ -61,7 +64,7 @@ namespace App\Http\Controllers;
  *   schema="Pagination",
  *   type="object",
  *   @OA\Property(
- *     property="perPage",
+ *     property="per_page",
  *     description="1ページの取得件数",
  *     type="integer",
  *   ),
@@ -71,12 +74,12 @@ namespace App\Http\Controllers;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="currentPage",
+ *     property="current_page",
  *     description="現在ページ番号（先頭ページが1）",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="lastPage",
+ *     property="last_page",
  *     description="最終ページ番号",
  *     type="integer",
  *   ),
@@ -90,30 +93,14 @@ namespace App\Http\Controllers;
  *     description="データ終了位置",
  *     type="integer",
  *   ),
- *   @OA\Property(
- *     property="path",
- *     description="APIパス",
- *     type="string",
- *   ),
- *   @OA\Property(
- *     property="nextPageUrl",
- *     description="次ページAPIパス",
- *     type="string",
- *   ),
- *   @OA\Property(
- *     property="prevPageUrl",
- *     description="前ページAPIパス",
- *     type="string",
- *   ),
  *   required={
  *     "data",
- *     "perPage",
+ *     "per_page",
  *     "total",
- *     "currentPage",
- *     "lastPage",
+ *     "current_page",
+ *     "last_page",
  *     "from",
  *     "to",
- *     "path",
  *   },
  * )
  */
@@ -124,6 +111,9 @@ class OpenApiController extends Controller
      */
     public function __invoke()
     {
-        return response(\OpenApi\scan(dirname(__FILE__))->toJson(), 200)->header('Content-Type', 'application/json');
+        // 動作している環境に応じて、動的に基準となるパスを書き換える
+        $docs = \OpenApi\scan(dirname(__FILE__));
+        $docs->servers[0]->url = preg_replace("/\/api-docs\.json.*$/", '/', $_SERVER['REQUEST_URI']);
+        return response($docs->toJson(), 200)->header('Content-Type', 'application/json');
     }
 }

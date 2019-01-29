@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\General\UserItem;
+use App\Models\Globals\UserItem;
 use App\Http\Controllers\Controller;
 
 /**
@@ -17,12 +17,12 @@ use App\Http\Controllers\Controller;
  *     type="number",
  *   ),
  *   @OA\Property(
- *     property="userId",
+ *     property="user_id",
  *     description="ユーザーID",
  *     type="number",
  *   ),
  *   @OA\Property(
- *     property="itemId",
+ *     property="item_id",
  *     description="アイテムID",
  *     type="number",
  *   ),
@@ -32,7 +32,7 @@ use App\Http\Controllers\Controller;
  *     type="number",
  *   ),
  *   @OA\Property(
- *     property="propertyIds",
+ *     property="property_ids",
  *     description="アイテムプロパティID配列",
  *     type="array",
  *     @OA\Items(
@@ -41,23 +41,23 @@ use App\Http\Controllers\Controller;
  *     ),
  *   ),
  *   @OA\Property(
- *     property="createdAt",
+ *     property="created_at",
  *     description="登録日時",
  *     type="string",
  *   ),
  *   @OA\Property(
- *     property="updatedAt",
+ *     property="updated_at",
  *     description="更新日時",
  *     type="string",
  *   ),
  *   required={
  *     "id",
- *     "userId",
- *     "itemId",
+ *     "user_id",
+ *     "item_id",
  *     "count",
- *     "propertyIds",
- *     "createdAt",
- *     "updatedAt",
+ *     "property_ids",
+ *     "created_at",
+ *     "updated_at",
  *   },
  * )
  */
@@ -65,11 +65,11 @@ class UserItemController extends Controller
 {
     /**
      * @OA\Get(
-     *   path="/users/{id}/items",
+     *   path="/admin/users/{id}/items",
      *   summary="ユーザーアイテム一覧",
      *   description="ユーザーのアイテム一覧を取得する。",
      *   tags={
-     *     "Users",
+     *     "Admin",
      *   },
      *   @OA\Parameter(
      *     in="path",

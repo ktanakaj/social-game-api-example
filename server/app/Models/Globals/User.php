@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\General;
+namespace App\Models\Globals;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
@@ -32,30 +32,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * 所持品を取得する。
-     * @return HasMany ユーザーアイテム配列。
+     * ユーザーの所持品とのリレーション定義。
      */
     public function userItems() : HasMany
     {
-        return $this->hasMany('App\Models\General\UserItem');
+        return $this->hasMany('App\Models\Globals\UserItem');
     }
 
     /**
-     * プレゼントボックスを取得する。
-     * @return HasMany ユーザーギフト配列。
+     * ユーザーのプレゼントボックスとのリレーション定義。
      */
     public function userGifts() : HasMany
     {
-        return $this->hasMany('App\Models\General\UserGift');
-    }
-
-    /**
-     * 行動履歴を取得する。
-     * @return HasMany 行動履歴配列。
-     */
-    public function userActionLogs() : HasMany
-    {
-        return $this->hasMany('App\Models\General\UserActionLog');
+        return $this->hasMany('App\Models\Globals\UserGift');
     }
 
     /**
