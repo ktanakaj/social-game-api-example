@@ -63,6 +63,21 @@ return [
             'engine' => null,
         ],
 
+        'admin' => [
+            'driver' => env('DB_ADMIN_DRIVER', 'mysql'),
+            'host' => env('DB_ADMIN_HOST', '127.0.0.1'),
+            'port' => env('DB_ADMIN_PORT', '3306'),
+            'database' => env('DB_ADMIN_DATABASE', 'game_admin_db'),
+            'username' => env('DB_ADMIN_USERNAME', 'game_usr'),
+            'password' => env('DB_ADMIN_PASSWORD', 'game001'),
+            'unix_socket' => env('DB_ADMIN_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
     ],
 
     /*

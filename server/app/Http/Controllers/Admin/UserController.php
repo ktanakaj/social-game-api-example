@@ -7,14 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Exceptions\BadRequestException;
 use App\Models\Globals\User;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PagingRequest;
 
 /**
  * ユーザーコントローラ。
- *
- * @OA\Tag(
- *   name="Admin",
- *   description="管理画面用API",
- * )
  *
  * @OA\Schema(
  *   schema="User",
@@ -62,17 +58,17 @@ use App\Http\Controllers\Controller;
  *   @OA\Property(
  *     property="last_login",
  *     description="最終ログイン日時",
- *     type="string",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="created_at",
  *     description="登録日時",
- *     type="string",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="updated_at",
  *     description="更新日時",
- *     type="string",
+ *     type="integer",
  *   ),
  *   required={
  *     "id",
@@ -98,11 +94,26 @@ class UserController extends Controller
      *   tags={
      *     "Admin",
      *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
      *   @OA\Parameter(
      *     in="query",
      *     name="page",
      *     description="ページ番号（先頭ページが1）",
-     *     @OA\Schema(type="integer"),
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=1,
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="max",
+     *     description="1ページ辺りの取得件数",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=100,
+     *     ),
      *   ),
      *   @OA\Response(
      *     response=200,
@@ -125,9 +136,10 @@ class UserController extends Controller
      *   ),
      * )
      */
-    public function index()
+    public function index(PagingRequest $request)
     {
-        return User::paginate(30);
+        // ※ pageはpaginate内部で勝手に参照される模様
+        return User::orderBy('name')->paginate($request->input('max', 100));
     }
 
     /**
@@ -148,16 +160,7 @@ class UserController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="成功",
-     *     @OA\JsonContent(
-     *       type="object",
-     *       @OA\Property(
-     *         property="user",
-     *         ref="#/components/schemas/User"
-     *       ),
-     *       required={
-     *         "user",
-     *       },
-     *     ),
+     *     @OA\JsonContent(ref="#/components/schemas/User"),
      *   ),
      *   @OA\Response(
      *     response=404,
@@ -166,8 +169,8 @@ class UserController extends Controller
      *   ),
      * )
      */
-    public function show($id)
+    public function show(User $user)
     {
-        return ['user' => User::findOrFail($id)];
+        return $user;
     }
 }

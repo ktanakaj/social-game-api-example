@@ -15,11 +15,11 @@ class UserControllerTest extends TestCase
         $this->createTestUser();
 
         // ページング条件なしで取得
-        $response = $this->json('GET', '/admin/users');
+        $response = $this->withAdminLogin()->json('GET', '/admin/users');
         $response
             ->assertStatus(200)
             ->assertJson([
-                'per_page' => 30,
+                'per_page' => 100,
                 'current_page' => 1,
                 'from' => 1,
             ]);

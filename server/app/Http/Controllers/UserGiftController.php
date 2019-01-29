@@ -30,7 +30,7 @@ class UserGiftController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/users/me/gifts/{userGiftId}/recv",
+     *   path="/gifts/{userGiftId}/recv",
      *   summary="ユーザーギフト受取",
      *   description="ユーザーのギフトを受け取る。",
      *   tags={
@@ -95,7 +95,7 @@ class UserGiftController extends Controller
 
     /**
      * @OA\Post(
-     *   path="/users/me/gifts/recv",
+     *   path="/gifts/recv",
      *   summary="全ユーザーギフト受取",
      *   description="ユーザーの全ギフトを受け取る。",
      *   tags={

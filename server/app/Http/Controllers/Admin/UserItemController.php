@@ -71,6 +71,9 @@ class UserItemController extends Controller
      *   tags={
      *     "Admin",
      *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
      *   @OA\Parameter(
      *     in="path",
      *     name="id",

@@ -20,15 +20,16 @@ Route::get('masters/items', 'MasterController@getItems');
 Route::get('masters/item-properties', 'MasterController@getItemProperties');
 Route::get('masters/news', 'MasterController@getNews');
 
-// ユーザー用API
+// ユーザー登録&認証API
 Route::post('users', 'UserController@store');
-Route::post('users/login', 'UserController@login');
+Route::post('login', 'AuthController@login');
+Route::post('logout', 'AuthController@logout');
 
+// 通常のAPI
 Route::middleware('auth')->group(function () {
-    Route::post('users/logout', 'UserController@logout');
     Route::get('users/me', 'UserController@me');
-    Route::post('users/me/gifts/recv', 'UserGiftController@allReceive');
-    Route::post('users/me/gifts/{userGiftId}/recv', 'UserGiftController@receive');
+    Route::post('gifts/recv', 'UserGiftController@allReceive');
+    Route::post('gifts/{userGiftId}/recv', 'UserGiftController@receive');
 });
 
 // 開発環境用の特殊なAPI

@@ -5,6 +5,7 @@ use App\Models\Masters\ErrorCode;
 use App\Models\Masters\Item;
 use App\Models\Masters\ItemProperty;
 use App\Models\Masters\GiftMessage;
+use App\Models\Admins\Administrator;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run() : void
     {
+        $admin = new Administrator();
+        $admin->email = 'admin';
+        $admin->password = bcrypt('admin01');
+        $admin->role = 0;
+        $admin->note = '初期管理者';
+        $admin->save();
+
         // FIXME: マスタインポートの仕組みを作成して、以下はマスタに移動する
         $errorCode500 = new ErrorCode();
         $errorCode500->id = 'INTERNAL_SERVER_ERROR';

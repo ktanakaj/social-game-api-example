@@ -14,27 +14,45 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
+     * 複数代入可能なプロパティ。
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
+     * 通常の取得結果に含めないカラム。
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * 日付として扱う属性。
+     * @var array
+     */
+    protected $dates = [
+        'last_login',
+    ];
+
+    /**
+     * ネイティブなタイプへキャストする属性。
+     * @var array
+     */
+    protected $casts = [
+        'last_login' => 'timestamp',
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp',
     ];
 
     /**
      * ユーザーの所持品とのリレーション定義。
      */
-    public function userItems() : HasMany
+    public function items() : HasMany
     {
         return $this->hasMany('App\Models\Globals\UserItem');
     }
@@ -42,7 +60,7 @@ class User extends Authenticatable
     /**
      * ユーザーのプレゼントボックスとのリレーション定義。
      */
-    public function userGifts() : HasMany
+    public function gifts() : HasMany
     {
         return $this->hasMany('App\Models\Globals\UserGift');
     }

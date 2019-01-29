@@ -39,7 +39,7 @@
     when: env_copy_result is changed
 
   - name: Create tables to the db
-    shell: php artisan migrate
+    shell: composer migrate
     args:
       chdir: "{{ app_svr_dir }}"
   - name: Insert initial data to the db

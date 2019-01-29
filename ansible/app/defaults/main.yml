@@ -6,7 +6,8 @@ app_log_dir: "/var/log/local/game-svr"
 app_db:
   - game_master_db
   - game_global_db
+  - game_admin_db
 app_db_users:
   - user: game_usr
     password: game001
-    privilege: "game_master_db.*:ALL/game_global_db.*:ALL" # FIXME: この書き方だと二度目以降のansibleで変更があるとエラーになる模様
+    privilege: "game_master_db.*:ALL/game_global_db.*:ALL/game_admin_db.*:ALL" # FIXME: この書き方だと二度目以降のansibleで変更があるとエラーになる模様

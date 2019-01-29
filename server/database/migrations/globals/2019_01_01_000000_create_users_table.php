@@ -13,8 +13,8 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('name', 191);
+            $table->string('email', 191)->unique();
             $table->string('password');
             $table->rememberToken();
             $table->bigInteger('game_coin')->default(0);
@@ -24,6 +24,9 @@ class CreateUsersTable extends Migration
             $table->bigInteger('exp')->default(0);
             $table->dateTime('last_login')->nullable();
             $table->timestamps();
+
+            $table->index('name');
+            $table->index('last_login');
         });
     }
 

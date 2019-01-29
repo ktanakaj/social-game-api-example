@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use App\Models\Globals\User;
+use App\Models\Admins\Administrator;
 
 /**
  * 全テスト共通の処理用の抽象クラス。
@@ -50,8 +51,11 @@ abstract class TestCase extends BaseTestCase
             if ($conn['driver'] === 'sqlite' && $file !== ':memory:') {
                 file_put_contents($file, '');
             }
+            Artisan::call('migrate:refresh', [
+                '--path' => 'database/migrations/' . str_plural($name),
+                '--database' => $name,
+            ]);
         }
-        Artisan::call('migrate:refresh');
         Artisan::call('db:seed');
     }
 
@@ -66,6 +70,20 @@ abstract class TestCase extends BaseTestCase
             $user = $this->createTestUser();
         }
         Auth::login($user);
+        return $this;
+    }
+
+    /**
+     * 指定された管理者で認証済の状態にする。
+     * @param Administrator $admin 管理者。未指定時は初期管理者。
+     * @return TestCase $this
+     */
+    protected function withAdminLogin(Administrator $admin = null) : TestCase
+    {
+        if ($admin === null) {
+            $admin = Administrator::where('email', 'admin')->firstOrFail();
+        }
+        Auth::guard('admin')->login($admin);
         return $this;
     }
 

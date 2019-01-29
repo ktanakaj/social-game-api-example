@@ -66,6 +66,16 @@
         ],
         "lint": [
             "./vendor/bin/phpcs ."
+        ],
+        "migrate": [
+            "@php artisan migrate --path=database/migrations/masters --database=master",
+            "@php artisan migrate --path=database/migrations/admins --database=admin",
+            "@php artisan migrate --path=database/migrations/globals --database=global"
+        ],
+        "migrate:refresh": [
+            "@php artisan migrate:refresh --path=database/migrations/masters --database=master",
+            "@php artisan migrate:refresh --path=database/migrations/admins --database=admin",
+            "@php artisan migrate:refresh --path=database/migrations/globals --database=global"
         ]
     }
 }

@@ -97,6 +97,9 @@ class UserGiftController extends Controller
      *   tags={
      *     "Admin",
      *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
      *   @OA\Parameter(
      *     in="path",
      *     name="id",
@@ -137,6 +140,9 @@ class UserGiftController extends Controller
      *   description="ユーザーにギフトを付与する。",
      *   tags={
      *     "Admin",
+     *   },
+     *   security={
+     *     {"SessionId":{}}
      *   },
      *   @OA\Parameter(
      *     in="path",

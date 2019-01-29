@@ -12,13 +12,15 @@
 */
 
 // 認証API
-// TODO: 管理者認証は未整備
+Route::post('login', 'AuthController@login');
+Route::post('logout', 'AuthController@logout');
 
 // 通常のAPI
-// Route::middleware('auth:admin')->group(function () {
+Route::middleware('auth:admin')->group(function () {
+    Route::get('administrators/me', 'AdministratorController@me');
     Route::get('users', 'UserController@index');
-    Route::get('users/{id}', 'UserController@show');
+    Route::get('users/{user}', 'UserController@show');
     Route::get('users/{id}/items', 'UserItemController@index');
     Route::get('users/{id}/gifts', 'UserGiftController@index');
     Route::post('users/{id}/gifts', 'UserGiftController@store');
-// });
+});
