@@ -30,19 +30,19 @@ class AuthController extends Controller
      *     @OA\JsonContent(
      *       type="object",
      *       @OA\Property(
-     *         property="email",
-     *         type="string",
-     *         description="メールアドレス",
-     *         example="string@example.com",
+     *         property="id",
+     *         type="integer",
+     *         description="ユーザーID",
+     *         example=1,
      *       ),
      *       @OA\Property(
-     *         property="password",
+     *         property="token",
      *         type="string",
-     *         description="パスワード",
+     *         description="端末トークン",
      *       ),
      *       required={
-     *         "email",
-     *         "password",
+     *         "id",
+     *         "token",
      *       },
      *     ),
      *   ),
@@ -61,14 +61,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required',
-            'password' => 'required',
+            'id' => 'required|integer',
+            'token' => 'required',
         ]);
         if (!Auth::attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
+            'id' => $request->input('id'),
+            'password' => $request->input('token'),
         ])) {
-            throw new BadRequestException('email or password is incorrect');
+            throw new BadRequestException('id or token is incorrect');
         }
         return Auth::user();
     }

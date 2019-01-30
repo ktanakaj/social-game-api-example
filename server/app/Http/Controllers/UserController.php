@@ -31,25 +31,12 @@ class UserController extends Controller
      *     @OA\JsonContent(
      *       type="object",
      *       @OA\Property(
-     *         property="name",
-     *         description="ユーザー名",
-     *         type="string",
-     *       ),
-     *       @OA\Property(
-     *         property="email",
-     *         description="メールアドレス",
-     *         type="string",
-     *         example="string@example.com",
-     *       ),
-     *       @OA\Property(
-     *         property="password",
-     *         description="パスワード",
+     *         property="token",
+     *         description="端末トークン",
      *         type="string",
      *       ),
      *       required={
-     *         "name",
-     *         "email",
-     *         "password",
+     *         "token",
      *       },
      *     ),
      *   ),
@@ -67,15 +54,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // ユーザーを新規登録してログイン済みにする
+        // ユーザーを新規登録して認証済みにする
         $request->validate([
-            'name' => 'required|max:191',
-            'email' => 'required|max:191|email|unique:users',
-            'password' => 'required',
+            'token' => 'required|max:191',
         ]);
 
-        $user = new User($request->input());
-        $user->password = bcrypt($request->input('password'));
+        $user = new User();
+        $user->token = bcrypt($request->input('token'));
         $user->save();
 
         Auth::login($user);
@@ -85,8 +70,8 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *   path="/users/me",
-     *   summary="ログイン中ユーザー情報",
-     *   description="ログイン中のユーザーの詳細情報を取得する。",
+     *   summary="認証中ユーザー情報",
+     *   description="認証中のユーザーの詳細情報を取得する。",
      *   tags={
      *     "Users",
      *   },

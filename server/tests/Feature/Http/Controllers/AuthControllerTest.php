@@ -14,20 +14,19 @@ class AuthControllerTest extends TestCase
     public function testLogin() : void
     {
         // ユーザーを生成してログイン
-        $user = new User(['name' => 'testLogin', 'email' => 'testLogin@example.com']);
-        $user->password = bcrypt('passwd');
+        $user = new User();
+        $user->token = bcrypt('TEST_LOGIN_TOKEN');
         $user->save();
 
         $response = $this->json('POST', '/login', [
-            'email' => $user->email,
-            'password' => 'passwd',
+            'id' => $user->id,
+            'token' => 'TEST_LOGIN_TOKEN',
         ]);
-        $response
-            ->assertStatus(200)
-            ->assertJson($user->toArray());
+        $response->assertStatus(200);
 
         $json = $response->json();
-        $this->assertArrayNotHasKey('password', $json);
+        $this->assertArrayHasKey('id', $json);
+        $this->assertArrayNotHasKey('token', $json);
         $this->assertTrue(Auth::check());
     }
 

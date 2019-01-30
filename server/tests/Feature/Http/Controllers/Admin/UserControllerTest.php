@@ -35,5 +35,6 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('name', $user);
         $this->assertArrayHasKey('created_at', $user);
         $this->assertArrayHasKey('updated_at', $user);
+        $this->assertArrayNotHasKey('token', $user);
     }
 }

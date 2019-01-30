@@ -3,7 +3,6 @@
 namespace App\Models\Globals;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -11,15 +10,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
-    use Notifiable;
-
     /**
      * 複数代入可能なプロパティ。
      * @var array
      */
     protected $fillable = [
         'name',
-        'email',
     ];
 
     /**
@@ -27,8 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'token',
     ];
 
     /**
@@ -48,6 +43,37 @@ class User extends Authenticatable
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
     ];
+
+    /**
+     * 属性に設定するデフォルト値。
+     * @var array
+     */
+    protected $attributes = [
+        'name' => '(noname)',
+    ];
+
+    /**
+     * プロパティに値を保存する。
+     * @param string $key プロパティ名。
+     * @param mixed $value 値。
+     */
+    public function setAttribute($key, $value) : void
+    {
+        // remember_token無効化のためのオーバーライド
+        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
+        if (!$isRememberTokenAttribute) {
+            parent::setAttribute($key, $value);
+        }
+    }
+
+    /**
+     * 認証用のパスワードを取得する。
+     */
+    public function getAuthPassword() : string
+    {
+        // 端末トークンをパスワードとして扱う
+        return $this->token;
+    }
 
     /**
      * ユーザーの所持品とのリレーション定義。

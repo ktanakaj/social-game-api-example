@@ -34,13 +34,13 @@ return [
     'connections' => [
 
         'global' => [
-            'driver' => env('DB_PLAYER_DRIVER', 'mysql'),
-            'host' => env('DB_PLAYER_HOST', '127.0.0.1'),
-            'port' => env('DB_PLAYER_PORT', '3306'),
-            'database' => env('DB_PLAYER_DATABASE', 'game_global_db'),
-            'username' => env('DB_PLAYER_USERNAME', 'game_usr'),
-            'password' => env('DB_PLAYER_PASSWORD', 'game001'),
-            'unix_socket' => env('DB_PLAYER_SOCKET', ''),
+            'driver' => env('DB_GLOBAL_DRIVER', 'mysql'),
+            'host' => env('DB_GLOBAL_HOST', '127.0.0.1'),
+            'port' => env('DB_GLOBAL_PORT', '3306'),
+            'database' => env('DB_GLOBAL_DATABASE', 'game_global_db'),
+            'username' => env('DB_GLOBAL_USERNAME', 'game_usr'),
+            'password' => env('DB_GLOBAL_PASSWORD', 'game001'),
+            'unix_socket' => env('DB_GLOBAL_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

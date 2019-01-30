@@ -8,6 +8,26 @@ use Illuminate\Support\Facades\Auth;
 class UserControllerTest extends TestCase
 {
     /**
+     * ユーザー登録のテスト。
+     */
+    public function testStore() : void
+    {
+        $response = $this->json('POST', '/users', [
+            'token' => 'TEST_STORE_TOKEN',
+        ]);
+        $response->assertStatus(201);
+
+        $json = $response->json();
+        $this->assertArrayHasKey('id', $json);
+        $this->assertArrayHasKey('name', $json);
+        $this->assertEquals('(noname)', $json['name']);
+        $this->assertArrayHasKey('created_at', $json);
+        $this->assertArrayHasKey('updated_at', $json);
+        $this->assertArrayNotHasKey('token', $json);
+        $this->assertTrue(Auth::check());
+    }
+
+    /**
      * 認証中のユーザー情報のテスト。
      */
     public function testMe() : void
@@ -19,9 +39,8 @@ class UserControllerTest extends TestCase
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);
         $this->assertArrayHasKey('name', $json);
-        $this->assertArrayHasKey('email', $json);
         $this->assertArrayHasKey('created_at', $json);
         $this->assertArrayHasKey('updated_at', $json);
-        $this->assertArrayNotHasKey('password', $json);
+        $this->assertArrayNotHasKey('token', $json);
     }
 }
