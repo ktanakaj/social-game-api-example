@@ -12,7 +12,7 @@ class CreateItemsTable extends Migration
     public function up() : void
     {
         Schema::connection('master')->create('items', function (Blueprint $table) {
-            $table->increments('id');
+            $table->unsignedInteger('id');
             // ※ 低レアの独自の性能を持たないアイテムと、一個一個個別の性能を持つアイテム
             $table->enum('type', ['stackable', 'generatable']);
             // ※ categoryはゲームの内容ごとに精査
@@ -29,6 +29,7 @@ class CreateItemsTable extends Migration
             $table->text('equipping_effect');
             $table->text('material_effect');
 
+            $table->primary('id');
             $table->index(['category', 'rarity', 'id']);
         });
     }

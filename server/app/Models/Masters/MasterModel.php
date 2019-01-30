@@ -5,6 +5,7 @@ namespace App\Models\Masters;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * マスタモデル抽象クラス。
@@ -25,6 +26,12 @@ abstract class MasterModel extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * 主キーがインクリメントされるかの指示。
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * マスタを主キーで取得する。
@@ -52,5 +59,15 @@ abstract class MasterModel extends Model
     protected static function makeCacheKey(string $method, ...$params) : string
     {
         return get_called_class() . ':' . $method . ':' . json_encode($params);
+    }
+
+    /**
+     * マスタテーブルの一覧を取得する。
+     * @return string テーブル名配列。
+     */
+    public static function findTables() : array
+    {
+        // マスタスキーマのテーブルのうちシステム用のものを除いたものを一覧として返す
+        return array_values(array_diff(DB::connection('master')->getDoctrineSchemaManager()->listTableNames(), [config('database.migrations')]));
     }
 }

@@ -8,12 +8,12 @@ namespace App\Models\Masters;
 class News extends MasterModel
 {
     /**
-     * 属性に設定するデフォルト値。
+     * 日付として扱う属性。
      * @var array
      */
-    protected $attributes = [
-        'title' => '{}',
-        'body' => '{}',
+    protected $dates = [
+        'open_at',
+        'close_at',
     ];
 
     /**
@@ -21,7 +21,7 @@ class News extends MasterModel
      * @var array
      */
     protected $casts = [
-        'title' => 'array',
-        'body' => 'array',
+        'open_at' => 'timestamp',
+        'close_at' => 'timestamp',
     ];
 }

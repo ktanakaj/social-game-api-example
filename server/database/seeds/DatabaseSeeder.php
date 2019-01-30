@@ -65,6 +65,7 @@ class DatabaseSeeder extends Seeder
         $errorCode409->save();
 
         $item = new Item();
+        $item->id = 1;
         $item->type = 'stackable';
         $item->category = 'item';
         $item->rarity = 1;
@@ -75,6 +76,7 @@ class DatabaseSeeder extends Seeder
         $item->save();
 
         $item = new Item();
+        $item->id = 2;
         $item->type = 'stackable';
         $item->category = 'weapon';
         $item->rarity = 1;
@@ -85,6 +87,7 @@ class DatabaseSeeder extends Seeder
         $item->save();
 
         $item = new Item();
+        $item->id = 3;
         $item->type = 'generatable';
         $item->category = 'weapon';
         $item->rarity = 2;
@@ -95,6 +98,7 @@ class DatabaseSeeder extends Seeder
         $item->save();
 
         $itemProperty = new ItemProperty();
+        $itemProperty->id = 1;
         $itemProperty->type = 'prefix';
         $itemProperty->category = 'weapon';
         $itemProperty->rarity = 2;
@@ -103,11 +107,13 @@ class DatabaseSeeder extends Seeder
         $itemProperty->save();
 
         $msg = new GiftMessage();
-        $msg->message = ['en' => 'Reward', 'jp' => '報酬'];
+        $msg->id = 1;
+        $msg->message = '報酬';
         $msg->save();
 
         $msg = new GiftMessage();
-        $msg->message = ['en' => 'Fill a deficit', 'jp' => '不具合のお詫び'];
+        $msg->id = 12;
+        $msg->message = '不具合のお詫び';
         $msg->save();
     }
 }

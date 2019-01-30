@@ -12,14 +12,14 @@ class CreateNewsTable extends Migration
     public function up() : void
     {
         Schema::connection('master')->create('news', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            // ※ 見出しや本文はJSONで多言語対応
-            $table->text('title');
+            $table->unsignedSmallInteger('id');
+            $table->string('title');
             $table->text('body');
-            $table->dateTime('open_date');
-            $table->dateTime('close_date');
+            $table->dateTime('open_at');
+            $table->dateTime('close_at');
 
-            $table->index(['open_date', 'close_date']);
+            $table->primary('id');
+            $table->index(['open_at', 'close_at']);
         });
     }
 

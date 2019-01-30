@@ -11,11 +11,12 @@ namespace App\Models\Masters;
 class Event extends MasterModel
 {
     /**
-     * 属性に設定するデフォルト値。
+     * 日付として扱う属性。
      * @var array
      */
-    protected $attributes = [
-        'title' => '{}',
+    protected $dates = [
+        'open_at',
+        'close_at',
     ];
 
     /**
@@ -23,6 +24,7 @@ class Event extends MasterModel
      * @var array
      */
     protected $casts = [
-        'title' => 'array',
+        'open_at' => 'timestamp',
+        'close_at' => 'timestamp',
     ];
 }

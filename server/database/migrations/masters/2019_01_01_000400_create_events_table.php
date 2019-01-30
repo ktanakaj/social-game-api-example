@@ -12,15 +12,15 @@ class CreateEventsTable extends Migration
     public function up() : void
     {
         Schema::connection('master')->create('events', function (Blueprint $table) {
-            $table->smallIncrements('id');
+            $table->unsignedSmallInteger('id');
             // ※ typeはenumだが頻繁に追加される想定なのでVARCHARで定義
             $table->string('type', 32);
-            $table->dateTime('open_date');
-            $table->dateTime('close_date');
-            // ※ イベント名はJSONで多言語対応
-            $table->text('title');
+            $table->dateTime('open_at');
+            $table->dateTime('close_at');
+            $table->string('title');
 
-            $table->index(['open_date', 'close_date']);
+            $table->primary('id');
+            $table->index(['open_at', 'close_at']);
         });
     }
 

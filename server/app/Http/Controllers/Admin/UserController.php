@@ -126,7 +126,7 @@ class UserController extends Controller
      *           type="object",
      *           @OA\Property(
      *             property="data",
-     *             description="データ配列",
+     *             description="ユーザー配列",
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/User")
      *           ),
@@ -150,6 +150,9 @@ class UserController extends Controller
      *   tags={
      *     "Admin",
      *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
      *   @OA\Parameter(
      *     in="path",
      *     name="id",
@@ -159,7 +162,7 @@ class UserController extends Controller
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="成功",
+     *     description="ユーザー情報",
      *     @OA\JsonContent(ref="#/components/schemas/User"),
      *   ),
      *   @OA\Response(

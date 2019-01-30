@@ -12,10 +12,10 @@ class CreateGiftMessagesTable extends Migration
     public function up() : void
     {
         Schema::connection('master')->create('gift_messages', function (Blueprint $table) {
-            $table->increments('id');
-            // ※ メッセージはJSONで多言語対応
-            // 例）{ "en": "Message A", "jp": "メッセージA" }
-            $table->text('message');
+            $table->unsignedInteger('id');
+            $table->string('message');
+
+            $table->primary('id');
         });
     }
 

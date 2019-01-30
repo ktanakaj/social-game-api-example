@@ -12,7 +12,7 @@ class CreateItemPropertiesTable extends Migration
     public function up() : void
     {
         Schema::connection('master')->create('item_properties', function (Blueprint $table) {
-            $table->increments('id');
+            $table->unsignedInteger('id');
             $table->enum('type', ['prefix', 'suffix']);
             $table->enum('category', ['item', 'weapon', 'protector', 'accessary', 'material']);
             $table->tinyInteger('rarity');
@@ -26,6 +26,7 @@ class CreateItemPropertiesTable extends Migration
             $table->text('equipping_effect');
             $table->text('material_effect');
 
+            $table->primary('id');
             $table->index(['category', 'rarity', 'type']);
         });
     }

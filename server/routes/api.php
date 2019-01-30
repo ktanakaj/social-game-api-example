@@ -14,11 +14,8 @@ use Illuminate\Http\Request;
 */
 
 // 公開API
-Route::get('masters/events', 'MasterController@getEvents');
-Route::get('masters/gift-messages', 'MasterController@getGiftMessages');
-Route::get('masters/items', 'MasterController@getItems');
-Route::get('masters/item-properties', 'MasterController@getItemProperties');
-Route::get('masters/news', 'MasterController@getNews');
+Route::get('masters', 'MasterController@index');
+Route::get('masters/{name}', 'MasterController@findMaster');
 
 // ユーザー登録&認証API
 Route::post('users', 'UserController@store');
