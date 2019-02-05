@@ -22,13 +22,22 @@ class EventServiceProvider extends ServiceProvider
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot() : void
     {
         parent::boot();
 
-        //
+        // 開発用のトランザクションログ
+        if (config('app.debug')) {
+            Event::listen('Illuminate\Database\Events\TransactionBeginning', function ($ev) {
+                \Log::debug("beginTransaction (connection={$ev->connectionName})");
+            });
+            Event::listen('Illuminate\Database\Events\TransactionCommitted', function ($ev) {
+                \Log::debug("commit (connection={$ev->connectionName})");
+            });
+            Event::listen('Illuminate\Database\Events\TransactionRolledBack', function ($ev) {
+                \Log::debug("rollback (connection={$ev->connectionName})");
+            });
+        }
     }
 }

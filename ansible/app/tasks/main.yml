@@ -42,6 +42,10 @@
     shell: composer migrate
     args:
       chdir: "{{ app_svr_dir }}"
+  - name: Import the test master data
+    shell: php artisan master:import {{ app_svr_dir }}/tests/Masters
+    args:
+      chdir: "{{ app_svr_dir }}"
   - name: Insert initial data to the db
     shell: php artisan db:seed
     args:

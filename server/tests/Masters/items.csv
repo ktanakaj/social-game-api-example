@@ -1,0 +1,4 @@
+﻿id,type,category,rarity,weight,name,flavor,use_effect,equipping_effect,material_effect
+1,stackable,item,1,1,"{""en"":""Potion"",""jp"":""ポーション""}","{""en"":""HP potion."",""jp"":""普通の回復薬。""}","{""hp"":""+30%"",""break_limit"":1}",{},{}
+2,stackable,weapon,1,10,"{""en"":""Short Sword"",""jp"":""ショートソード""}","{""en"":""Cheaper sword."",""jp"":""短い剣。""}",{},"{""atk"":""+10""}",{}
+3,generatable,weapon,2,15,"{""en"":""Knight Sword"",""jp"":""ナイトソード""}","{""en"":""Strong sword."",""jp"":""騎士の剣。""}",{},"{""atk"":""+20""}",{}

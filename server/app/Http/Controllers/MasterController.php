@@ -35,7 +35,9 @@ class MasterController extends Controller
      */
     public function index()
     {
-        return MasterModel::findTables();
+        return array_map(function ($classname) {
+            return (new \ReflectionClass($classname))->getShortName();
+        }, MasterModel::getMasterModels());
     }
 
     /**
@@ -69,9 +71,8 @@ class MasterController extends Controller
     public function findMaster(string $name)
     {
         // TODO: open_at, close_at や enable などの列を見て、公開中のもののみ返す
-        // indexの戻り値がテーブル名なので、テーブル名をマスタクラス名に変換して処理
-        $classname = '\\App\\Models\\Masters\\' . studly_case(str_singular($name));
-        if (!class_exists($classname)) {
+        $classname = MasterModel::getMasterModel($name);
+        if (!$classname) {
             throw new BadRequestException("name={$name} is not found");
         }
         return $classname::all();

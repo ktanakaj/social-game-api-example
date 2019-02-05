@@ -56,6 +56,7 @@ abstract class TestCase extends BaseTestCase
                 '--database' => $name,
             ]);
         }
+        Artisan::call('master:import', ['directory' => 'tests/Masters']);
         Artisan::call('db:seed');
     }
 

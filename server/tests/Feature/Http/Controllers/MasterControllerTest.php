@@ -17,8 +17,8 @@ class MasterControllerTest extends TestCase
 
         $array = $response->json();
         $this->assertInternalType('array', $array);
-        $this->assertContains('error_codes', $array);
-        $this->assertNotContains('migrations', $array);
+        $this->assertContains('ErrorCode', $array);
+        $this->assertNotContains('MasterModel', $array);
     }
 
     /**

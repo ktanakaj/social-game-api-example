@@ -34,6 +34,13 @@ abstract class MasterModel extends Model
     public $incrementing = false;
 
     /**
+     * 複数代入しない属性。
+     * ※ マスタインポートのため全フィールド許可。
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * マスタを主キーで取得する。
      * @param mixed $id マスタの主キー。複数指定された場合、複数件を一括検索。
      * @param array $columns 取得するカラム。
@@ -62,12 +69,39 @@ abstract class MasterModel extends Model
     }
 
     /**
-     * マスタテーブルの一覧を取得する。
-     * @return string テーブル名配列。
+     * モデル名やテーブル名から、モデルクラスを取得する。
+     * @param string $name モデル名 or テーブル名。
+     * @return string モデルクラス名。存在しない場合null。
      */
-    public static function findTables() : array
+    public static function getMasterModel(string $name) : ?string
     {
-        // マスタスキーマのテーブルのうちシステム用のものを除いたものを一覧として返す
-        return array_values(array_diff(DB::connection('master')->getDoctrineSchemaManager()->listTableNames(), [config('database.migrations')]));
+        $class = (new \ReflectionClass(self::class));
+        $classname = $class->getNamespaceName() . '\\' . str_singular(studly_case($name));
+        if (!class_exists($classname) || !is_subclass_of($classname, self::class)) {
+            return null;
+        }
+        return $classname;
+    }
+
+    /**
+     * マスタモデルクラスの一覧を取得する。
+     * @return arra モデルクラス名。存在しない場合null。
+     */
+    public static function getMasterModels() : array
+    {
+        // このディレクトリに存在するファイル名を元に、クラスを探索する
+        // （アプリが複雑化してディレクトリが分割されるようなら別の方法を検討）
+        $class = new \ReflectionClass(self::class);
+        $dir = dirname($class->getFileName());
+        $namespace = $class->getNamespaceName() . '\\';
+
+        $models = [];
+        foreach (glob("{$dir}/*.php") as $file) {
+            $classname = $namespace . basename($file, '.php');
+            if (class_exists($classname) && is_subclass_of($classname, self::class)) {
+                $models[] = $classname;
+            };
+        }
+        return $models;
     }
 }
