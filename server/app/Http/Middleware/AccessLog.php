@@ -27,8 +27,8 @@ class AccessLog
 
     /**
      * アクセスログを出力する。
-     * @param Request $req HTTPリクエスト。
-     * @param Response|JsonResponse|RedirectResponse $res HTTPレスポンス。
+     * @param \Illuminate\Http\Request $req HTTPリクエスト。
+     * @param \Symfony\Component\HttpFoundation\Response $res HTTPレスポンス。
      * @param float $starttime 処理時間測定用の開始時のmicrotime。
      */
     private static function log($req, $res, float $starttime = null) : void
@@ -47,10 +47,10 @@ class AccessLog
             //    KPIなどにアクセスログが欲しい場合は、丸々置き換えてしまって構いません。
 
             // 基本のアクセスログ
-            $resBody = $res->content();
+            $resBody = $res->getContent();
             $contentLength = strlen($resBody);
             $log = "{$req->ip()} - - \"{$req->method()} {$req->fullUrl()}"
-                . " {$req->server->get('SERVER_PROTOCOL')}\" {$res->status()}"
+                . " {$req->server->get('SERVER_PROTOCOL')}\" {$res->getStatusCode()}"
                 . " {$contentLength} \"{$req->server->get('HTTP_REFERER')}\""
                 . " \"{$req->userAgent()}\"";
 

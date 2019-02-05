@@ -19,7 +19,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * 通常の取得結果に含めないカラム。
+     * JSONへの変換結果に含めないカラム。
      * @var array
      */
     protected $hidden = [

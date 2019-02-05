@@ -65,11 +65,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        \App\Http\Middleware\AccessLog::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\Auth\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
-        \App\Http\Middleware\AccessLog::class,
     ];
 }
