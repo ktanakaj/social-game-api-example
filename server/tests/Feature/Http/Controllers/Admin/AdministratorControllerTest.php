@@ -3,8 +3,6 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Admins\Administrator;
 
 class AdministratorControllerTest extends TestCase
 {

@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\Auth;
 
 class AuthControllerTest extends TestCase
 {
@@ -25,7 +24,7 @@ class AuthControllerTest extends TestCase
             ]);
         $json = $response->json();
         $this->assertArrayNotHasKey('password', $json);
-        $this->assertTrue(Auth::guard('admin')->check());
+        $this->assertAuthenticated('admin');
     }
 
     /**
@@ -35,6 +34,6 @@ class AuthControllerTest extends TestCase
     {
         $response = $this->withAdminLogin()->json('POST', '/admin/logout');
         $response->assertStatus(200);
-        $this->assertFalse(Auth::guard('admin')->check());
+        $this->assertGuest('admin');
     }
 }

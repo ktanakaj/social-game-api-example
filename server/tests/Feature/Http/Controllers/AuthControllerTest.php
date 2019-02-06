@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Globals\User;
 
 class AuthControllerTest extends TestCase
@@ -27,7 +26,7 @@ class AuthControllerTest extends TestCase
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);
         $this->assertArrayNotHasKey('token', $json);
-        $this->assertTrue(Auth::check());
+        $this->assertAuthenticated();
     }
 
     /**
@@ -37,6 +36,6 @@ class AuthControllerTest extends TestCase
     {
         $response = $this->withLogin()->json('POST', '/logout');
         $response->assertStatus(200);
-        $this->assertFalse(Auth::check());
+        $this->assertGuest();
     }
 }

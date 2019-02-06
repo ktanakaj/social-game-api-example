@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\Auth;
 
 class UserControllerTest extends TestCase
 {
@@ -24,7 +23,7 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('created_at', $json);
         $this->assertArrayHasKey('updated_at', $json);
         $this->assertArrayNotHasKey('token', $json);
-        $this->assertTrue(Auth::check());
+        $this->assertAuthenticated();
     }
 
     /**
