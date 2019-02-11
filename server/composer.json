@@ -1,10 +1,10 @@
 {
-    "name": "ktanakaj/user-model-sandbox",
+    "name": "ktanakaj/laravel-api-example",
     "type": "project",
-    "description": "User Model Sandbox.",
+    "description": "Laravel Social Game API Example.",
     "keywords": [
         "server",
-        "sandbox"
+        "example"
     ],
     "license": "MIT",
     "require": {

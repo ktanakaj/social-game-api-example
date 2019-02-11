@@ -1,7 +1,7 @@
-# ゲームのユーザーデータの試験的実装場
-[Laravel 5](http://laravel.jp/)の勉強を兼ねて、ソシャゲをイメージしたゲームのユーザーモデルの実装を試している作業場です。
+# Laravel 5 APIサンプルアプリ
+[Laravel 5](http://laravel.jp/)のAPI勉強用に作成したサンプルアプリです。
 
-ゲームは、よくあるクエストとかカードとかアイテムとかアチーブメントとかがあるようなのをイメージ。  
+クエストとかカードとかアイテムとかアチーブメントとかがあるようなソシャゲをイメージして作成しています。  
 スマホアプリで、管理画面があって…みたいな想定だけど、お勉強用なので一部APIしかありません。
 
 ## 開発環境
@@ -22,4 +22,4 @@
 * `composer lint` : スタイルチェック
 
 ## ライセンス
-[MIT](https://github.com/ktanakaj/user-model-sandbox/blob/master/LICENSE)
+[MIT](https://github.com/ktanakaj/laravel-api-example/blob/master/LICENSE)
