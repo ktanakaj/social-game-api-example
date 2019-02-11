@@ -16,9 +16,10 @@ class CreateItemsTable extends Migration
             $table->unsignedInteger('id');
             $table->enum('type', Item::ITEM_TYPES);
             $table->tinyInteger('rarity');
-            $table->string('name_text_id');
-            $table->string('help_text_id');
+            $table->string('name_text_id', 64);
+            $table->string('help_text_id', 64);
             $table->text('effect');
+            $table->dateTime('expired_at')->nullable();
 
             $table->primary('id');
             $table->index(['type', 'rarity', 'id']);

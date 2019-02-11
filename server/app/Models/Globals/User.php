@@ -42,6 +42,7 @@ class User extends Authenticatable
         'game_coin' => 'integer',
         'special_coin' => 'integer',
         'free_special_coin' => 'integer',
+        'stamina' => 'integer',
         'exp' => 'integer',
         'last_login' => 'timestamp',
         'created_at' => 'timestamp',
@@ -57,6 +58,7 @@ class User extends Authenticatable
         'game_coin' => 0,
         'special_coin' => 0,
         'free_special_coin' => 0,
+        'stamina' => 0,
         'exp' => 0,
     ];
 
@@ -89,6 +91,14 @@ class User extends Authenticatable
     public function items() : HasMany
     {
         return $this->hasMany('App\Models\Globals\UserItem');
+    }
+
+    /**
+     * ユーザーのカードとのリレーション定義。
+     */
+    public function cards() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\UserCard');
     }
 
     /**

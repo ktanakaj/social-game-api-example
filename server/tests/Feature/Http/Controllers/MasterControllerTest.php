@@ -32,6 +32,6 @@ class MasterControllerTest extends TestCase
         $array = $response->json();
         $this->assertInternalType('array', $array);
         $this->assertGreaterThan(0, count($array));
-        $this->assertEquals(ErrorCode::findOrFail('INTERNAL_SERVER_ERROR')->toArray(), $array[0]);
+        $this->assertEquals(ErrorCode::findOrFail('BAD_REQUEST')->toArray(), $array[0]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Globals;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Masters\Item;
@@ -44,11 +45,32 @@ class UserItem extends Model
     ];
 
     /**
+     * モデルの初期化。
+     */
+    protected static function boot() : void
+    {
+        parent::boot();
+
+        // アイテム全般でデフォルトのソート順を設定
+        static::addGlobalScope('sortUsreAndItem', function (Builder $builder) {
+            return $builder->orderBy('user_id', 'asc')->orderBy('item_id', 'asc')->orderBy('id', 'asc');
+        });
+    }
+
+    /**
      * ユーザーとのリレーション定義。
      */
     public function user() : BelongsTo
     {
         return $this->belongsTo('App\Models\Globals\User');
+    }
+
+    /**
+     * アイテムマスタとのリレーション定義。
+     */
+    public function item() : BelongsTo
+    {
+        return $this->belongsTo('App\Models\Masters\Item');
     }
 
     /**

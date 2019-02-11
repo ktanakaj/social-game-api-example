@@ -25,8 +25,11 @@ Route::post('logout', 'AuthController@logout');
 // 通常のAPI
 Route::middleware('auth')->group(function () {
     Route::get('users/me', 'UserController@me');
-    Route::post('gifts/recv', 'UserGiftController@allReceive');
-    Route::post('gifts/{userGiftId}/recv', 'UserGiftController@receive');
+    Route::get('items', 'ItemController@index');
+    Route::get('cards', 'CardController@index');
+    Route::get('gifts', 'GiftController@index');
+    Route::post('gifts/recv', 'GiftController@allReceive');
+    Route::post('gifts/{userGiftId}/recv', 'GiftController@receive');
 });
 
 // 開発環境用の特殊なAPI

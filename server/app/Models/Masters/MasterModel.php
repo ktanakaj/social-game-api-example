@@ -3,6 +3,7 @@
 namespace App\Models\Masters;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,19 @@ abstract class MasterModel extends Model
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * モデルの初期化。
+     */
+    protected static function boot() : void
+    {
+        parent::boot();
+
+        // マスタはデフォルトではIDの昇順でソートする
+        static::addGlobalScope('sortId', function (Builder $builder) {
+            return $builder->orderBy('id', 'asc');
+        });
+    }
 
     /**
      * マスタを主キーで取得する。

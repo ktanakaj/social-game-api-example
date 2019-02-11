@@ -3,6 +3,7 @@
 namespace App\Models\Globals;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +19,12 @@ class UserGift extends Model
     use SoftDeletes;
 
     /**
+     * プレゼントを受け取る処理。
+     * @var array
+     */
+    protected static $giftReceiveres = [];
+
+    /**
      * タイムスタンプ更新を無効化。
      * @var bool
      */
@@ -28,10 +35,11 @@ class UserGift extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'text_id',
         'text_options',
-        'gifts',
+        'object_type',
+        'object_id',
+        'count',
     ];
 
     /**
@@ -49,7 +57,8 @@ class UserGift extends Model
     protected $casts = [
         'user_id' => 'integer',
         'text_options' => 'array',
-        'gifts' => 'array',
+        'object_id' => 'integer',
+        'count' => 'integer',
         'created_at' => 'timestamp',
         'deleted_at' => 'timestamp',
     ];
@@ -60,7 +69,6 @@ class UserGift extends Model
      */
     protected $attributes = [
         'text_options' => '{}',
-        'gifts' => '{}',
     ];
 
     /**
@@ -72,6 +80,34 @@ class UserGift extends Model
         //    created_at もオフにして手動で日時指定
         parent::__construct($attributes);
         $this->created_at = new Carbon();
+    }
+
+    /**
+     * モデルの初期化。
+     */
+    protected static function boot() : void
+    {
+        parent::boot();
+
+        // ギフト全般でデフォルトのソート順を設定
+        static::addGlobalScope('sortCreatedAt', function (Builder $builder) {
+            return $builder->orderBy('user_id', 'asc')->orderBy('created_at', 'desc');
+        });
+    }
+
+    /**
+     * プレゼント受け取り処理を登録する。
+     *
+     * TODO: ↓整理する
+     * クロージャは UserGift インスタンスを引数に取り、
+     * 受け取ることができた場合、受け取り結果インスタンスを返さなければならない。
+     * クロージャでは処理対象外の場合、nullを返す。
+     * アイテム一杯などで受け取れない場合は例外を投げてよい。
+     * @param \Closure $receiver プレゼント受け取り処理。
+     */
+    public static function addGiftReceiver(\Closure $receiver) : void
+    {
+        static::$giftReceiveres[] = $receiver;
     }
 
     /**

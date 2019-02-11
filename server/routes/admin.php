@@ -20,7 +20,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('administrators/me', 'AdministratorController@me');
     Route::get('users', 'UserController@index');
     Route::get('users/{user}', 'UserController@show');
-    Route::get('users/{id}/items', 'UserItemController@index');
-    Route::get('users/{id}/gifts', 'UserGiftController@index');
-    Route::post('users/{id}/gifts', 'UserGiftController@store');
+    Route::get('users/{user}/items', 'ItemController@index');
+    Route::get('users/{user}/cards', 'CardController@index');
+    Route::get('users/{user}/gifts', 'GiftController@index');
+    Route::post('users/{user}/gifts', 'GiftController@store');
 });

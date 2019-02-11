@@ -40,11 +40,42 @@ class Item extends MasterModel
     ];
 
     /**
+     * 日付として扱う属性。
+     * @var array
+     */
+    protected $dates = [
+        'expired_at',
+    ];
+
+    /**
      * ネイティブなタイプへキャストする属性。
      * @var array
      */
     protected $casts = [
         'rarity' => 'integer',
         'effect' => 'array',
+        'expired_at' => 'timestamp',
     ];
+
+    /**
+     * アイテム効果を保存する。
+     * @param mixed $value 値。
+     */
+    public function setEffectAttribute($value) : void
+    {
+        // マスタインポート用。ミューテタが無いとJSON文字列が$castsで
+        // 二重にエスケープされるので、空定義でそれを阻止する
+        $this->attributes['effect'] = $value;
+    }
+
+    /**
+     * アイテム期限を保存する。
+     * @param mixed $value 値。
+     */
+    public function setExpiredAtAttribute($value) : void
+    {
+        // マスタインポート用。CSVから空文字列が渡されるとエラーになるので、
+        // nullに読み替え
+        $this->attributes['expired_at'] = $value !== '' ? $value : null;
+    }
 }

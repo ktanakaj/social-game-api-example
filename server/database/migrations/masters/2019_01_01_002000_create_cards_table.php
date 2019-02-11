@@ -14,8 +14,8 @@ class CreateCardsTable extends Migration
         Schema::connection('master')->create('cards', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->tinyInteger('rarity');
-            $table->string('name_text_id');
-            $table->string('flavor_text_id');
+            $table->string('name_text_id', 64);
+            $table->string('flavor_text_id', 64);
             $table->unsignedInteger('max_hp');
             $table->unsignedInteger('attack');
             $table->unsignedInteger('defense');

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Globals\UserItem;
 use App\Http\Controllers\Controller;
+use App\Models\Globals\User;
+use App\Models\Globals\UserItem;
 
 /**
  * ユーザーアイテムコントローラ。
@@ -32,36 +33,26 @@ use App\Http\Controllers\Controller;
  *     type="number",
  *   ),
  *   @OA\Property(
- *     property="property_ids",
- *     description="アイテムプロパティID配列",
- *     type="array",
- *     @OA\Items(
- *       description="アイテムプロパティID",
- *       type="number",
- *     ),
- *   ),
- *   @OA\Property(
  *     property="created_at",
  *     description="登録日時",
- *     type="string",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="updated_at",
  *     description="更新日時",
- *     type="string",
+ *     type="integer",
  *   ),
  *   required={
  *     "id",
  *     "user_id",
  *     "item_id",
  *     "count",
- *     "property_ids",
  *     "created_at",
  *     "updated_at",
  *   },
  * )
  */
-class UserItemController extends Controller
+class ItemController extends Controller
 {
     /**
      * @OA\Get(
@@ -83,7 +74,7 @@ class UserItemController extends Controller
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="成功",
+     *     description="アイテム一覧",
      *     @OA\JsonContent(
      *       type="object",
      *       allOf={
@@ -92,7 +83,7 @@ class UserItemController extends Controller
      *           type="object",
      *           @OA\Property(
      *             property="data",
-     *             description="データ配列",
+     *             description="アイテム配列",
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/UserItem")
      *           ),
@@ -102,8 +93,8 @@ class UserItemController extends Controller
      *   ),
      * )
      */
-    public function index($id)
+    public function index(User $user)
     {
-        return UserItem::where('user_id', $id)->orderBy('item_id', 'asc')->paginate(20);
+        return $user->items()->paginate(20);
     }
 }

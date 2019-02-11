@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\BadRequestException;
-use App\Models\Globals\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
+use App\Models\Globals\User;
 
 /**
  * ユーザーコントローラ。
@@ -26,11 +26,6 @@ use App\Http\Requests\PagingRequest;
  *     type="string",
  *   ),
  *   @OA\Property(
- *     property="email",
- *     description="メールアドレス",
- *     type="string",
- *   ),
- *   @OA\Property(
  *     property="game_coin",
  *     description="ゲームコイン",
  *     type="integer",
@@ -46,8 +41,8 @@ use App\Http\Requests\PagingRequest;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="level",
- *     description="レベル",
+ *     property="stamina",
+ *     description="スタミナ",
  *     type="integer",
  *   ),
  *   @OA\Property(
@@ -73,11 +68,10 @@ use App\Http\Requests\PagingRequest;
  *   required={
  *     "id",
  *     "name",
- *     "email",
  *     "game_coin",
  *     "special_coin",
  *     "free_special_coin",
- *     "level",
+ *     "stamina",
  *     "exp",
  *     "created_at",
  *     "updated_at",

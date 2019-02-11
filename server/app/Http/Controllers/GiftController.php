@@ -12,7 +12,7 @@ use App\Services\UserService;
 /**
  * ユーザーギフトコントローラ。
  */
-class UserGiftController extends Controller
+class GiftController extends Controller
 {
     /**
      * @var UserService
@@ -48,18 +48,8 @@ class UserGiftController extends Controller
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="成功",
-     *     @OA\JsonContent(
-     *       type="object",
-     *       @OA\Property(
-     *         property="user_gift",
-     *         description="受け取ったギフト",
-     *         ref="#/components/schemas/UserGift"
-     *       ),
-     *       required={
-     *         "user_gift",
-     *       },
-     *     ),
+     *     description="受け取ったギフト",
+     *     @OA\JsonContent(ref="#/components/schemas/UserGift"),
      *   ),
      *   @OA\Response(
      *     response=400,
@@ -78,7 +68,7 @@ class UserGiftController extends Controller
      *   ),
      * )
      */
-    public function receive(Request $request, $userGiftId)
+    public function receive(Request $request, int $userGiftId)
     {
         $userId = Auth::id();
         DB::transaction(function () use ($userId, $userGiftId, &$result) {
@@ -86,9 +76,10 @@ class UserGiftController extends Controller
             if ($userGift->user_id != $userId) {
                 throw new \InvalidArgumentException("The user gift is not belong to me");
             }
+            // FIXME: 新仕様に合わせる
             $this->userService->addObject($userGift->user_id, $userGift->data);
             $userGift->delete();
-            $result = ['user_gift' => $userGift];
+            $result = $userGift;
         });
         return $result;
     }
@@ -106,18 +97,10 @@ class UserGiftController extends Controller
      *   },
      *   @OA\Response(
      *     response=200,
-     *     description="成功",
+     *     description="受け取ったギフト配列",
      *     @OA\JsonContent(
-     *       type="object",
-     *       @OA\Property(
-     *         property="user_gifts",
-     *         description="受け取ったギフト配列",
-     *         type="array",
-     *         @OA\Items(ref="#/components/schemas/UserGift")
-     *       ),
-     *       required={
-     *         "user_gifts",
-     *       },
+     *       type="array",
+     *       @OA\Items(ref="#/components/schemas/UserGift")
      *     ),
      *   ),
      *   @OA\Response(
@@ -143,7 +126,7 @@ class UserGiftController extends Controller
             foreach ($userGifts as $userGift) {
                 $userGift->delete();
             }
-            $result = ['user_gifts' => $userGifts];
+            $result = $userGifts;
         });
         return $result;
     }

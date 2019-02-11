@@ -16,13 +16,17 @@ class CreateUserGiftsTable extends Migration
         Schema::create('user_gifts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
-            $table->string('text_id');
+            $table->string('text_id', 64);
             $table->text('text_options');
-            $table->text('gifts');
+            $table->string('object_type', 32);
+            $table->unsignedInteger('object_id');
+            $table->unsignedInteger('count');
             $table->dateTime('created_at');
             $table->softDeletes();
 
             $table->index(['user_id', 'created_at']);
+            $table->index(['text_id', 'user_id', 'created_at']);
+            $table->index(['object_type', 'object_id', 'created_at']);
         });
 
         // 時系列で肥大化する想定なのでパーティション化する

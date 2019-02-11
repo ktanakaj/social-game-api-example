@@ -6,9 +6,9 @@ namespace App\Http\Controllers;
  * OpenAPI (Swagger) コントローラ。
  *
  * @OA\Info(
- *   title="user-model-sandbox API",
+ *   title="laravel-api-example API",
  *   version="0.0.1",
- *   description="ゲームのユーザーデータの試験的実装場。"
+ *   description="Laravel 5勉強用ソシャゲAPIサンプルアプリ。"
  * ),
  * @OA\Server(
  *   url="/",
