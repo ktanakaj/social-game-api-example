@@ -29,8 +29,9 @@ class UserGift extends Model
      */
     protected $fillable = [
         'user_id',
-        'message_id',
-        'data',
+        'text_id',
+        'text_options',
+        'gifts',
     ];
 
     /**
@@ -46,7 +47,11 @@ class UserGift extends Model
      * @var array
      */
     protected $casts = [
-        'data' => 'array',
+        'user_id' => 'integer',
+        'text_options' => 'array',
+        'gifts' => 'array',
+        'created_at' => 'timestamp',
+        'deleted_at' => 'timestamp',
     ];
 
     /**
@@ -54,7 +59,8 @@ class UserGift extends Model
      * @var array
      */
     protected $attributes = [
-        'data' => '{}',
+        'text_options' => '{}',
+        'gifts' => '{}',
     ];
 
     /**

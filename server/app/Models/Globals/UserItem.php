@@ -5,15 +5,11 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Masters\Item;
-use App\Models\Masters\ItemProperty;
 
 /**
  * ユーザーが持つアイテムを表すモデル。
  *
- * ユーザーが保持するアイテムや装備品、素材などが格納される。
- * ユーザーは重量の限界までアイテムを持つことができる。
- * アイテムは、特別なデータを持たないスタッカブル品と、
- * 個別に管理されるジェネレーテッド品がある。
+ * ユーザーが保持するアイテムが格納される。
  */
 class UserItem extends Model
 {
@@ -25,7 +21,6 @@ class UserItem extends Model
         'user_id',
         'item_id',
         'count',
-        'property_ids',
     ];
 
     /**
@@ -33,7 +28,11 @@ class UserItem extends Model
      * @var array
      */
     protected $casts = [
-        'property_ids' => 'array',
+        'user_id' => 'integer',
+        'item_id' => 'integer',
+        'count' => 'integer',
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp',
     ];
 
     /**
@@ -41,7 +40,7 @@ class UserItem extends Model
      * @var array
      */
     protected $attributes = [
-        'property_ids' => '[]',
+        'count' => 1,
     ];
 
     /**

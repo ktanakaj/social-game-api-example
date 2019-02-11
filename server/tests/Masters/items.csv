@@ -1,4 +1,5 @@
-﻿id,type,category,rarity,weight,name,flavor,use_effect,equipping_effect,material_effect
-1,stackable,item,1,1,"{""en"":""Potion"",""jp"":""ポーション""}","{""en"":""HP potion."",""jp"":""普通の回復薬。""}","{""hp"":""+30%"",""break_limit"":1}",{},{}
-2,stackable,weapon,1,10,"{""en"":""Short Sword"",""jp"":""ショートソード""}","{""en"":""Cheaper sword."",""jp"":""短い剣。""}",{},"{""atk"":""+10""}",{}
-3,generatable,weapon,2,15,"{""en"":""Knight Sword"",""jp"":""ナイトソード""}","{""en"":""Strong sword."",""jp"":""騎士の剣。""}",{},"{""atk"":""+20""}",{}
+﻿id,type,rarity,name_text_id,help_text_id,effect
+100,usable,1,ITEM_NAME_STAMINA_S,ITEM_HELP_STAMINA_S,"{""stamina"":50}"
+110,usable,1,ITEM_NAME_EXP_S,ITEM_HELP_EXP_S,"{""exp"":100}"
+200,material,1,ITEM_NAME_MATERIAL_S,ITEM_HELP_MATERIAL_S,"{""cardexp"":100}"
+300,tradable,1,ITEM_NAME_TRADE_MEDAL,ITEM_HELP_TRADE_MEDAL,""

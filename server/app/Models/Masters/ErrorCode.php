@@ -7,4 +7,11 @@ namespace App\Models\Masters;
  */
 class ErrorCode extends MasterModel
 {
+    /**
+     * ネイティブなタイプへキャストする属性。
+     * @var array
+     */
+    protected $casts = [
+        'response_code' => 'integer',
+    ];
 }

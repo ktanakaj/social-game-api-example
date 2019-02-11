@@ -16,17 +16,12 @@ class CreateUserItemsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('item_id');
             $table->unsignedInteger('count');
-            // ※ Diablo式の武器などをイメージした項目。
-            //    Holy + Sword とかを実現する。
-            $table->text('property_ids');
             $table->timestamps();
 
-            $table->index(['user_id', 'item_id']);
+            $table->unique(['user_id', 'item_id']);
             $table->index(['item_id', 'user_id']);
 
             $table->foreign('user_id')->references('id')->on('users');
-            // ※ スキーマを分けたいので、マスタへの外部キーは貼らない
-            // $table->foreign('item_id')->references('id')->on('items');
         });
     }
 

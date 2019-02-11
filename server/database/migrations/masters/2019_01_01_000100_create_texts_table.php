@@ -4,16 +4,17 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGiftMessagesTable extends Migration
+class CreateTextsTable extends Migration
 {
     /**
      * マイグレーション実行。
      */
     public function up() : void
     {
-        Schema::connection('master')->create('gift_messages', function (Blueprint $table) {
-            $table->unsignedInteger('id');
-            $table->string('message');
+        Schema::connection('master')->create('texts', function (Blueprint $table) {
+            $table->string('id', 64);
+            $table->string('text_en');
+            $table->string('text_ja');
 
             $table->primary('id');
         });
@@ -24,6 +25,6 @@ class CreateGiftMessagesTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('master')->dropIfExists('gift_messages');
+        Schema::connection('master')->dropIfExists('texts');
     }
 }

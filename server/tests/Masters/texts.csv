@@ -1,0 +1,15 @@
+﻿id,text_en,text_ja
+GIFT_MESSAGE_REWARD,Reward for {name},{name}の報酬
+GIFT_MESSAGE_COVERING,Loss compensation,不具合のお詫び
+ITEM_NAME_STAMINA_S,Stamina potion (50),スタミナ回復薬(小)
+ITEM_HELP_STAMINA_S,Stamina +50,スタミナを50回復します。
+ITEM_NAME_EXP_S,EXP potion (100),EXP薬(小)
+ITEM_HELP_EXP_S,EXP +100,経験値を100獲得します。
+ITEM_NAME_MATERIAL_S,Material (100),強化素材(小)
+ITEM_HELP_MATERIAL_S,Material +100,合成すると経験値を100獲得します。
+ITEM_NAME_TRADE_MEDAL,Trade Medal,メダル
+ITEM_HELP_TRADE_MEDAL,Tradable Medal,アイテムと交換できます。
+CARD_NAME_HERO,Hero,勇者
+CARD_FLAVOR_HERO,Hero is strong,強い勇者。
+CARD_NAME_GOBLIN,Goblin,ゴブリン
+CARD_FLAVOR_GOBLIN,Goblin is weak,雑魚のゴブリン。

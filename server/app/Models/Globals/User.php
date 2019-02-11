@@ -39,6 +39,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'game_coin' => 'integer',
+        'special_coin' => 'integer',
+        'free_special_coin' => 'integer',
+        'exp' => 'integer',
         'last_login' => 'timestamp',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
@@ -50,6 +54,10 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'name' => '(noname)',
+        'game_coin' => 0,
+        'special_coin' => 0,
+        'free_special_coin' => 0,
+        'exp' => 0,
     ];
 
     /**

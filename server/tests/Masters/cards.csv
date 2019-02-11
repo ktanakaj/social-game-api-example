@@ -1,0 +1,3 @@
+﻿id,rarity,name_text_id,flavor_text_id,max_hp,attack,defense,agility
+1000,2,CARD_NAME_HERO,CARD_FLAVOR_HERO,2000,300,200,10
+2000,1,CARD_NAME_GOBLIN,CARD_FLAVOR_GOBLIN,500,100,50,5

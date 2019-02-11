@@ -16,8 +16,9 @@ class CreateUserGiftsTable extends Migration
         Schema::create('user_gifts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('message_id');
-            $table->text('data');
+            $table->string('text_id');
+            $table->text('text_options');
+            $table->text('gifts');
             $table->dateTime('created_at');
             $table->softDeletes();
 
