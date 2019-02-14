@@ -21,7 +21,7 @@ class CreateUserCardsTable extends Migration
             $table->softDeletes();
 
             $table->index(['user_id', 'card_id']);
-            $table->index(['card_id', 'user_id']);
+            $table->index(['card_id', 'exp']);
 
             $table->foreign('user_id')->references('id')->on('users');
         });

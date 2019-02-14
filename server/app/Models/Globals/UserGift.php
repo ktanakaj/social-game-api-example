@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Virtual\ReceivedObject;
 
 /**
  * プレゼントデータを表すモデル。
@@ -69,6 +70,7 @@ class UserGift extends Model
      */
     protected $attributes = [
         'text_options' => '{}',
+        'count' => 1,
     ];
 
     /**
@@ -98,16 +100,14 @@ class UserGift extends Model
     /**
      * プレゼント受け取り処理を登録する。
      *
-     * TODO: ↓整理する
-     * クロージャは UserGift インスタンスを引数に取り、
-     * 受け取ることができた場合、受け取り結果インスタンスを返さなければならない。
-     * クロージャでは処理対象外の場合、nullを返す。
-     * アイテム一杯などで受け取れない場合は例外を投げてよい。
-     * @param \Closure $receiver プレゼント受け取り処理。
+     * $receiverはUserGiftインスタンスを引数に取り、ReceivedObjectインスタンスを返す。
+     * アイテム一杯などで受け取れない場合は例外を投げる。
+     * @param string $type ギフトオブジェクト種別。
+     * @param callable $receiver プレゼント受け取り処理。
      */
-    public static function addGiftReceiver(\Closure $receiver) : void
+    public static function giftReceiver(string $type, callable $receiver) : void
     {
-        static::$giftReceiveres[] = $receiver;
+        static::$giftReceiveres[$type] = $receiver;
     }
 
     /**
@@ -116,5 +116,19 @@ class UserGift extends Model
     public function user() : BelongsTo
     {
         return $this->belongsTo('App\Models\Globals\User');
+    }
+
+    /**
+     * プレゼントを受け取る。
+     * @return ReceivedObject プレゼントの受け取り結果。
+     */
+    public function receive() : ReceivedObject
+    {
+        if (!isset(static::$giftReceiveres[$this->object_type])) {
+            throw new \LogicException("objectType={$this->object_type} is not supported");
+        }
+        $result = call_user_func(static::$giftReceiveres[$this->object_type], $this);
+        $this->delete();
+        return $result;
     }
 }

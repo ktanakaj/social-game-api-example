@@ -11,6 +11,41 @@ use App\Services\UserService;
 
 /**
  * ユーザーギフトコントローラ。
+ *
+ * @OA\Schema(
+ *   schema="ReceivedObject",
+ *   type="object",
+ *   @OA\Property(
+ *     property="object_type",
+ *     description="受け取ったものの種別",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="object_id",
+ *     description="受け取ったもののID ※IDを持たない種別の場合null",
+ *     type="number",
+ *   ),
+ *   @OA\Property(
+ *     property="count",
+ *     description="受け取った件数",
+ *     type="number",
+ *   ),
+ *   @OA\Property(
+ *     property="total",
+ *     description="受け取った後の件数",
+ *     type="number",
+ *   ),
+ *   @OA\Property(
+ *     property="is_new",
+ *     description="初めて獲得したものか？",
+ *     type="boolean",
+ *   ),
+ *   required={
+ *     "object_type",
+ *     "count",
+ *     "is_new",
+ *   },
+ * )
  */
 class GiftController extends Controller
 {
@@ -48,8 +83,8 @@ class GiftController extends Controller
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="受け取ったギフト",
-     *     @OA\JsonContent(ref="#/components/schemas/UserGift"),
+     *     description="受け取ったオブジェクト",
+     *     @OA\JsonContent(ref="#/components/schemas/ReceivedObject"),
      *   ),
      *   @OA\Response(
      *     response=400,
@@ -76,10 +111,7 @@ class GiftController extends Controller
             if ($userGift->user_id != $userId) {
                 throw new \InvalidArgumentException("The user gift is not belong to me");
             }
-            // FIXME: 新仕様に合わせる
-            $this->userService->addObject($userGift->user_id, $userGift->data);
-            $userGift->delete();
-            $result = $userGift;
+            $result = $userGift->receive();
         });
         return $result;
     }
@@ -97,10 +129,10 @@ class GiftController extends Controller
      *   },
      *   @OA\Response(
      *     response=200,
-     *     description="受け取ったギフト配列",
+     *     description="受け取ったオブジェクト配列",
      *     @OA\JsonContent(
      *       type="array",
-     *       @OA\Items(ref="#/components/schemas/UserGift")
+     *       @OA\Items(ref="#/components/schemas/ReceivedObject")
      *     ),
      *   ),
      *   @OA\Response(
@@ -118,16 +150,13 @@ class GiftController extends Controller
     public function allReceive(Request $request)
     {
         $userId = Auth::id();
-        DB::transaction(function () use ($userId, &$result) {
+        DB::transaction(function () use ($userId, &$results) {
+            $results = [];
             $userGifts = UserGift::lockForUpdate()->where(['user_id' => $userId])->get();
-            $this->userService->addObjects($userId, $userGifts->map(function ($v) {
-                return $v->data;
-            })->all());
             foreach ($userGifts as $userGift) {
-                $userGift->delete();
+                $results[] = $userGift->receive();
             }
-            $result = $userGifts;
         });
-        return $result;
+        return $results;
     }
 }

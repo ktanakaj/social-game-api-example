@@ -24,6 +24,8 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('updated_at', $json);
         $this->assertArrayNotHasKey('token', $json);
         $this->assertAuthenticated();
+
+        // TODO: DBもチェックする
     }
 
     /**

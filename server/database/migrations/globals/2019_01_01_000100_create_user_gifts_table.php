@@ -19,7 +19,7 @@ class CreateUserGiftsTable extends Migration
             $table->string('text_id', 64);
             $table->text('text_options');
             $table->string('object_type', 32);
-            $table->unsignedInteger('object_id');
+            $table->unsignedInteger('object_id')->nullable();
             $table->unsignedInteger('count');
             $table->dateTime('created_at');
             $table->softDeletes();

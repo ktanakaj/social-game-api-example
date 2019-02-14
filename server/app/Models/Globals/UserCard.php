@@ -5,6 +5,7 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Virtual\ReceivedObject;
 
 /**
  * ユーザーが持つカードを表すモデル。
@@ -71,5 +72,24 @@ class UserCard extends Model
     public function card() : BelongsTo
     {
         return $this->belongsTo('App\Models\Masters\Card');
+    }
+
+    /**
+     * カードのプレゼントを受け取る。
+     * @param UserGift $userGift カードのプレゼント。
+     * @return ReceivedObject 受け取り情報。
+     */
+    public static function receiveCardGift(UserGift $userGift) : ReceivedObject
+    {
+        // TODO: bulkでやる
+        // TODO: is_new判定する
+        for ($i = 0; $i < $userGift->count; $i++) {
+            self::create([
+                'user_id' => $userGift->user_id,
+                'card_id' => $userGift->object_id,
+            ]);
+        }
+        $received = new ReceivedObject($userGift->toArray());
+        return $received;
     }
 }

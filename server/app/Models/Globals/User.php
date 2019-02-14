@@ -4,6 +4,7 @@ namespace App\Models\Globals;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Virtual\ReceivedObject;
 
 /**
  * ユーザーデータを表すモデル。
@@ -110,26 +111,48 @@ class User extends Authenticatable
     }
 
     /**
-     * オブジェクト種別からコインなどを加算する。
-     * @param array $data {type,count} 形式の情報。
-     * @return User 加算されたオブジェクト。対象外の種別の場合はnull。
+     * ゲームコインのプレゼントを受け取る。
+     * @param UserGift $userGift ゲームコインのプレゼント。
+     * @return ReceivedObject 受け取り情報。
      */
-    public function addObjectByType(array $data) : ?User
+    public static function receiveGameCoinGift(UserGift $userGift) : ReceivedObject
     {
-        switch ($data['type']) {
-            case 'game_coin':
-                $this->game_coin += $data['count'];
-                return $this;
-            case 'special_coin':
-                $this->special_coin += $data['count'];
-                return $this;
-            case 'free_special_coin':
-                $this->free_special_coin += $data['count'];
-                return $this;
-            case 'exp':
-                $this->exp += $data['count'];
-                return $this;
-        }
-        return null;
+        $user = $userGift->user;
+        $user->game_coin += $userGift->count;
+        $user->save();
+        $received = new ReceivedObject($userGift->toArray());
+        $received->total = $user->game_coin;
+        return $received;
+    }
+
+    /**
+     * スペシャルコインのプレゼントを受け取る。
+     * @param UserGift $userGift スペシャルコインのプレゼント。
+     * @return ReceivedObject 受け取り情報。
+     */
+    public static function receiveSpecialCoinGift(UserGift $userGift) : ReceivedObject
+    {
+        // このメソッドで受け取った分は、非課金コインとして加算する
+        $user = $userGift->user;
+        $user->free_special_coin += $userGift->count;
+        $user->save();
+        $received = new ReceivedObject($userGift->toArray());
+        $received->total = $user->special_coin + $user->free_special_coin;
+        return $received;
+    }
+
+    /**
+     * ユーザー経験値のプレゼントを受け取る。
+     * @param UserGift $userGift ユーザー経験値のプレゼント。
+     * @return ReceivedObject 受け取り情報。
+     */
+    public static function receiveExpGift(UserGift $userGift) : ReceivedObject
+    {
+        $user = $userGift->user;
+        $user->exp += $userGift->count;
+        $user->save();
+        $received = new ReceivedObject($userGift->toArray());
+        $received->total = $user->exp;
+        return $received;
     }
 }

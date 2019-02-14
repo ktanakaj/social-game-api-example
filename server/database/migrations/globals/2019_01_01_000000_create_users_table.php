@@ -15,11 +15,12 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('token');
             $table->string('name', 191);
-            $table->bigInteger('game_coin');
-            $table->bigInteger('special_coin');
-            $table->bigInteger('free_special_coin');
-            $table->bigInteger('stamina');
-            $table->bigInteger('exp');
+            $table->unsignedBigInteger('game_coin');
+            $table->unsignedInteger('special_coin');
+            $table->unsignedInteger('free_special_coin');
+            $table->unsignedBigInteger('exp');
+            $table->unsignedInteger('stamina');
+            $table->dateTime('stamina_updated_at')->nullable();
             $table->dateTime('last_login')->nullable();
             $table->timestamps();
 

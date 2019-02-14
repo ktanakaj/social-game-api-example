@@ -5,7 +5,7 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Masters\Item;
+use App\Models\Virtual\ReceivedObject;
 
 /**
  * ユーザーが持つアイテムを表すモデル。
@@ -41,7 +41,7 @@ class UserItem extends Model
      * @var array
      */
     protected $attributes = [
-        'count' => 1,
+        'count' => 0,
     ];
 
     /**
@@ -74,46 +74,21 @@ class UserItem extends Model
     }
 
     /**
-     * オブジェクト種別からアイテムなどを加算する。
-     * @param int $userId ユーザーID。
-     * @param array $data {type,object_id,count} 形式の情報。
-     * @return UserItem 加算されたオブジェクト。対象外の種別の場合はnull。
+     * アイテムのプレゼントを受け取る。
+     * @param UserGift $userGift アイテムのプレゼント。
+     * @return ReceivedObject 受け取り情報。
      */
-    public static function addObjectByType(int $userId, array $data) : ?UserItem
+    public static function receiveItemGift(UserGift $userGift) : ReceivedObject
     {
-        switch ($data['type']) {
-            case 'item':
-                $item = Item::findOrFail($data['object_id']);
-                return self::addItem($userId, $item, $data['count']);
-        }
-        return null;
-    }
-
-    /**
-     * アイテムを加算する。
-     * @param int $userId ユーザーID。
-     * @param Item $item アイテムマスタ。
-     * @param int $count 加算する個数。
-     * @return UserItem 加算されたオブジェクト。
-     */
-    private static function addItem(int $userId, Item $item, int $count) : ?UserItem
-    {
-        // TODO: 高レアアイテムは受け取った瞬間にランダムで称号が付く
-        // TODO: ジェネレータブルアイテムの対応
-        // TODO: アイテムが持てるかの重量チェックとかする
-        $userItem = self::lockForUpdate()->where([
-            'user_id' => $userId,
-            'item_id' => $item->id,
-        ])->first();
-        if ($userItem) {
-            $userItem->count += $count;
-            $userItem->save();
-            return $userItem;
-        }
-        return self::create([
-            'user_id' => $userId,
-            'item_id' => $item->id,
-            'count' => $count,
+        // TODO: is_new判定する
+        $userItem = self::lockForUpdate()->firstOrNew([
+            'user_id' => $userGift->user_id,
+            'item_id' => $userGift->object_id,
         ]);
+        $userItem->count += $userGift->count;
+        $userItem->save();
+        $received = new ReceivedObject($userGift->toArray());
+        $received->total = $userItem->count;
+        return $received;
     }
 }

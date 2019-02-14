@@ -19,7 +19,7 @@ class CreateUserItemsTable extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'item_id']);
-            $table->index(['item_id', 'user_id']);
+            $table->index(['item_id', 'count']);
 
             $table->foreign('user_id')->references('id')->on('users');
         });
