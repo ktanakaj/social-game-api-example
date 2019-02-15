@@ -39,6 +39,16 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
+        // ページング用クラスをアプリ用にカスタマイズしたものに差し替え
+        $this->app->bind(
+            'Illuminate\Pagination\Paginator',
+            'App\Models\JsonPaginator'
+        );
+        $this->app->bind(
+            'Illuminate\Pagination\LengthAwarePaginator',
+            'App\Models\JsonLengthAwarePaginator'
+        );
+
         // プレゼント受け取り処理の登録
         // TODO: 現状の実装だと、プレゼント一括受け取り時に何度もSELECT&UPDATEしてしまうので、
         //       ちゃんとやる場合はどこかにインスタンスをキャッシュして最後にUPDATEするようにする。

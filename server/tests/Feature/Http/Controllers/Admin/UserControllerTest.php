@@ -33,6 +33,13 @@ class UserControllerTest extends TestCase
         $user = $json['data'][0];
         $this->assertArrayHasKey('id', $user);
         $this->assertArrayHasKey('name', $user);
+        $this->assertArrayHasKey('game_coins', $user);
+        $this->assertArrayHasKey('special_coins', $user);
+        $this->assertArrayHasKey('free_special_coins', $user);
+        $this->assertArrayHasKey('exp', $user);
+        $this->assertArrayHasKey('stamina', $user);
+        $this->assertArrayHasKey('stamina_updated_at', $user);
+        $this->assertArrayHasKey('last_login', $user);
         $this->assertArrayHasKey('created_at', $user);
         $this->assertArrayHasKey('updated_at', $user);
         $this->assertArrayNotHasKey('token', $user);

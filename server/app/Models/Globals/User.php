@@ -32,6 +32,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $dates = [
+        'stamina_updated_at',
         'last_login',
     ];
 
@@ -40,11 +41,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'game_coin' => 'integer',
-        'special_coin' => 'integer',
-        'free_special_coin' => 'integer',
-        'stamina' => 'integer',
+        'game_coins' => 'integer',
+        'special_coins' => 'integer',
+        'free_special_coins' => 'integer',
         'exp' => 'integer',
+        'stamina' => 'integer',
+        'stamina_updated_at' => 'timestamp',
         'last_login' => 'timestamp',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
@@ -56,11 +58,11 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'name' => '(noname)',
-        'game_coin' => 0,
-        'special_coin' => 0,
-        'free_special_coin' => 0,
-        'stamina' => 0,
+        'game_coins' => 0,
+        'special_coins' => 0,
+        'free_special_coins' => 0,
         'exp' => 0,
+        'stamina' => 0,
     ];
 
     /**
@@ -118,10 +120,10 @@ class User extends Authenticatable
     public static function receiveGameCoinGift(UserGift $userGift) : ReceivedObject
     {
         $user = $userGift->user;
-        $user->game_coin += $userGift->count;
+        $user->game_coins += $userGift->count;
         $user->save();
         $received = new ReceivedObject($userGift->toArray());
-        $received->total = $user->game_coin;
+        $received->total = $user->game_coins;
         return $received;
     }
 
@@ -134,10 +136,10 @@ class User extends Authenticatable
     {
         // このメソッドで受け取った分は、非課金コインとして加算する
         $user = $userGift->user;
-        $user->free_special_coin += $userGift->count;
+        $user->free_special_coins += $userGift->count;
         $user->save();
         $received = new ReceivedObject($userGift->toArray());
-        $received->total = $user->special_coin + $user->free_special_coin;
+        $received->total = $user->special_coins + $user->free_special_coins;
         return $received;
     }
 

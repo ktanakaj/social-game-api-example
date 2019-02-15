@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\Globals\User;
+use App\Http\Requests\PagingRequest;
 use App\Models\Globals\UserGift;
-use App\Services\UserService;
+use App\Services\GiftService;
 
 /**
  * ユーザーギフトコントローラ。
+ *
+ * @OA\Tag(
+ *   name="Gifts",
+ *   description="プレゼントAPI",
+ * )
  *
  * @OA\Schema(
  *   schema="ReceivedObject",
@@ -50,17 +53,73 @@ use App\Services\UserService;
 class GiftController extends Controller
 {
     /**
-     * @var UserService
+     * @var GiftService
      */
-    private $userService;
+    private $service;
 
     /**
      * サービスをDIしてコントローラを作成する。
-     * @param UserService $userService ユーザー関連サービス。
+     * @param GiftService $giftService プレゼント関連サービス。
      */
-    public function __construct(UserService $userService)
+    public function __construct(GiftService $giftService)
     {
-        $this->userService = $userService;
+        $this->service = $giftService;
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/gifts",
+     *   summary="ユーザーギフト一覧",
+     *   description="ユーザーのギフト一覧を取得する。",
+     *   tags={
+     *     "Gifts",
+     *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="page",
+     *     description="ページ番号（先頭ページが1）",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=1,
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="max",
+     *     description="1ページ辺りの取得件数",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=20,
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="ギフト一覧",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       allOf={
+     *         @OA\Schema(ref="#components/schemas/Pagination"),
+     *         @OA\Schema(
+     *           type="object",
+     *           @OA\Property(
+     *             property="data",
+     *             description="ギフト情報配列",
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/UserGift")
+     *           ),
+     *         ),
+     *       }
+     *     ),
+     *   ),
+     * )
+     */
+    public function index(PagingRequest $request)
+    {
+        // ※ pageはpaginate内部で勝手に参照される模様
+        return UserGift::where('user_id', Auth::id())->paginate($request->input('max', 20));
     }
 
     /**
@@ -69,7 +128,7 @@ class GiftController extends Controller
      *   summary="ユーザーギフト受取",
      *   description="ユーザーのギフトを受け取る。",
      *   tags={
-     *     "Users",
+     *     "Gifts",
      *   },
      *   security={
      *     "SessionId",
@@ -103,17 +162,9 @@ class GiftController extends Controller
      *   ),
      * )
      */
-    public function receive(Request $request, int $userGiftId)
+    public function receive(int $userGiftId)
     {
-        $userId = Auth::id();
-        DB::transaction(function () use ($userId, $userGiftId, &$result) {
-            $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
-            if ($userGift->user_id != $userId) {
-                throw new \InvalidArgumentException("The user gift is not belong to me");
-            }
-            $result = $userGift->receive();
-        });
-        return $result;
+        return $this->service->receive(Auth::id(), $userGiftId);
     }
 
     /**
@@ -122,7 +173,7 @@ class GiftController extends Controller
      *   summary="全ユーザーギフト受取",
      *   description="ユーザーの全ギフトを受け取る。",
      *   tags={
-     *     "Users",
+     *     "Gifts",
      *   },
      *   security={
      *     "SessionId",
@@ -147,16 +198,8 @@ class GiftController extends Controller
      *   ),
      * )
      */
-    public function allReceive(Request $request)
+    public function receiveAll()
     {
-        $userId = Auth::id();
-        DB::transaction(function () use ($userId, &$results) {
-            $results = [];
-            $userGifts = UserGift::lockForUpdate()->where(['user_id' => $userId])->get();
-            foreach ($userGifts as $userGift) {
-                $results[] = $userGift->receive();
-            }
-        });
-        return $results;
+        return $this->service->receiveAll(Auth::id());
     }
 }

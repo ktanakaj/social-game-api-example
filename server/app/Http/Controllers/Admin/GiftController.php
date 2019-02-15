@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
 use App\Models\Globals\UserGift;
 
@@ -44,7 +45,6 @@ use App\Models\Globals\UserGift;
  *   required={
  *     "text_id",
  *     "object_type",
- *     "count",
  *   },
  * )
  *
@@ -105,6 +105,24 @@ class GiftController extends Controller
      *     required=true,
      *     @OA\Schema(type="integer"),
      *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="page",
+     *     description="ページ番号（先頭ページが1）",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=1,
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="max",
+     *     description="1ページ辺りの取得件数",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=20,
+     *     ),
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="ギフト一覧",
@@ -126,9 +144,10 @@ class GiftController extends Controller
      *   ),
      * )
      */
-    public function index(User $user)
+    public function index(PagingRequest $request, User $user)
     {
-        return $user->gifts()->paginate(20);
+        // ※ pageはpaginate内部で勝手に参照される模様
+        return $user->gifts()->paginate($request->input('max', 20));
     }
 
     /**
@@ -155,7 +174,7 @@ class GiftController extends Controller
      *     @OA\JsonContent(ref="#/components/schemas/UserGiftBody"),
      *   ),
      *   @OA\Response(
-     *     response=200,
+     *     response=201,
      *     description="付与したギフト",
      *     @OA\JsonContent(ref="#/components/schemas/UserGift"),
      *   ),
@@ -177,7 +196,7 @@ class GiftController extends Controller
         $request->validate([
             'object_type' => 'required|max:32',
             'object_id' => 'integer',
-            'count' => 'required|integer|min:1',
+            'count' => 'integer|min:1',
             'text_id' => 'required|exists:master.texts,id',
         ]);
         return $user->gifts()->create($request->input());

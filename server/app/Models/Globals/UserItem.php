@@ -80,15 +80,15 @@ class UserItem extends Model
      */
     public static function receiveItemGift(UserGift $userGift) : ReceivedObject
     {
-        // TODO: is_new判定する
+        $received = new ReceivedObject($userGift->toArray());
         $userItem = self::lockForUpdate()->firstOrNew([
             'user_id' => $userGift->user_id,
             'item_id' => $userGift->object_id,
         ]);
         $userItem->count += $userGift->count;
-        $userItem->save();
-        $received = new ReceivedObject($userGift->toArray());
         $received->total = $userItem->count;
+        $received->is_new = !$userItem->exists;
+        $userItem->save();
         return $received;
     }
 }

@@ -93,7 +93,7 @@ class UserGift extends Model
 
         // ギフト全般でデフォルトのソート順を設定
         static::addGlobalScope('sortCreatedAt', function (Builder $builder) {
-            return $builder->orderBy('user_id', 'asc')->orderBy('created_at', 'desc');
+            return $builder->orderBy('user_id', 'asc')->orderBy('created_at', 'desc')->orderBy('id', 'asc');
         });
     }
 

@@ -26,18 +26,23 @@ use App\Models\Globals\User;
  *     type="string",
  *   ),
  *   @OA\Property(
- *     property="game_coin",
+ *     property="game_coins",
  *     description="ゲームコイン",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="special_coin",
+ *     property="special_coins",
  *     description="課金コイン",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="free_special_coin",
+ *     property="free_special_coins",
  *     description="無償課金コイン",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="exp",
+ *     description="経験値",
  *     type="integer",
  *   ),
  *   @OA\Property(
@@ -46,8 +51,8 @@ use App\Models\Globals\User;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="exp",
- *     description="経験値",
+ *     property="stamina_updated_at",
+ *     description="スタミナ最終更新日時",
  *     type="integer",
  *   ),
  *   @OA\Property(
@@ -68,11 +73,11 @@ use App\Models\Globals\User;
  *   required={
  *     "id",
  *     "name",
- *     "game_coin",
- *     "special_coin",
- *     "free_special_coin",
- *     "stamina",
+ *     "game_coins",
+ *     "special_coins",
+ *     "free_special_coins",
  *     "exp",
+ *     "stamina",
  *     "created_at",
  *     "updated_at",
  *   },

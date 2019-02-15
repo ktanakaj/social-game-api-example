@@ -82,14 +82,15 @@ class UserCard extends Model
     public static function receiveCardGift(UserGift $userGift) : ReceivedObject
     {
         // TODO: bulkでやる
-        // TODO: is_new判定する
+        // TODO: is_newの判定は、複数件受け取り時に何度もSELECTされるのでキャッシュとか検討
+        $received = new ReceivedObject($userGift->toArray());
+        $received->is_new = self::where('user_id', $userGift->user_id)->where('card_id', $userGift->object_id)->doesntExist();
         for ($i = 0; $i < $userGift->count; $i++) {
             self::create([
                 'user_id' => $userGift->user_id,
                 'card_id' => $userGift->object_id,
             ]);
         }
-        $received = new ReceivedObject($userGift->toArray());
         return $received;
     }
 }

@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('items', 'ItemController@index');
     Route::get('cards', 'CardController@index');
     Route::get('gifts', 'GiftController@index');
-    Route::post('gifts/recv', 'GiftController@allReceive');
+    Route::post('gifts/recv', 'GiftController@receiveAll');
     Route::post('gifts/{userGiftId}/recv', 'GiftController@receive');
 });
 
