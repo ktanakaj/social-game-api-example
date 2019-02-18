@@ -25,25 +25,25 @@ class GiftControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'per_page' => 20,
-                'current_page' => 1,
+                'perPage' => 20,
+                'currentPage' => 1,
                 'from' => 1,
             ]);
 
         $json = $response->json();
         $this->assertGreaterThan(0, $json['total']);
-        $this->assertGreaterThan(0, $json['last_page']);
+        $this->assertGreaterThan(0, $json['lastPage']);
         $this->assertGreaterThan(0, $json['to']);
         $this->assertGreaterThan(0, count($json['data']));
 
         $userGift = $json['data'][0];
         $this->assertArrayHasKey('id', $userGift);
-        $this->assertArrayHasKey('text_id', $userGift);
-        $this->assertArrayHasKey('text_options', $userGift);
-        $this->assertArrayHasKey('object_type', $userGift);
-        $this->assertArrayHasKey('object_id', $userGift);
+        $this->assertArrayHasKey('textId', $userGift);
+        $this->assertArrayHasKey('textOptions', $userGift);
+        $this->assertArrayHasKey('objectType', $userGift);
+        $this->assertArrayHasKey('objectId', $userGift);
         $this->assertArrayHasKey('count', $userGift);
-        $this->assertArrayHasKey('created_at', $userGift);
+        $this->assertArrayHasKey('createdAt', $userGift);
     }
 
     /**
@@ -62,10 +62,10 @@ class GiftControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'object_type' => 'item',
-                'object_id' => 100,
+                'objectType' => 'item',
+                'objectId' => 100,
                 'count' => 1,
-                'is_new' => true,
+                'isNew' => true,
             ]);
 
         $this->assertDatabaseHas('user_items', [
@@ -103,16 +103,16 @@ class GiftControllerTest extends TestCase
         $this->assertGreaterThan(1, count($json));
 
         $received = $json[0];
-        $this->assertEquals('item', $received['object_type']);
-        $this->assertEquals(100, $received['object_id']);
+        $this->assertEquals('item', $received['objectType']);
+        $this->assertEquals(100, $received['objectId']);
         $this->assertEquals(1, $received['count']);
-        $this->assertTrue($received['is_new']);
+        $this->assertTrue($received['isNew']);
 
         $received = $json[1];
-        $this->assertEquals('gameCoin', $received['object_type']);
-        $this->assertNull($received['object_id']);
+        $this->assertEquals('gameCoin', $received['objectType']);
+        $this->assertNull($received['objectId']);
         $this->assertEquals(10000, $received['count']);
-        $this->assertFalse($received['is_new']);
+        $this->assertFalse($received['isNew']);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

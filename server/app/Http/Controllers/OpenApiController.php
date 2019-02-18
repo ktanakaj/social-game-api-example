@@ -64,7 +64,7 @@ namespace App\Http\Controllers;
  *   schema="Pagination",
  *   type="object",
  *   @OA\Property(
- *     property="per_page",
+ *     property="perPage",
  *     description="1ページの取得件数",
  *     type="integer",
  *   ),
@@ -74,12 +74,12 @@ namespace App\Http\Controllers;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="current_page",
+ *     property="currentPage",
  *     description="現在ページ番号（先頭ページが1）",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="last_page",
+ *     property="lastPage",
  *     description="最終ページ番号",
  *     type="integer",
  *   ),
@@ -95,10 +95,10 @@ namespace App\Http\Controllers;
  *   ),
  *   required={
  *     "data",
- *     "per_page",
+ *     "perPage",
  *     "total",
- *     "current_page",
- *     "last_page",
+ *     "currentPage",
+ *     "lastPage",
  *     "from",
  *     "to",
  *   },

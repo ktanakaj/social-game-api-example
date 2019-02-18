@@ -8,7 +8,7 @@ use App\Models\Globals\UserGift;
 use App\Services\GiftService;
 
 /**
- * ユーザーギフトコントローラ。
+ * ギフトコントローラ。
  *
  * @OA\Tag(
  *   name="Gifts",
@@ -19,12 +19,12 @@ use App\Services\GiftService;
  *   schema="ReceivedObject",
  *   type="object",
  *   @OA\Property(
- *     property="object_type",
+ *     property="objectType",
  *     description="受け取ったものの種別",
  *     type="string",
  *   ),
  *   @OA\Property(
- *     property="object_id",
+ *     property="objectId",
  *     description="受け取ったもののID ※IDを持たない種別の場合null",
  *     type="number",
  *   ),
@@ -39,14 +39,14 @@ use App\Services\GiftService;
  *     type="number",
  *   ),
  *   @OA\Property(
- *     property="is_new",
+ *     property="isNew",
  *     description="初めて獲得したものか？",
  *     type="boolean",
  *   ),
  *   required={
- *     "object_type",
+ *     "objectType",
  *     "count",
- *     "is_new",
+ *     "isNew",
  *   },
  * )
  */
@@ -69,8 +69,8 @@ class GiftController extends Controller
     /**
      * @OA\Get(
      *   path="/gifts",
-     *   summary="ユーザーギフト一覧",
-     *   description="ユーザーのギフト一覧を取得する。",
+     *   summary="ギフト一覧",
+     *   description="認証中のユーザーのギフト一覧を取得する。",
      *   tags={
      *     "Gifts",
      *   },
@@ -125,8 +125,8 @@ class GiftController extends Controller
     /**
      * @OA\Post(
      *   path="/gifts/{userGiftId}/recv",
-     *   summary="ユーザーギフト受取",
-     *   description="ユーザーのギフトを受け取る。",
+     *   summary="ギフト受取",
+     *   description="認証中のユーザーのギフトを受け取る。",
      *   tags={
      *     "Gifts",
      *   },
@@ -170,8 +170,8 @@ class GiftController extends Controller
     /**
      * @OA\Post(
      *   path="/gifts/recv",
-     *   summary="全ユーザーギフト受取",
-     *   description="ユーザーの全ギフトを受け取る。",
+     *   summary="全ギフト受取",
+     *   description="認証中のユーザーの受け取り可能な全ギフトを受け取る。",
      *   tags={
      *     "Gifts",
      *   },

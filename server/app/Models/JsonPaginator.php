@@ -16,8 +16,8 @@ class JsonPaginator extends Paginator
     {
         // JSON APIでは不要なプロパティをカット&文字列が入りやすい項目をキャスト
         return [
-            'per_page' => intval($this->perPage()),
-            'current_page' => $this->currentPage(),
+            'perPage' => intval($this->perPage()),
+            'currentPage' => $this->currentPage(),
             'from' => $this->firstItem(),
             'to' => $this->lastItem(),
             'data' => $this->items->toArray(),

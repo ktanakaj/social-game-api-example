@@ -5,6 +5,7 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\CamelcaseJson;
 use App\Models\Virtual\ReceivedObject;
 
 /**
@@ -14,6 +15,8 @@ use App\Models\Virtual\ReceivedObject;
  */
 class UserCard extends Model
 {
+    use CamelcaseJson;
+
     /**
      * 複数代入する属性。
      * @var array

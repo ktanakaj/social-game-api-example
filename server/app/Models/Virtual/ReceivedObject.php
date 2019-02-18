@@ -41,7 +41,9 @@ class ReceivedObject implements \JsonSerializable
      */
     public function __construct(array $attributes = [])
     {
+        // キーがキャメルケースの場合、スネークケースに変換して処理する
         foreach ($attributes as $key => $value) {
+            $key = snake_case($key);
             if (property_exists($this, $key)) {
                 $this->{$key} = $value;
             }
@@ -54,6 +56,11 @@ class ReceivedObject implements \JsonSerializable
      */
     public function jsonSerialize() : array
     {
-        return (array)$this;
+        // キーをキャメルケースに変換して返す
+        $json = [];
+        foreach (get_object_vars($this) as $key => $value) {
+            $json[camel_case($key)] = $value;
+        }
+        return $json;
     }
 }

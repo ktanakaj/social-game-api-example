@@ -9,30 +9,30 @@ use App\Models\Globals\User;
 use App\Models\Globals\UserGift;
 
 /**
- * ユーザーギフトコントローラ。
+ * 管理画面ギフトコントローラ。
  *
  * @OA\Schema(
  *   schema="UserGiftBody",
  *   type="object",
  *   @OA\Property(
- *     property="text_id",
+ *     property="textId",
  *     description="ギフトテキストID",
  *     type="string",
  *     example="GIFT_MESSAGE_COVERING",
  *   ),
  *   @OA\Property(
- *     property="text_options",
+ *     property="textOptions",
  *     type="object",
  *     description="ギフトテキスト追加情報",
  *   ),
  *   @OA\Property(
- *     property="object_type",
+ *     property="objectType",
  *     description="ギフトオブジェクト種別",
  *     type="string",
  *     example="gameCoin"
  *   ),
  *   @OA\Property(
- *     property="object_id",
+ *     property="objectId",
  *     description="ギフトオブジェクトID",
  *     type="number",
  *   ),
@@ -43,8 +43,8 @@ use App\Models\Globals\UserGift;
  *     example=1,
  *   ),
  *   required={
- *     "text_id",
- *     "object_type",
+ *     "textId",
+ *     "objectType",
  *   },
  * )
  *
@@ -61,25 +61,25 @@ use App\Models\Globals\UserGift;
  *         type="number",
  *       ),
  *       @OA\Property(
- *         property="user_id",
+ *         property="userId",
  *         description="ユーザーID",
  *         type="number",
  *       ),
  *       @OA\Property(
- *         property="created_at",
+ *         property="createdAt",
  *         description="登録日時",
  *         type="integer",
  *       ),
  *       @OA\Property(
- *         property="deleted_at",
+ *         property="deletedAt",
  *         description="削除日時",
  *         type="integer",
  *       ),
  *       required={
  *         "id",
- *         "user_id",
- *         "created_at",
- *         "deleted_at",
+ *         "userId",
+ *         "createdAt",
+ *         "deletedAt",
  *       },
  *     ),
  *   },
@@ -90,7 +90,7 @@ class GiftController extends Controller
     /**
      * @OA\Get(
      *   path="/admin/users/{id}/gifts",
-     *   summary="ユーザーギフト一覧",
+     *   summary="ギフト一覧",
      *   description="ユーザーのギフト一覧を取得する。",
      *   tags={
      *     "Admin",
@@ -153,7 +153,7 @@ class GiftController extends Controller
     /**
      * @OA\Post(
      *   path="/admin/users/{id}/gifts",
-     *   summary="ユーザーギフト付与",
+     *   summary="ギフト付与",
      *   description="ユーザーにギフトを付与する。",
      *   tags={
      *     "Admin",
@@ -194,10 +194,10 @@ class GiftController extends Controller
     {
         // ※ 現状、object_typeやobject_idの有効性まではチェックしていない
         $request->validate([
-            'object_type' => 'required|max:32',
-            'object_id' => 'integer',
+            'objectType' => 'required|max:32',
+            'objectId' => 'integer',
             'count' => 'integer|min:1',
-            'text_id' => 'required|exists:master.texts,id',
+            'textId' => 'required|exists:master.texts,id',
         ]);
         return $user->gifts()->create($request->input());
     }

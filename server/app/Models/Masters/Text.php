@@ -2,6 +2,8 @@
 
 namespace App\Models\Masters;
 
+use App\Models\CamelcaseJson;
+
 /**
  * テキストマスタモデル。
  * ユーザーが見るメッセージはこのマスタで一元管理する。
@@ -9,4 +11,5 @@ namespace App\Models\Masters;
  */
 class Text extends MasterModel
 {
+    use CamelcaseJson;
 }

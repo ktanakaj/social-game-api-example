@@ -10,7 +10,7 @@ use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
 
 /**
- * ユーザーコントローラ。
+ * 管理画面ユーザーコントローラ。
  *
  * @OA\Schema(
  *   schema="User",
@@ -26,17 +26,17 @@ use App\Models\Globals\User;
  *     type="string",
  *   ),
  *   @OA\Property(
- *     property="game_coins",
+ *     property="gameCoins",
  *     description="ゲームコイン",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="special_coins",
+ *     property="specialCoins",
  *     description="課金コイン",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="free_special_coins",
+ *     property="freeSpecialCoins",
  *     description="無償課金コイン",
  *     type="integer",
  *   ),
@@ -51,35 +51,35 @@ use App\Models\Globals\User;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="stamina_updated_at",
- *     description="スタミナ最終更新日時",
- *     type="integer",
- *   ),
- *   @OA\Property(
- *     property="last_login",
+ *     property="lastLogin",
  *     description="最終ログイン日時",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="created_at",
+ *     property="createdAt",
  *     description="登録日時",
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="updated_at",
+ *     property="updatedAt",
  *     description="更新日時",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="deletedAt",
+ *     description="削除日時",
  *     type="integer",
  *   ),
  *   required={
  *     "id",
  *     "name",
- *     "game_coins",
- *     "special_coins",
- *     "free_special_coins",
+ *     "gameCoins",
+ *     "specialCoins",
+ *     "freeSpecialCoins",
  *     "exp",
  *     "stamina",
- *     "created_at",
- *     "updated_at",
+ *     "createdAt",
+ *     "updatedAt",
  *   },
  * )
  */
@@ -144,8 +144,8 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *   path="/admin/users/{id}",
-     *   summary="ユーザー詳細",
-     *   description="ユーザーの詳細情報を取得する。",
+     *   summary="ユーザー情報",
+     *   description="ユーザーの情報を取得する。",
      *   tags={
      *     "Admin",
      *   },

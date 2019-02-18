@@ -19,29 +19,29 @@ class UserControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'per_page' => 100,
-                'current_page' => 1,
+                'perPage' => 100,
+                'currentPage' => 1,
                 'from' => 1,
             ]);
 
         $json = $response->json();
         $this->assertGreaterThan(0, $json['total']);
-        $this->assertGreaterThan(0, $json['last_page']);
+        $this->assertGreaterThan(0, $json['lastPage']);
         $this->assertGreaterThan(0, $json['to']);
         $this->assertGreaterThan(0, count($json['data']));
 
         $user = $json['data'][0];
         $this->assertArrayHasKey('id', $user);
         $this->assertArrayHasKey('name', $user);
-        $this->assertArrayHasKey('game_coins', $user);
-        $this->assertArrayHasKey('special_coins', $user);
-        $this->assertArrayHasKey('free_special_coins', $user);
+        $this->assertArrayHasKey('gameCoins', $user);
+        $this->assertArrayHasKey('specialCoins', $user);
+        $this->assertArrayHasKey('freeSpecialCoins', $user);
         $this->assertArrayHasKey('exp', $user);
         $this->assertArrayHasKey('stamina', $user);
-        $this->assertArrayHasKey('stamina_updated_at', $user);
-        $this->assertArrayHasKey('last_login', $user);
-        $this->assertArrayHasKey('created_at', $user);
-        $this->assertArrayHasKey('updated_at', $user);
+        $this->assertArrayHasKey('lastLogin', $user);
+        $this->assertArrayHasKey('createdAt', $user);
+        $this->assertArrayHasKey('updatedAt', $user);
         $this->assertArrayNotHasKey('token', $user);
+        $this->assertArrayNotHasKey('staminaUpdatedAt', $user);
     }
 }

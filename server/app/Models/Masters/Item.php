@@ -2,6 +2,8 @@
 
 namespace App\Models\Masters;
 
+use App\Models\CamelcaseJson;
+
 /**
  * アイテムマスタを表すモデル。
  *
@@ -14,6 +16,8 @@ namespace App\Models\Masters;
  */
 class Item extends MasterModel
 {
+    use CamelcaseJson;
+
     /** アイテム種別: 消費アイテム */
     const ITEM_TYPE_USABLE = 'usable';
     /** アイテム種別: 素材アイテム */

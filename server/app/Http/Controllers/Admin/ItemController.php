@@ -3,27 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
 use App\Models\Globals\UserItem;
 
 /**
- * ユーザーアイテムコントローラ。
+ * 管理画面アイテムコントローラ。
  *
  * @OA\Schema(
- *   schema="UserItem",
+ *   schema="UserItemBody",
  *   type="object",
  *   @OA\Property(
- *     property="id",
- *     description="ユーザーアイテムID",
- *     type="number",
- *   ),
- *   @OA\Property(
- *     property="user_id",
- *     description="ユーザーID",
- *     type="number",
- *   ),
- *   @OA\Property(
- *     property="item_id",
+ *     property="itemId",
  *     description="アイテムID",
  *     type="number",
  *   ),
@@ -32,23 +23,46 @@ use App\Models\Globals\UserItem;
  *     description="所持数",
  *     type="number",
  *   ),
- *   @OA\Property(
- *     property="created_at",
- *     description="登録日時",
- *     type="integer",
- *   ),
- *   @OA\Property(
- *     property="updated_at",
- *     description="更新日時",
- *     type="integer",
- *   ),
  *   required={
- *     "id",
- *     "user_id",
- *     "item_id",
+ *     "itemId",
  *     "count",
- *     "created_at",
- *     "updated_at",
+ *   },
+ * )
+ *
+ * @OA\Schema(
+ *   schema="UserItem",
+ *   type="object",
+ *   allOf={
+ *     @OA\Schema(ref="#components/schemas/UserItemBody"),
+ *     @OA\Schema(
+ *       type="object",
+ *       @OA\Property(
+ *         property="id",
+ *         description="ユーザーアイテムID",
+ *         type="number",
+ *       ),
+ *       @OA\Property(
+ *         property="userId",
+ *         description="ユーザーID",
+ *         type="number",
+ *       ),
+ *       @OA\Property(
+ *         property="createdAt",
+ *         description="登録日時",
+ *         type="integer",
+ *       ),
+ *       @OA\Property(
+ *         property="updatedAt",
+ *         description="更新日時",
+ *         type="integer",
+ *       ),
+ *       required={
+ *         "id",
+ *         "userId",
+ *         "createdAt",
+ *         "updatedAt",
+ *       },
+ *     ),
  *   },
  * )
  */
@@ -57,7 +71,7 @@ class ItemController extends Controller
     /**
      * @OA\Get(
      *   path="/admin/users/{id}/items",
-     *   summary="ユーザーアイテム一覧",
+     *   summary="アイテム一覧",
      *   description="ユーザーのアイテム一覧を取得する。",
      *   tags={
      *     "Admin",
@@ -71,6 +85,24 @@ class ItemController extends Controller
      *     description="ユーザーID",
      *     required=true,
      *     @OA\Schema(type="integer"),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="page",
+     *     description="ページ番号（先頭ページが1）",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=1,
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="max",
+     *     description="1ページ辺りの取得件数",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=20,
+     *     ),
      *   ),
      *   @OA\Response(
      *     response=200,
@@ -93,8 +125,9 @@ class ItemController extends Controller
      *   ),
      * )
      */
-    public function index(User $user)
+    public function index(PagingRequest $request, User $user)
     {
-        return $user->items()->paginate(20);
+        // ※ pageはpaginate内部で勝手に参照される模様
+        return $user->items()->paginate($request->input('max', 20));
     }
 }

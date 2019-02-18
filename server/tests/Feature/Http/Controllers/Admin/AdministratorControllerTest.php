@@ -22,9 +22,9 @@ class AdministratorControllerTest extends TestCase
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);
         $this->assertArrayHasKey('note', $json);
-        $this->assertArrayHasKey('created_at', $json);
-        $this->assertArrayHasKey('updated_at', $json);
-        $this->assertArrayHasKey('deleted_at', $json);
+        $this->assertArrayHasKey('createdAt', $json);
+        $this->assertArrayHasKey('updatedAt', $json);
+        $this->assertArrayHasKey('deletedAt', $json);
         $this->assertArrayNotHasKey('password', $json);
     }
 }

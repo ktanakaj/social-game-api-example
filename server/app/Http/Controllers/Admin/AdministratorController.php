@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
 /**
- * 管理者管理画面コントローラ。
+ * 管理画面管理者コントローラ。
  *
  * @OA\Tag(
  *   name="Admin",
@@ -50,24 +50,24 @@ use App\Http\Controllers\Controller;
  *         type="integer",
  *       ),
  *       @OA\Property(
- *         property="created_at",
+ *         property="createdAt",
  *         description="登録日時",
  *         type="integer",
  *       ),
  *       @OA\Property(
- *         property="updated_at",
+ *         property="updatedAt",
  *         description="更新日時",
  *         type="integer",
  *       ),
  *       @OA\Property(
- *         property="deleted_at",
+ *         property="deletedAt",
  *         description="削除日時",
  *         type="integer",
  *       ),
  *       required={
  *         "id",
- *         "created_at",
- *         "updated_at",
+ *         "createdAt",
+ *         "updatedAt",
  *       },
  *     )
  *   }

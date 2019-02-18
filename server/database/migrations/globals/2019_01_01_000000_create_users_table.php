@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->dateTime('stamina_updated_at')->nullable();
             $table->dateTime('last_login')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('name', 'id');
             $table->index('last_login');

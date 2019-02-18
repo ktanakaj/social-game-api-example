@@ -70,8 +70,8 @@ class UserController extends Controller
     /**
      * @OA\Get(
      *   path="/users/me",
-     *   summary="認証中ユーザー情報",
-     *   description="認証中のユーザーの詳細情報を取得する。",
+     *   summary="ユーザー情報",
+     *   description="認証中のユーザーの情報を取得する。",
      *   tags={
      *     "Users",
      *   },

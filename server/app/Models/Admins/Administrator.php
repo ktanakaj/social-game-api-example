@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Exceptions\BadRequestException;
+use App\Models\CamelcaseJson;
 
 /**
  * 管理者モデル。
  */
 class Administrator extends Authenticatable
 {
-    use SoftDeletes;
+    use SoftDeletes, CamelcaseJson;
 
     /**
      * モデルで使用するコネクション名。

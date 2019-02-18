@@ -20,8 +20,8 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('id', $json);
         $this->assertArrayHasKey('name', $json);
         $this->assertEquals('(noname)', $json['name']);
-        $this->assertArrayHasKey('created_at', $json);
-        $this->assertArrayHasKey('updated_at', $json);
+        $this->assertArrayHasKey('createdAt', $json);
+        $this->assertArrayHasKey('updatedAt', $json);
         $this->assertArrayNotHasKey('token', $json);
         $this->assertAuthenticated();
 
@@ -40,8 +40,8 @@ class UserControllerTest extends TestCase
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);
         $this->assertArrayHasKey('name', $json);
-        $this->assertArrayHasKey('created_at', $json);
-        $this->assertArrayHasKey('updated_at', $json);
+        $this->assertArrayHasKey('createdAt', $json);
+        $this->assertArrayHasKey('updatedAt', $json);
         $this->assertArrayNotHasKey('token', $json);
     }
 }

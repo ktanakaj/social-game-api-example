@@ -23,22 +23,22 @@ class ItemControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'per_page' => 20,
-                'current_page' => 1,
+                'perPage' => 20,
+                'currentPage' => 1,
                 'from' => 1,
             ]);
 
         $json = $response->json();
         $this->assertGreaterThan(0, $json['total']);
-        $this->assertGreaterThan(0, $json['last_page']);
+        $this->assertGreaterThan(0, $json['lastPage']);
         $this->assertGreaterThan(0, $json['to']);
         $this->assertGreaterThan(0, count($json['data']));
 
         $userItem = $json['data'][0];
         $this->assertArrayHasKey('id', $userItem);
-        $this->assertArrayHasKey('item_id', $userItem);
+        $this->assertArrayHasKey('itemId', $userItem);
         $this->assertArrayHasKey('count', $userItem);
-        $this->assertArrayHasKey('created_at', $userItem);
-        $this->assertArrayHasKey('updated_at', $userItem);
+        $this->assertArrayHasKey('createdAt', $userItem);
+        $this->assertArrayHasKey('updatedAt', $userItem);
     }
 }

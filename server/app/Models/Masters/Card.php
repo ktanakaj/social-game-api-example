@@ -2,6 +2,8 @@
 
 namespace App\Models\Masters;
 
+use App\Models\CamelcaseJson;
+
 /**
  * カードのマスタを表すモデル。
  *
@@ -16,6 +18,8 @@ namespace App\Models\Masters;
  */
 class Card extends MasterModel
 {
+    use CamelcaseJson;
+
     /**
      * ネイティブなタイプへキャストする属性。
      * @var array

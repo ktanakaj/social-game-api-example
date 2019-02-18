@@ -24,25 +24,25 @@ class GiftControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'per_page' => 20,
-                'current_page' => 1,
+                'perPage' => 20,
+                'currentPage' => 1,
                 'from' => 1,
             ]);
 
         $json = $response->json();
         $this->assertGreaterThan(0, $json['total']);
-        $this->assertGreaterThan(0, $json['last_page']);
+        $this->assertGreaterThan(0, $json['lastPage']);
         $this->assertGreaterThan(0, $json['to']);
         $this->assertGreaterThan(0, count($json['data']));
 
         $userGift = $json['data'][0];
         $this->assertArrayHasKey('id', $userGift);
-        $this->assertArrayHasKey('text_id', $userGift);
-        $this->assertArrayHasKey('text_options', $userGift);
-        $this->assertArrayHasKey('object_type', $userGift);
-        $this->assertArrayHasKey('object_id', $userGift);
+        $this->assertArrayHasKey('textId', $userGift);
+        $this->assertArrayHasKey('textOptions', $userGift);
+        $this->assertArrayHasKey('objectType', $userGift);
+        $this->assertArrayHasKey('objectId', $userGift);
         $this->assertArrayHasKey('count', $userGift);
-        $this->assertArrayHasKey('created_at', $userGift);
+        $this->assertArrayHasKey('createdAt', $userGift);
     }
 
     /**
@@ -53,9 +53,9 @@ class GiftControllerTest extends TestCase
         // ユーザーを作成、ギフトを付与
         $user = $this->createTestUser();
         $body = [
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
+            'textId' => 'GIFT_MESSAGE_COVERING',
+            'objectType' => 'item',
+            'objectId' => 100,
         ];
         $response = $this->withAdminLogin()->json('POST', "/admin/users/{$user->id}/gifts", $body);
         $response
@@ -64,11 +64,14 @@ class GiftControllerTest extends TestCase
 
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);
-        $this->assertArrayHasKey('created_at', $json);
+        $this->assertArrayHasKey('createdAt', $json);
 
         $this->assertDatabaseHas('user_gifts', [
             'id' => $json['id'],
             'user_id' => $user->id,
-        ] + $body);
+            'text_id' => 'GIFT_MESSAGE_COVERING',
+            'object_type' => 'item',
+            'object_id' => 100,
+        ]);
     }
 }

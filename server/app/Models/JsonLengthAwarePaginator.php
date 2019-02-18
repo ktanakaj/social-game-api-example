@@ -16,10 +16,10 @@ class JsonLengthAwarePaginator extends LengthAwarePaginator
     {
         // JSON APIでは不要なプロパティをカット&文字列が入りやすい項目をキャスト
         return [
-            'per_page' => intval($this->perPage()),
+            'perPage' => intval($this->perPage()),
             'total' => $this->total(),
-            'current_page' => $this->currentPage(),
-            'last_page' => $this->lastPage(),
+            'currentPage' => $this->currentPage(),
+            'lastPage' => $this->lastPage(),
             'from' => $this->firstItem(),
             'to' => $this->lastItem(),
             'data' => $this->items->toArray(),

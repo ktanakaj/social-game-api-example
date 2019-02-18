@@ -3,7 +3,9 @@
 namespace App\Models\Globals;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\CamelcaseJson;
 use App\Models\Virtual\ReceivedObject;
 
 /**
@@ -11,6 +13,8 @@ use App\Models\Virtual\ReceivedObject;
  */
 class User extends Authenticatable
 {
+    use SoftDeletes, CamelcaseJson;
+
     /**
      * 複数代入可能なプロパティ。
      * @var array
@@ -25,6 +29,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'token',
+        'stamina_updated_at',
     ];
 
     /**
@@ -34,6 +39,7 @@ class User extends Authenticatable
     protected $dates = [
         'stamina_updated_at',
         'last_login',
+        'deleted_at',
     ];
 
     /**
@@ -50,6 +56,7 @@ class User extends Authenticatable
         'last_login' => 'timestamp',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
+        'deleted_at' => 'timestamp',
     ];
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\CamelcaseJson;
 use App\Models\Virtual\ReceivedObject;
 
 /**
@@ -17,7 +18,7 @@ use App\Models\Virtual\ReceivedObject;
  */
 class UserGift extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, CamelcaseJson;
 
     /**
      * プレゼントを受け取る処理。
