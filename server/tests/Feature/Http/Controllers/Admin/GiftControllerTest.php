@@ -7,7 +7,7 @@ use Tests\TestCase;
 class GiftControllerTest extends TestCase
 {
     /**
-     * ユーザーギフト一覧のテスト。
+     * ギフト一覧のテスト。
      */
     public function testIndex() : void
     {
@@ -46,7 +46,7 @@ class GiftControllerTest extends TestCase
     }
 
     /**
-     * ユーザーギフト付与のテスト。
+     * ギフト付与のテスト。
      */
     public function testStore() : void
     {
@@ -72,6 +72,40 @@ class GiftControllerTest extends TestCase
             'text_id' => 'GIFT_MESSAGE_COVERING',
             'object_type' => 'item',
             'object_id' => 100,
+        ]);
+    }
+
+    /**
+     * ギフト削除のテスト。
+     */
+    public function testDestroy() : void
+    {
+        // 一人ユーザーを作成、ギフトを付与
+        $user = $this->createTestUser();
+        $userGift = $user->gifts()->create([
+            'text_id' => 'GIFT_MESSAGE_COVERING',
+            'object_type' => 'item',
+            'object_id' => 100,
+        ]);
+
+        // ギフトを削除
+        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/gifts/{$userGift->id}");
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'id' => $userGift->id,
+                'textId' => $userGift->text_id,
+                'objectType' => $userGift->object_type,
+                'objectId' => $userGift->object_id,
+                'count' => 1,
+            ]);
+
+        $json = $response->json();
+        $this->assertArrayHasKey('createdAt', $json);
+        $this->assertArrayHasKey('deletedAt', $json);
+
+        $this->assertSoftDeleted('user_gifts', [
+            'id' => $userGift->id,
         ]);
     }
 }

@@ -35,9 +35,9 @@ class MasterController extends Controller
      */
     public function index()
     {
-        return array_map(function ($classname) {
+        return MasterModel::getMasterModels()->map(function ($classname) {
             return (new \ReflectionClass($classname))->getShortName();
-        }, MasterModel::getMasterModels());
+        });
     }
 
     /**

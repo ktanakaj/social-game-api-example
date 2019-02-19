@@ -7,34 +7,36 @@ use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
-use App\Models\Globals\UserItem;
+use App\Models\Globals\UserCard;
 
 /**
- * 管理画面アイテムコントローラ。
+ * 管理画面カードコントローラ。
  *
  * @OA\Schema(
- *   schema="UserItemBody",
+ *   schema="UserCardBody",
  *   type="object",
  *   @OA\Property(
  *     property="count",
- *     description="所持数",
+ *     description="同カード重ね合わせ枚数",
  *     type="integer",
  *   ),
- *   required={
- *     "count",
- *   },
+ *   @OA\Property(
+ *     property="exp",
+ *     description="カード経験値",
+ *     type="integer",
+ *   ),
  * )
  *
  * @OA\Schema(
- *   schema="UserItem",
+ *   schema="UserCard",
  *   type="object",
  *   allOf={
- *     @OA\Schema(ref="#components/schemas/UserItemBody"),
+ *     @OA\Schema(ref="#components/schemas/UserCardBody"),
  *     @OA\Schema(
  *       type="object",
  *       @OA\Property(
  *         property="id",
- *         description="ユーザーアイテムID",
+ *         description="ユーザーカードID",
  *         type="integer",
  *       ),
  *       @OA\Property(
@@ -43,8 +45,8 @@ use App\Models\Globals\UserItem;
  *         type="integer",
  *       ),
  *       @OA\Property(
- *         property="itemId",
- *         description="アイテムID",
+ *         property="cardId",
+ *         description="カードID",
  *         type="integer",
  *       ),
  *       @OA\Property(
@@ -57,10 +59,15 @@ use App\Models\Globals\UserItem;
  *         description="更新日時",
  *         type="integer",
  *       ),
+ *       @OA\Property(
+ *         property="deletedAt",
+ *         description="削除日時",
+ *         type="integer",
+ *       ),
  *       required={
  *         "id",
  *         "userId",
- *         "itemId",
+ *         "cardId",
  *         "createdAt",
  *         "updatedAt",
  *       },
@@ -68,13 +75,13 @@ use App\Models\Globals\UserItem;
  *   },
  * )
  */
-class ItemController extends Controller
+class CardController extends Controller
 {
     /**
      * @OA\Get(
-     *   path="/admin/users/{id}/items",
-     *   summary="アイテム一覧",
-     *   description="ユーザーのアイテム一覧を取得する。",
+     *   path="/admin/users/{id}/cards",
+     *   summary="カード一覧",
+     *   description="ユーザーのカード一覧を取得する。",
      *   tags={
      *     "Admin",
      *   },
@@ -108,7 +115,7 @@ class ItemController extends Controller
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="アイテム一覧",
+     *     description="カード一覧",
      *     @OA\JsonContent(
      *       type="object",
      *       allOf={
@@ -117,9 +124,9 @@ class ItemController extends Controller
      *           type="object",
      *           @OA\Property(
      *             property="data",
-     *             description="アイテム配列",
+     *             description="カード配列",
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/UserItem")
+     *             @OA\Items(ref="#/components/schemas/UserCard")
      *           ),
      *         ),
      *       }
@@ -135,14 +142,14 @@ class ItemController extends Controller
     public function index(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->items()->notEmpty()->paginate($request->input('max', 20));
+        return $user->cards()->paginate($request->input('max', 20));
     }
 
     /**
      * @OA\Post(
-     *   path="/admin/users/{id}/items",
-     *   summary="アイテム付与",
-     *   description="ユーザーにアイテムを付与または更新する。",
+     *   path="/admin/users/{id}/cards",
+     *   summary="カード付与",
+     *   description="ユーザーにカードを付与する。",
      *   tags={
      *     "Admin",
      *   },
@@ -157,21 +164,21 @@ class ItemController extends Controller
      *     @OA\Schema(type="integer"),
      *   ),
      *   @OA\RequestBody(
-     *     description="アイテム情報",
+     *     description="カード情報",
      *     required=true,
      *     @OA\JsonContent(
      *       type="object",
      *       allOf={
-     *         @OA\Schema(ref="#components/schemas/UserItemBody"),
+     *         @OA\Schema(ref="#components/schemas/UserCardBody"),
      *         @OA\Schema(
      *           type="object",
      *           @OA\Property(
-     *             property="itemId",
-     *             description="アイテムID",
+     *             property="cardId",
+     *             description="カードID",
      *             type="integer",
      *           ),
      *           required={
-     *             "itemId",
+     *             "cardId",
      *           },
      *         ),
      *       }
@@ -179,8 +186,8 @@ class ItemController extends Controller
      *   ),
      *   @OA\Response(
      *     response=201,
-     *     description="付与/更新したアイテム情報",
-     *     @OA\JsonContent(ref="#/components/schemas/UserItem"),
+     *     description="付与したカード情報",
+     *     @OA\JsonContent(ref="#/components/schemas/UserCard"),
      *   ),
      *   @OA\Response(
      *     response=400,
@@ -207,20 +214,18 @@ class ItemController extends Controller
     public function store(Request $request, User $user)
     {
         $request->validate([
-            'itemId' => 'integer|exists:master.items,id',
+            'cardId' => 'integer|exists:master.cards,id',
             'count' => 'integer|min:1',
+            'exp' => 'integer|min:0',
         ]);
-        return $user->items()->updateOrCreate(
-            ['item_id' => $request->input('itemId')],
-            ['count' => $request->input('count')]
-        );
+        return $user->cards()->create($request->input());
     }
 
     /**
      * @OA\Put(
-     *   path="/admin/users/{id}/items/{userItemId}",
-     *   summary="アイテム更新",
-     *   description="ユーザーのアイテムの情報を更新する。",
+     *   path="/admin/users/{id}/cards/{userCardId}",
+     *   summary="カード更新",
+     *   description="ユーザーのカードの情報を更新する。",
      *   tags={
      *     "Admin",
      *   },
@@ -236,20 +241,20 @@ class ItemController extends Controller
      *   ),
      *   @OA\Parameter(
      *     in="path",
-     *     name="userItemId",
-     *     description="ユーザーアイテムID",
+     *     name="userCardId",
+     *     description="ユーザーカードID",
      *     required=true,
      *     @OA\Schema(type="integer"),
      *   ),
      *   @OA\RequestBody(
-     *     description="アイテム情報",
+     *     description="カード情報",
      *     required=true,
-     *     @OA\JsonContent(ref="#components/schemas/UserItemBody"),
+     *     @OA\JsonContent(ref="#components/schemas/UserCardBody"),
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="更新されたアイテム情報",
-     *     @OA\JsonContent(ref="#/components/schemas/UserItem"),
+     *     description="更新されたカード情報",
+     *     @OA\JsonContent(ref="#/components/schemas/UserCard"),
      *   ),
      *   @OA\Response(
      *     response=401,
@@ -268,25 +273,26 @@ class ItemController extends Controller
      *   ),
      * )
      */
-    public function update(Request $request, int $userId, UserItem $userItem)
+    public function update(Request $request, int $userId, UserCard $userCard)
     {
-        // 一応ユーザーIDとアイテムのIDが一致しているかチェック
-        if ($userItem->user_id !== $userId) {
-            throw new NotFoundException('The user item is not belong to this user');
+        // 一応ユーザーIDとカードのIDが一致しているかチェック
+        if ($userCard->user_id !== $userId) {
+            throw new NotFoundException('The user card is not belong to this user');
         }
         $request->validate([
             'count' => 'integer|min:1',
+            'exp' => 'integer|min:0',
         ]);
-        $userItem->fill($request->input());
-        $userItem->save();
-        return $userItem;
+        $userCard->fill($request->input());
+        $userCard->save();
+        return $userCard;
     }
 
     /**
      * @OA\Delete(
-     *   path="/admin/users/{usreId}/items/{userItemId}",
-     *   summary="アイテム削除",
-     *   description="ユーザーのアイテムを削除する。",
+     *   path="/admin/users/{usreId}/cards/{userCardId}",
+     *   summary="カード削除",
+     *   description="ユーザーのカードを削除する。",
      *   tags={
      *     "Admin",
      *   },
@@ -302,15 +308,15 @@ class ItemController extends Controller
      *   ),
      *   @OA\Parameter(
      *     in="path",
-     *     name="userItemId",
-     *     description="ユーザーアイテムID",
+     *     name="userCardId",
+     *     description="ユーザーカードID",
      *     required=true,
      *     @OA\Schema(type="integer"),
      *   ),
      *   @OA\Response(
      *     response=200,
-     *     description="削除されたアイテム情報",
-     *     @OA\JsonContent(ref="#components/schemas/UserItem"),
+     *     description="削除されたカード情報",
+     *     @OA\JsonContent(ref="#components/schemas/UserCard"),
      *   ),
      *   @OA\Response(
      *     response=401,
@@ -329,15 +335,13 @@ class ItemController extends Controller
      *   ),
      * )
      */
-    public function destroy(int $userId, UserItem $userItem)
+    public function destroy(int $userId, UserCard $userCard)
     {
-        // 一応ユーザーIDとアイテムのIDが一致しているかチェック
-        if ($userItem->user_id !== $userId) {
-            throw new NotFoundException('The user item is not belong to this user');
+        // 一応ユーザーIDとカードのIDが一致しているかチェック
+        if ($userCard->user_id !== $userId) {
+            throw new NotFoundException('The user card is not belong to this user');
         }
-        // レコードは消さず、所持数0にして更新
-        $userItem->count = 0;
-        $userItem->save();
-        return $userItem;
+        $userCard->delete();
+        return $userCard;
     }
 }

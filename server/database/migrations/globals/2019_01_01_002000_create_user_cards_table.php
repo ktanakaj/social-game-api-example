@@ -12,7 +12,7 @@ class CreateUserCardsTable extends Migration
     public function up() : void
     {
         Schema::create('user_cards', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('card_id');
             $table->unsignedTinyInteger('count');

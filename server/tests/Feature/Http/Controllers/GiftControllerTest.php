@@ -8,7 +8,7 @@ use App\Models\Globals\UserGift;
 class GiftControllerTest extends TestCase
 {
     /**
-     * ユーザーギフト一覧のテスト。
+     * ギフト一覧のテスト。
      */
     public function testIndex() : void
     {
@@ -47,7 +47,7 @@ class GiftControllerTest extends TestCase
     }
 
     /**
-     * ユーザーギフト受取のテスト。
+     * ギフト受取のテスト。
      */
     public function testReceive() : void
     {
@@ -79,7 +79,7 @@ class GiftControllerTest extends TestCase
     }
 
     /**
-     * 全ユーザーギフト受取のテスト。
+     * 全ギフト受取のテスト。
      */
     public function testReceiveAll() : void
     {

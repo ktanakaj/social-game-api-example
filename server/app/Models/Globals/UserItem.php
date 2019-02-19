@@ -56,8 +56,16 @@ class UserItem extends Model
 
         // アイテム全般でデフォルトのソート順を設定
         static::addGlobalScope('sortUsreAndItem', function (Builder $builder) {
-            return $builder->orderBy('user_id', 'asc')->orderBy('item_id', 'asc')->orderBy('id', 'asc');
+            return $builder->orderBy('user_id', 'asc')->orderBy('item_id', 'asc');
         });
+    }
+
+    /**
+     * 0個を除外するクエリスコープ。
+     */
+    public function scopeNotEmpty(Builder $query) : Builder
+    {
+        return $query->where('count', '>', 0);
     }
 
     /**

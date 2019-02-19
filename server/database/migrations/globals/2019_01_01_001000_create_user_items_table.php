@@ -12,7 +12,7 @@ class CreateUserItemsTable extends Migration
     public function up() : void
     {
         Schema::create('user_items', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('item_id');
             $table->unsignedInteger('count');

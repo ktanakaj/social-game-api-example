@@ -25,7 +25,16 @@ class UserControllerTest extends TestCase
         $this->assertArrayNotHasKey('token', $json);
         $this->assertAuthenticated();
 
-        // TODO: DBもチェックする
+        $this->assertDatabaseHas('users', [
+            'id' => $json['id'],
+            'name' => $json['name'],
+        ]);
+
+        // 登録したトークンで認証できること
+        $this->assertCredentials([
+            'id' => $json['id'],
+            'password' => 'TEST_STORE_TOKEN',
+        ]);
     }
 
     /**

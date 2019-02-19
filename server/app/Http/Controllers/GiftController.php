@@ -26,17 +26,17 @@ use App\Services\GiftService;
  *   @OA\Property(
  *     property="objectId",
  *     description="受け取ったもののID ※IDを持たない種別の場合null",
- *     type="number",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="count",
  *     description="受け取った件数",
- *     type="number",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="total",
  *     description="受け取った後の件数",
- *     type="number",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="isNew",
@@ -114,6 +114,11 @@ class GiftController extends Controller
      *       }
      *     ),
      *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
      * )
      */
     public function index(PagingRequest $request)
@@ -157,7 +162,7 @@ class GiftController extends Controller
      *   ),
      *   @OA\Response(
      *     response=404,
-     *     description="ギフトが存在しない",
+     *     description="未存在",
      *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )

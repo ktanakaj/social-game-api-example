@@ -21,6 +21,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'game_coins',
+        'special_coins',
+        'free_special_coins',
+        'exp',
+        'stamina',
     ];
 
     /**
@@ -118,6 +123,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Globals\UserGift');
     }
+
+    // TODO: staminaをミューテタにして、時間経過で回復するようにする
 
     /**
      * ゲームコインのプレゼントを受け取る。

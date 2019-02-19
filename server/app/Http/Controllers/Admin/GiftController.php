@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
@@ -34,12 +35,12 @@ use App\Models\Globals\UserGift;
  *   @OA\Property(
  *     property="objectId",
  *     description="ギフトオブジェクトID",
- *     type="number",
+ *     type="integer",
  *   ),
  *   @OA\Property(
  *     property="count",
  *     description="個数",
- *     type="number",
+ *     type="integer",
  *     example=1,
  *   ),
  *   required={
@@ -58,12 +59,12 @@ use App\Models\Globals\UserGift;
  *       @OA\Property(
  *         property="id",
  *         description="ユーザーギフトID",
- *         type="number",
+ *         type="integer",
  *       ),
  *       @OA\Property(
  *         property="userId",
  *         description="ユーザーID",
- *         type="number",
+ *         type="integer",
  *       ),
  *       @OA\Property(
  *         property="createdAt",
@@ -142,6 +143,11 @@ class GiftController extends Controller
      *       }
      *     ),
      *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
      * )
      */
     public function index(PagingRequest $request, User $user)
@@ -169,13 +175,13 @@ class GiftController extends Controller
      *     @OA\Schema(type="integer"),
      *   ),
      *   @OA\RequestBody(
-     *     description="パラメータ",
+     *     description="ギフト情報",
      *     required=true,
      *     @OA\JsonContent(ref="#/components/schemas/UserGiftBody"),
      *   ),
      *   @OA\Response(
      *     response=201,
-     *     description="付与したギフト",
+     *     description="付与したギフト情報",
      *     @OA\JsonContent(ref="#/components/schemas/UserGift"),
      *   ),
      *   @OA\Response(
@@ -184,8 +190,18 @@ class GiftController extends Controller
      *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      *   @OA\Response(
+     *     response=401,
+     *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     *   @OA\Response(
+     *     response=403,
+     *     description="権限無し",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     *   @OA\Response(
      *     response=404,
-     *     description="ユーザー取得失敗",
+     *     description="未存在",
      *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      * )
@@ -200,5 +216,62 @@ class GiftController extends Controller
             'textId' => 'required|exists:master.texts,id',
         ]);
         return $user->gifts()->create($request->input());
+    }
+
+    /**
+     * @OA\Delete(
+     *   path="/admin/users/{usreId}/gifts/{userGiftId}",
+     *   summary="ギフト削除",
+     *   description="ユーザーのギフトを削除する。",
+     *   tags={
+     *     "Admin",
+     *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
+     *   @OA\Parameter(
+     *     in="path",
+     *     name="usreId",
+     *     description="ユーザーID",
+     *     required=true,
+     *     @OA\Schema(type="integer"),
+     *   ),
+     *   @OA\Parameter(
+     *     in="path",
+     *     name="userGiftId",
+     *     description="ユーザーギフトID",
+     *     required=true,
+     *     @OA\Schema(type="integer"),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="削除されたギフト情報",
+     *     @OA\JsonContent(ref="#components/schemas/UserGift"),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     *   @OA\Response(
+     *     response=403,
+     *     description="権限無し",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     description="未存在",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     * )
+     */
+    public function destroy(int $userId, UserGift $userGift)
+    {
+        // 一応ユーザーIDとギフトのIDが一致しているかチェック
+        if ($userGift->user_id !== $userId) {
+            throw new NotFoundException('The user gift is not belong to this user');
+        }
+        $userGift->delete();
+        return $userGift;
     }
 }

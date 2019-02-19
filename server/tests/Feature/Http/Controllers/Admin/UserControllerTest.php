@@ -44,4 +44,39 @@ class UserControllerTest extends TestCase
         $this->assertArrayNotHasKey('token', $user);
         $this->assertArrayNotHasKey('staminaUpdatedAt', $user);
     }
+
+    /**
+     * ユーザー更新のテスト。
+     */
+    public function testUpdate() : void
+    {
+        $user = $this->createTestUser();
+        $body = [
+            'name' => 'updated by testUpdate()',
+            'gameCoins' => 100000,
+            'specialCoins' => 100,
+            'freeSpecialCoins' => 1000,
+            'exp' => 10000,
+            'stamina' => 150,
+        ];
+        $response = $this->withAdminLogin()->json('PUT', "/admin/users/{$user->id}", $body);
+        $response
+            ->assertStatus(200)
+            ->assertJson($body);
+
+        $json = $response->json();
+        $this->assertArrayHasKey('id', $json);
+        $this->assertArrayHasKey('createdAt', $json);
+        $this->assertArrayHasKey('updatedAt', $json);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $json['id'],
+            'name' => $json['name'],
+            'game_coins' => $json['gameCoins'],
+            'special_coins' => $json['specialCoins'],
+            'free_special_coins' => $json['freeSpecialCoins'],
+            'exp' => $json['exp'],
+            'stamina' => $json['stamina'],
+        ]);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Models\Masters;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -99,9 +100,9 @@ abstract class MasterModel extends Model
 
     /**
      * マスタモデルクラスの一覧を取得する。
-     * @return arra モデルクラス名。存在しない場合null。
+     * @return Collection モデルクラス名コレクション。
      */
-    public static function getMasterModels() : array
+    public static function getMasterModels() : Collection
     {
         // このディレクトリに存在するファイル名を元に、クラスを探索する
         // （アプリが複雑化してディレクトリが分割されるようなら別の方法を検討）
@@ -116,6 +117,6 @@ abstract class MasterModel extends Model
                 $models[] = $classname;
             };
         }
-        return $models;
+        return collect($models)->sort()->values();
     }
 }
