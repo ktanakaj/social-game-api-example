@@ -5,6 +5,7 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\CamelcaseJson;
 use App\Models\Virtual\ReceivedObject;
 
@@ -77,6 +78,14 @@ class UserCard extends Model
     public function card() : BelongsTo
     {
         return $this->belongsTo('App\Models\Masters\Card');
+    }
+
+    /**
+     * デッキのカード情報とのリレーション定義。
+     */
+    public function decks() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\UserDeckCard');
     }
 
     /**

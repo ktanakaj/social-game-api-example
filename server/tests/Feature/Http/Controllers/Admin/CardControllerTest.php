@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
+use App\Models\Globals\UserDeck;
 
 class CardControllerTest extends TestCase
 {
@@ -137,6 +138,62 @@ class CardControllerTest extends TestCase
 
         $this->assertDatabaseMissing('user_cards', [
             'id' => $userCard->id,
+        ]);
+    }
+
+    /**
+     * カード削除のテスト（デッキ登録済）。
+     */
+    public function testDestroyWithDeck() : void
+    {
+        // 一人ユーザーを作成、カードを付与、デッキに登録
+        $user = $this->createTestUser();
+        $userCard = $user->cards()->create([
+            'card_id' => 1000,
+        ]);
+        $userCard2 = $user->cards()->create([
+            'card_id' => 1000,
+        ]);
+        $userDeck = new UserDeck();
+        $userDeck->no = 1;
+        $user->decks()->save($userDeck);
+        $userDeck->cards()->createMany([
+            ['userCardId' => $userCard->id, 'position' => 1],
+            ['userCardId' => $userCard2->id, 'position' => 2],
+        ]);
+
+        // カードを削除するとデッキからも取り除かれる
+        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCard->id}");
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('user_cards', [
+            'id' => $userCard->id,
+        ]);
+        $this->assertDatabaseMissing('user_deck_cards', [
+            'user_deck_id' => $userDeck->id,
+            'user_card_id' => $userCard->id,
+        ]);
+        $this->assertDatabaseHas('user_deck_cards', [
+            'user_deck_id' => $userDeck->id,
+            'user_card_id' => $userCard2->id,
+        ]);
+        $this->assertDatabaseHas('user_decks', [
+            'id' => $userDeck->id,
+        ]);
+
+        // デッキが空になるとデッキも消える
+        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCard2->id}");
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('user_cards', [
+            'id' => $userCard2->id,
+        ]);
+        $this->assertDatabaseMissing('user_deck_cards', [
+            'user_deck_id' => $userDeck->id,
+            'user_card_id' => $userCard2->id,
+        ]);
+        $this->assertDatabaseMissing('user_decks', [
+            'id' => $userDeck->id,
         ]);
     }
 }

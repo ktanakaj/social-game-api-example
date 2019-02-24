@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
 use App\Models\Globals\UserCard;
+use App\Services\CardService;
 
 /**
  * 管理画面カードコントローラ。
@@ -77,6 +78,20 @@ use App\Models\Globals\UserCard;
  */
 class CardController extends Controller
 {
+    /**
+     * @var CardService
+     */
+    private $service;
+
+    /**
+     * サービスをDIしてコントローラを作成する。
+     * @param CardService $cardService カード関連サービス。
+     */
+    public function __construct(CardService $cardService)
+    {
+        $this->service = $cardService;
+    }
+
     /**
      * @OA\Get(
      *   path="/admin/users/{id}/cards",
@@ -335,13 +350,8 @@ class CardController extends Controller
      *   ),
      * )
      */
-    public function destroy(int $userId, UserCard $userCard)
+    public function destroy(int $userId, int $userCardId)
     {
-        // 一応ユーザーIDとカードのIDが一致しているかチェック
-        if ($userCard->user_id !== $userId) {
-            throw new NotFoundException('The user card is not belong to this user');
-        }
-        $userCard->delete();
-        return $userCard;
+        return $this->service->delete($userId, $userCardId);
     }
 }

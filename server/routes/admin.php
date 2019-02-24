@@ -28,8 +28,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('users/{user}/cards', 'CardController@index');
     Route::post('users/{user}/cards', 'CardController@store');
     Route::put('users/{user}/cards/{userCard}', 'CardController@update');
-    Route::delete('users/{user}/cards/{userCard}', 'CardController@destroy');
+    Route::delete('users/{user}/cards/{userCardId}', 'CardController@destroy');
     Route::get('users/{user}/gifts', 'GiftController@index');
     Route::post('users/{user}/gifts', 'GiftController@store');
     Route::delete('users/{user}/gifts/{userGift}', 'GiftController@destroy');
+    Route::get('users/{user}/decks', 'DeckController@index');
+    Route::get('users/{user}/achievements', 'AchievementController@index');
 });

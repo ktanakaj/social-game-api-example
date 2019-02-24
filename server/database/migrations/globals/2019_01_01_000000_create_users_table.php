@@ -22,11 +22,14 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('stamina');
             $table->dateTime('stamina_updated_at')->nullable();
             $table->dateTime('last_login')->nullable();
+            $table->unsignedInteger('last_selected_deck_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->index(['name', 'id']);
             $table->index('last_login');
+
+            // ※ last_selected_deck_id の外部キー制約は user_decks 側で実施
         });
     }
 

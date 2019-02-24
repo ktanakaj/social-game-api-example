@@ -59,6 +59,7 @@ class User extends Authenticatable
         'stamina' => 'integer',
         'stamina_updated_at' => 'timestamp',
         'last_login' => 'timestamp',
+        'last_selected_deck_id' => 'integer',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
         'deleted_at' => 'timestamp',
@@ -122,6 +123,14 @@ class User extends Authenticatable
     public function gifts() : HasMany
     {
         return $this->hasMany('App\Models\Globals\UserGift');
+    }
+
+    /**
+     * ユーザーのデッキとのリレーション定義。
+     */
+    public function decks() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\UserDeck');
     }
 
     // TODO: staminaをミューテタにして、時間経過で回復するようにする
