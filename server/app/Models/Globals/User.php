@@ -70,7 +70,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $attributes = [
-        'name' => '(noname)',
         'game_coins' => 0,
         'special_coins' => 0,
         'free_special_coins' => 0,

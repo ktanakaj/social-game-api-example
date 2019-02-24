@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Globals\User;
+use App\Services\UserService;
 
 /**
  * ユーザーコントローラ。
@@ -16,6 +17,20 @@ use App\Models\Globals\User;
  */
 class UserController extends Controller
 {
+    /**
+     * @var UserService
+     */
+    private $service;
+
+    /**
+     * サービスをDIしてコントローラを作成する。
+     * @param UserService $userService ユーザー関連サービス。
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->service = $userService;
+    }
+
     /**
      * @OA\Post(
      *   path="/users",
@@ -55,13 +70,9 @@ class UserController extends Controller
     {
         // ユーザーを新規登録して認証済みにする
         $request->validate([
-            'token' => 'required|max:191',
+            'token' => 'required',
         ]);
-
-        $user = new User();
-        $user->token = bcrypt($request->input('token'));
-        $user->save();
-
+        $user = $this->service->create($request->input('token'));
         Auth::login($user);
         return $user;
     }

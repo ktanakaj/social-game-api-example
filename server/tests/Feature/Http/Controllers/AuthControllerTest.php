@@ -13,7 +13,7 @@ class AuthControllerTest extends TestCase
     public function testLogin() : void
     {
         // ユーザーを生成してログイン
-        $user = new User();
+        $user = $this->createTestUser();
         $user->token = bcrypt('TEST_LOGIN_TOKEN');
         $user->save();
 
