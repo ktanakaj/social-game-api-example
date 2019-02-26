@@ -33,10 +33,8 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
         'api' => [
             \App\Http\Middleware\CheckForMaintenanceMode::class,
-            'throttle:120,1',
         ],
         'admin' => [
-            'throttle:120,1',
             'bindings',
         ],
     ];
@@ -68,6 +66,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\AccessLog::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\Auth\Middleware\Authenticate::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,

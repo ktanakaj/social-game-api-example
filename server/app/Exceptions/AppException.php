@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -52,6 +53,8 @@ class AppException extends \Exception
         // 例外クラスまたは例外名を元に各エラーの内容に合わせて変換
         if ($ex instanceof AppException) {
             return $ex;
+        } elseif ($ex instanceof MaintenanceModeException) {
+            return new AppException($ex->getMessage(), 'MAINTENANCE_MODE', null, $ex);
         } elseif ($ex instanceof HttpException) {
             return self::fromHttpException($ex);
         } elseif ($ex instanceof AuthenticationException) {
@@ -75,7 +78,11 @@ class AppException extends \Exception
     {
         $msg = $ex->getMessage();
         switch ($ex->getStatusCode()) {
+            // ※ 簡易的にいくつかの4xxエラーは400にまとめている
             case 400:
+            case 406:
+            case 413:
+            case 422:
                 return new BadRequestException($msg, $ex);
             case 401:
                 return new UnauthorizedException($msg);
@@ -83,10 +90,18 @@ class AppException extends \Exception
                 return new ForbiddenException($msg);
             case 404:
                 return new NotFoundException($msg, $ex);
+            case 405:
+                return new AppException($msg, 'METHOD_NOT_ALLOWED', null, $ex);
+            case 408:
+                return new AppException($msg, 'REQUEST_TIMEOUT', null, $ex);
             case 409:
                 return new ConflictException($msg, $ex);
-            case 422:
-                return new BadRequestException($msg, $ex);
+            case 429:
+                return new AppException($msg, 'TOO_MANY_REQUESTS', null, $ex);
+            case 501:
+                return new AppException($msg, 'NOT_IMPLEMENTED', null, $ex);
+            case 503:
+                return new AppException($msg, 'SERVICE_UNAVAILABLE', null, $ex);
             default:
                 return new InternalServerErrorException($msg, $ex);
         }
