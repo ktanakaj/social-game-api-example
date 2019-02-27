@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\CamelcaseJson;
-use App\Models\Virtual\ReceivedObject;
+use App\Models\ObjectReceiver;
+use App\Models\Virtual\ReceivedInfo;
 
 /**
  * プレゼントデータを表すモデル。
@@ -19,12 +20,6 @@ use App\Models\Virtual\ReceivedObject;
 class UserGift extends Model
 {
     use SoftDeletes, CamelcaseJson;
-
-    /**
-     * プレゼントを受け取る処理。
-     * @var array
-     */
-    protected static $giftReceiveres = [];
 
     /**
      * タイムスタンプ更新を無効化。
@@ -99,19 +94,6 @@ class UserGift extends Model
     }
 
     /**
-     * プレゼント受け取り処理を登録する。
-     *
-     * $receiverはUserGiftインスタンスを引数に取り、ReceivedObjectインスタンスを返す。
-     * アイテム一杯などで受け取れない場合は例外を投げる。
-     * @param string $type ギフトオブジェクト種別。
-     * @param callable $receiver プレゼント受け取り処理。
-     */
-    public static function giftReceiver(string $type, callable $receiver) : void
-    {
-        static::$giftReceiveres[$type] = $receiver;
-    }
-
-    /**
      * ユーザーとのリレーション定義。
      */
     public function user() : BelongsTo
@@ -121,14 +103,11 @@ class UserGift extends Model
 
     /**
      * プレゼントを受け取る。
-     * @return ReceivedObject プレゼントの受け取り結果。
+     * @return ReceivedInfo プレゼントの受け取り結果。
      */
-    public function receive() : ReceivedObject
+    public function receive() : ReceivedInfo
     {
-        if (!isset(static::$giftReceiveres[$this->object_type])) {
-            throw new \LogicException("objectType={$this->object_type} is not supported");
-        }
-        $result = call_user_func(static::$giftReceiveres[$this->object_type], $this);
+        $result = ObjectReceiver::receive($this->user_id, $this);
         $this->delete();
         return $result;
     }

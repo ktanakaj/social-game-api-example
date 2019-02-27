@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Enums\ObjectType;
 use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
@@ -208,9 +210,12 @@ class GiftController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        // ※ 現状、object_typeやobject_idの有効性まではチェックしていない
+        // ※ 現状、object_id の有効性まではチェックしていない
         $request->validate([
-            'objectType' => 'required|max:32',
+            'objectType' => [
+                'required',
+                Rule::in(ObjectType::values()),
+            ],
             'objectId' => 'integer',
             'count' => 'integer|min:1',
             'textId' => 'required|exists:master.texts,id',

@@ -62,8 +62,8 @@ class GiftControllerTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'objectType' => 'item',
-                'objectId' => 100,
+                'type' => 'item',
+                'id' => 100,
                 'count' => 1,
                 'isNew' => true,
             ]);
@@ -103,14 +103,14 @@ class GiftControllerTest extends TestCase
         $this->assertGreaterThan(1, count($json));
 
         $received = $json[0];
-        $this->assertEquals('item', $received['objectType']);
-        $this->assertEquals(100, $received['objectId']);
+        $this->assertEquals('item', $received['type']);
+        $this->assertEquals(100, $received['id']);
         $this->assertEquals(1, $received['count']);
         $this->assertTrue($received['isNew']);
 
         $received = $json[1];
-        $this->assertEquals('gameCoin', $received['objectType']);
-        $this->assertNull($received['objectId']);
+        $this->assertEquals('gameCoin', $received['type']);
+        $this->assertNull($received['id']);
         $this->assertEquals(10000, $received['count']);
         $this->assertFalse($received['isNew']);
 

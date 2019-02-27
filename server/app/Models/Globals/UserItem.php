@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\CamelcaseJson;
-use App\Models\Virtual\ReceivedObject;
+use App\Models\Virtual\ObjectInfo;
+use App\Models\Virtual\ReceivedInfo;
 
 /**
  * ユーザーが持つアイテムを表すモデル。
@@ -85,18 +86,16 @@ class UserItem extends Model
     }
 
     /**
-     * アイテムのプレゼントを受け取る。
-     * @param UserGift $userGift アイテムのプレゼント。
-     * @return ReceivedObject 受け取り情報。
+     * アイテムを受け取る。
+     * @param int $userId ユーザーID。
+     * @param ObjectInfo $info 受け取るアイテム情報。
+     * @return ReceivedInfo 受け取り情報。
      */
-    public static function receiveItemGift(UserGift $userGift) : ReceivedObject
+    public static function receiveTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
-        $received = new ReceivedObject($userGift->toArray());
-        $userItem = self::lockForUpdate()->firstOrNew([
-            'user_id' => $userGift->user_id,
-            'item_id' => $userGift->object_id,
-        ]);
-        $userItem->count += $userGift->count;
+        $received = new ReceivedInfo($info);
+        $userItem = self::lockForUpdate()->firstOrNew(['user_id' => $userId, 'item_id' => $info->id]);
+        $userItem->count += $info->count;
         $received->total = $userItem->count;
         $received->is_new = !$userItem->exists;
         $userItem->save();

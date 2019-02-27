@@ -69,9 +69,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // ユーザーを新規登録して認証済みにする
-        $request->validate([
-            'token' => 'required',
-        ]);
+        $request->validate(['token' => 'required']);
         $user = $this->service->create($request->input('token'));
         Auth::login($user);
         return $user;

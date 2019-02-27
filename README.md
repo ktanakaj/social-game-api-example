@@ -18,6 +18,7 @@
 * `composer migrate` : DB作成
 * `composer migrate:refresh` : DB再作成
 * `php artisan db:seed` : 初期データ生成
+* `php artisan master:import` : CSVマスタインポート
 * `composer test` : ユニットテスト
 * `composer lint` : スタイルチェック
 

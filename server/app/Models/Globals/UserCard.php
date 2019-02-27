@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\CamelcaseJson;
-use App\Models\Virtual\ReceivedObject;
+use App\Models\Virtual\ObjectInfo;
+use App\Models\Virtual\ReceivedInfo;
 
 /**
  * ユーザーが持つカードを表すモデル。
@@ -89,21 +90,19 @@ class UserCard extends Model
     }
 
     /**
-     * カードのプレゼントを受け取る。
-     * @param UserGift $userGift カードのプレゼント。
-     * @return ReceivedObject 受け取り情報。
+     * カードを受け取る。
+     * @param int $userId ユーザーID。
+     * @param ObjectInfo $info 受け取るカード情報。
+     * @return ReceivedInfo 受け取り情報。
      */
-    public static function receiveCardGift(UserGift $userGift) : ReceivedObject
+    public static function receiveTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
-        // TODO: bulkでやる
+        // TODO: できればbulkでやる
         // TODO: is_newの判定は、複数件受け取り時に何度もSELECTされるのでキャッシュとか検討
-        $received = new ReceivedObject($userGift->toArray());
-        $received->is_new = self::where('user_id', $userGift->user_id)->where('card_id', $userGift->object_id)->doesntExist();
-        for ($i = 0; $i < $userGift->count; $i++) {
-            self::create([
-                'user_id' => $userGift->user_id,
-                'card_id' => $userGift->object_id,
-            ]);
+        $received = new ReceivedInfo($info);
+        $received->is_new = self::where('user_id', $userId)->where('card_id', $info->id)->doesntExist();
+        for ($i = 0; $i < $info->count; $i++) {
+            self::create(['user_id' => $userId, 'card_id' => $info->id]);
         }
         return $received;
     }

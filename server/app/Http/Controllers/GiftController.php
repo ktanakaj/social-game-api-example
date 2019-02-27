@@ -14,41 +14,6 @@ use App\Services\GiftService;
  *   name="Gifts",
  *   description="プレゼントAPI",
  * )
- *
- * @OA\Schema(
- *   schema="ReceivedObject",
- *   type="object",
- *   @OA\Property(
- *     property="objectType",
- *     description="受け取ったものの種別",
- *     type="string",
- *   ),
- *   @OA\Property(
- *     property="objectId",
- *     description="受け取ったもののID ※IDを持たない種別の場合null",
- *     type="integer",
- *   ),
- *   @OA\Property(
- *     property="count",
- *     description="受け取った件数",
- *     type="integer",
- *   ),
- *   @OA\Property(
- *     property="total",
- *     description="受け取った後の件数",
- *     type="integer",
- *   ),
- *   @OA\Property(
- *     property="isNew",
- *     description="初めて獲得したものか？",
- *     type="boolean",
- *   ),
- *   required={
- *     "objectType",
- *     "count",
- *     "isNew",
- *   },
- * )
  */
 class GiftController extends Controller
 {
@@ -148,7 +113,7 @@ class GiftController extends Controller
      *   @OA\Response(
      *     response=200,
      *     description="受け取ったオブジェクト",
-     *     @OA\JsonContent(ref="#/components/schemas/ReceivedObject"),
+     *     @OA\JsonContent(ref="#/components/schemas/ReceivedInfo"),
      *   ),
      *   @OA\Response(
      *     response=400,
@@ -188,7 +153,7 @@ class GiftController extends Controller
      *     description="受け取ったオブジェクト配列",
      *     @OA\JsonContent(
      *       type="array",
-     *       @OA\Items(ref="#/components/schemas/ReceivedObject")
+     *       @OA\Items(ref="#/components/schemas/ReceivedInfo")
      *     ),
      *   ),
      *   @OA\Response(

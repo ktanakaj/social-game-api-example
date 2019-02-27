@@ -103,6 +103,54 @@ namespace App\Http\Controllers;
  *     "to",
  *   },
  * )
+ *
+ * @OA\Schema(
+ *   schema="ObjectInfo",
+ *   type="object",
+ *   @OA\Property(
+ *     property="type",
+ *     description="オブジェクト種別",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="id",
+ *     description="オブジェクトのID ※IDを持たない種別の場合null",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="count",
+ *     description="オブジェクトの個数",
+ *     type="integer",
+ *   ),
+ *   required={
+ *     "type",
+ *     "count",
+ *   },
+ * )
+ *
+ * @OA\Schema(
+ *   schema="ReceivedInfo",
+ *   type="object",
+ *   allOf={
+ *     @OA\Schema(ref="#components/schemas/ObjectInfo"),
+ *     @OA\Schema(
+ *       type="object",
+ *       @OA\Property(
+ *         property="total",
+ *         description="オブジェクトの総所持数",
+ *         type="integer",
+ *       ),
+ *       @OA\Property(
+ *         property="isNew",
+ *         description="初めて入手したものか？",
+ *         type="boolean",
+ *       ),
+ *       required={
+ *         "isNew",
+ *       },
+ *     )
+ *   }
+ * )
  */
 class OpenApiController extends Controller
 {

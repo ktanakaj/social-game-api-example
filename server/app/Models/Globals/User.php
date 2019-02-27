@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\CamelcaseJson;
-use App\Models\Virtual\ReceivedObject;
+use App\Models\Virtual\ObjectInfo;
+use App\Models\Virtual\ReceivedInfo;
 
 /**
  * ユーザーデータを表すモデル。
@@ -135,47 +136,50 @@ class User extends Authenticatable
     // TODO: staminaをミューテタにして、時間経過で回復するようにする
 
     /**
-     * ゲームコインのプレゼントを受け取る。
-     * @param UserGift $userGift ゲームコインのプレゼント。
-     * @return ReceivedObject 受け取り情報。
+     * ゲームコインを受け取る。
+     * @param int $userId ユーザーID。
+     * @param ObjectInfo $info 受け取るコイン情報。
+     * @return ReceivedInfo 受け取り情報。
      */
-    public static function receiveGameCoinGift(UserGift $userGift) : ReceivedObject
+    public static function receiveGameCoinTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
-        $user = $userGift->user;
-        $user->game_coins += $userGift->count;
+        $user = self::lockForUpdate()->findOrFail($userId);
+        $user->game_coins += $info->count;
         $user->save();
-        $received = new ReceivedObject($userGift->toArray());
+        $received = new ReceivedInfo($info);
         $received->total = $user->game_coins;
         return $received;
     }
 
     /**
-     * スペシャルコインのプレゼントを受け取る。
-     * @param UserGift $userGift スペシャルコインのプレゼント。
-     * @return ReceivedObject 受け取り情報。
+     * スペシャルコインを受け取る。
+     * @param int $userId ユーザーID。
+     * @param ObjectInfo $info 受け取るコイン情報。
+     * @return ReceivedInfo 受け取り情報。
      */
-    public static function receiveSpecialCoinGift(UserGift $userGift) : ReceivedObject
+    public static function receiveSpecialCoinTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
         // このメソッドで受け取った分は、非課金コインとして加算する
-        $user = $userGift->user;
-        $user->free_special_coins += $userGift->count;
+        $user = self::lockForUpdate()->findOrFail($userId);
+        $user->free_special_coins += $info->count;
         $user->save();
-        $received = new ReceivedObject($userGift->toArray());
+        $received = new ReceivedInfo($info);
         $received->total = $user->special_coins + $user->free_special_coins;
         return $received;
     }
 
     /**
-     * ユーザー経験値のプレゼントを受け取る。
-     * @param UserGift $userGift ユーザー経験値のプレゼント。
-     * @return ReceivedObject 受け取り情報。
+     * ユーザー経験値を受け取る。
+     * @param int $userId ユーザーID。
+     * @param ObjectInfo $info 受け取る経験値情報。
+     * @return ReceivedInfo 受け取り情報。
      */
-    public static function receiveExpGift(UserGift $userGift) : ReceivedObject
+    public static function receiveExpTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
-        $user = $userGift->user;
-        $user->exp += $userGift->count;
+        $user = self::lockForUpdate()->findOrFail($userId);
+        $user->exp += $info->count;
         $user->save();
-        $received = new ReceivedObject($userGift->toArray());
+        $received = new ReceivedInfo($info);
         $received->total = $user->exp;
         return $received;
     }

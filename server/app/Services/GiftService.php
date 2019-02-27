@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotFoundException;
 use App\Models\Globals\UserGift;
-use App\Models\Virtual\ReceivedObject;
+use App\Models\Virtual\ReceivedInfo;
 
 /**
  * プレゼント関連の処理を担うサービスクラス。
@@ -16,10 +16,10 @@ class GiftService
      * 指定されたプレゼントを受け取る。
      * @param int $userId ユーザーID。
      * @param int $userGiftId 受け取るプレゼントのID。
-     * @return ReceivedObject 受け取り結果。
+     * @return ReceivedInfo 受け取り結果。
      * @throws NotFoundException プレゼントがユーザーのものとして存在しない場合。
      */
-    public function receive(int $userId, int $userGiftId) : ReceivedObject
+    public function receive(int $userId, int $userGiftId) : ReceivedInfo
     {
         DB::transaction(function () use ($userId, $userGiftId, &$received) {
             $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
@@ -34,7 +34,7 @@ class GiftService
     /**
      * 受け取り可能な全プレゼントを受け取る。
      * @param int $userId ユーザーID。
-     * @return array ReceivedObject配列。
+     * @return array ReceivedInfo配列。
      */
     public function receiveAll(int $userId) : array
     {
