@@ -2,10 +2,13 @@
 
 namespace App\Models\Globals;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\CamelcaseJson;
+use App\Models\Masters\Level;
+use App\Models\Masters\Parameter;
 use App\Models\Virtual\ObjectInfo;
 use App\Models\Virtual\ReceivedInfo;
 
@@ -56,6 +59,7 @@ class User extends Authenticatable
         'game_coins' => 'integer',
         'special_coins' => 'integer',
         'free_special_coins' => 'integer',
+        'level' => 'integer',
         'exp' => 'integer',
         'stamina' => 'integer',
         'stamina_updated_at' => 'timestamp',
@@ -74,6 +78,7 @@ class User extends Authenticatable
         'game_coins' => 0,
         'special_coins' => 0,
         'free_special_coins' => 0,
+        'level' => 1,
         'exp' => 0,
         'stamina' => 0,
     ];
@@ -133,7 +138,75 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Globals\UserDeck');
     }
 
-    // TODO: staminaをミューテタにして、時間経過で回復するようにする
+    /**
+     * レベルを保存する。
+     * @param mixed $value 値。
+     */
+    public function setLevelAttribute(int $value) : void
+    {
+        // レベルアップ分スタミナも回復する
+        $stamina = 0;
+        for ($i = $this->level + 1; $i <= $value; $i++) {
+            $stamina += Level::findOrFail($i)->max_stamina;
+        }
+        if ($stamina > 0) {
+            $this->stamina += $stamina;
+        }
+        $this->attributes['level'] = $value;
+    }
+
+    /**
+     * 経験値を保存する。
+     * @param mixed $value 値。
+     */
+    public function setExpAttribute(int $value) : void
+    {
+        // 経験値が保存されたタイミングで、レベルアップを判定する
+        // ※ レベルマスタが変更され、計算上レベルが戻るような事があっても、自動で更新はしない。
+        //    単に次のレベルまでが遠くなるだけ。
+        $this->attributes['exp'] = $value;
+        $level = Level::findByExp($value);
+        if ($level->level > $this->level) {
+            $this->level = $level->level;
+        }
+    }
+
+    /**
+     * スタミナを取得する。
+     * @param int $value スタミナ元値。
+     * @return int 計算されたスタミナ値。
+     */
+    public function getStaminaAttribute(int $value) : int
+    {
+        // 最終更新時間と現在日時の差から、スタミナを最大値まで回復させる。
+        // ただし、初めから最大を超えている場合はその値を用いる。
+        // また、マスタがオフられている場合は回復しない。
+        $level = Level::findOrFail($this->level);
+        $rate = Parameter::get('STAMINA_RECOVERY_RATE', 0);
+        if ($value >= $level->max_stamina || $rate <= 0) {
+            return $value;
+        }
+        if (!$this->stamina_updated_at) {
+            return $level->max_stamina;
+        }
+        // ※ 一応、デバッグ機能等で現在日時が過去に戻ることも想定。減りはしない。
+        $diff = floor(Carbon::now()->diffInMinutes(Carbon::createFromTimestamp($this->stamina_updated_at)) / $rate);
+        if ($diff > 0) {
+            $value += $diff;
+        }
+        return $value >= $level->max_stamina ? $level->max_stamina : $value;
+    }
+
+    /**
+     * スタミナを保存する。
+     * @param mixed $value 値。
+     */
+    public function setStaminaAttribute(int $value) : void
+    {
+        // スタミナが保存されたタイミングで、最終更新時間を更新する
+        $this->attributes['stamina'] = $value;
+        $this->stamina_updated_at = Carbon::now();
+    }
 
     /**
      * ゲームコインを受け取る。

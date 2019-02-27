@@ -18,23 +18,6 @@ class Item extends MasterModel
 {
     use CamelcaseJson;
 
-    /** アイテム種別: 消費アイテム */
-    const ITEM_TYPE_USABLE = 'usable';
-    /** アイテム種別: 素材アイテム */
-    const ITEM_TYPE_MATERIAL = 'material';
-    /** アイテム種別: 交換用アイテム */
-    const ITEM_TYPE_TRADABLE = 'tradable';
-    /** アイテム種別: ガチャチケット等 */
-    const ITEM_TYPE_TICKET = 'ticket';
-
-    /** アイテム種別一覧 */
-    const ITEM_TYPES = [
-        self::ITEM_TYPE_USABLE,
-        self::ITEM_TYPE_MATERIAL,
-        self::ITEM_TYPE_TRADABLE,
-        self::ITEM_TYPE_TICKET,
-    ];
-
     /**
      * 属性に設定するデフォルト値。
      * @var array

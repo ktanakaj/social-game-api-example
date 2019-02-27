@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('game_coins');
             $table->unsignedInteger('special_coins');
             $table->unsignedInteger('free_special_coins');
+            $table->unsignedSmallInteger('level');
             $table->unsignedBigInteger('exp');
             $table->unsignedInteger('stamina');
             $table->dateTime('stamina_updated_at')->nullable();

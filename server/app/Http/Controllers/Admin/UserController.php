@@ -34,6 +34,11 @@ use App\Models\Globals\User;
  *     type="integer",
  *   ),
  *   @OA\Property(
+ *     property="level",
+ *     description="レベル",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
  *     property="exp",
  *     description="経験値",
  *     type="integer",

@@ -3,7 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use App\Models\Masters\Parameter;
 
 /**
  * デッキ作成/更新API用の共通フォームリクエスト。
@@ -15,9 +18,17 @@ class DeckRequest extends FormRequest
      */
     public function rules() : array
     {
+        $max = Parameter::get('MAX_DECK_POSITION', 9999);
         return [
-            '*.userCardId' => 'required|integer|distinct|exists:user_cards,id',
-            '*.position' => 'required|integer|min:0|distinct',
+            '*.userCardId' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('user_cards', 'id')->where(function ($query) {
+                    return $query->where('user_id', Auth::id());
+                }),
+            ],
+            '*.position' => "required|integer|min:0|max:{$max}|distinct",
         ];
     }
 
@@ -38,7 +49,5 @@ class DeckRequest extends FormRequest
                 $validator->addFailure('array', 'required');
             }
         });
-
-        // TODO: 最大デッキ数と最大ポジションをparametersマスタ辺りに定義してバリデーションを追加する
     }
 }

@@ -11,5 +11,13 @@ ITEM_NAME_TRADE_MEDAL,Trade Medal,メダル
 ITEM_HELP_TRADE_MEDAL,Tradable Medal,アイテムと交換できます。
 CARD_NAME_HERO,Hero,勇者
 CARD_FLAVOR_HERO,Hero is strong,強い勇者。
+CARD_NAME_FIGHTER,Fighter,戦士
+CARD_FLAVOR_FIGHTER,Fighter is strong too,歴戦の戦士。
+CARD_NAME_SORCERER,Sorcerer,魔法使い
+CARD_FLAVOR_SORCERER,Sorcerer is smart,賢い魔法使い。
 CARD_NAME_GOBLIN,Goblin,ゴブリン
 CARD_FLAVOR_GOBLIN,Goblin is weak,雑魚のゴブリン。
+CARD_NAME_WOLF,Wolf,狼
+CARD_FLAVOR_WOLF,Wolf is quickly,素早い狼。
+CARD_NAME_CROW,Crow,カラス
+CARD_FLAVOR_CROW,Crow is bird,そこら中にいるカラス。

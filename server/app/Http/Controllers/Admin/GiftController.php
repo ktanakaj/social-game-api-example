@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Enums\ObjectType;
 use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\GiftRequest;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
 use App\Models\Globals\UserGift;
@@ -208,18 +206,8 @@ class GiftController extends Controller
      *   ),
      * )
      */
-    public function store(Request $request, User $user)
+    public function store(GiftRequest $request, User $user)
     {
-        // ※ 現状、object_id の有効性まではチェックしていない
-        $request->validate([
-            'objectType' => [
-                'required',
-                Rule::in(ObjectType::values()),
-            ],
-            'objectId' => 'integer',
-            'count' => 'integer|min:1',
-            'textId' => 'required|exists:master.texts,id',
-        ]);
         return $user->gifts()->create($request->input());
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotFoundException;
 use App\Models\Globals\User;
 use App\Models\Globals\UserDeck;
+use App\Models\Masters\Parameter;
 
 /**
  * デッキ関連の処理を担うサービスクラス。
@@ -25,6 +26,9 @@ class DeckService
             $user = User::lockForUpdate()->findOrFail($userId);
             $userDeck = new UserDeck();
             $userDeck->no = $this->findNewNo($user);
+            if ($userDeck->no > Parameter::get('MAX_DECKS', 9999)) {
+                throw new BadRequestException('The user decks are too much');
+            }
             $user->decks()->save($userDeck);
             $userDeck->cards = $userDeck->cards()->createMany($cards);
 
