@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
  * OpenAPI (Swagger) コントローラ。
  *
  * @OA\Info(
- *   title="laravel-api-example API",
- *   version="0.0.1",
+ *   title="social-game-api-example API",
+ *   version="0.1.0",
  *   description="Laravel 5勉強用ソシャゲAPIサンプルアプリ。"
  * ),
  * @OA\Server(

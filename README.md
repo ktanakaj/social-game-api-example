@@ -1,4 +1,4 @@
-# Laravel 5 APIサンプルアプリ
+# Laravel 5勉強用ソシャゲAPIサンプルアプリ
 [Laravel 5](http://laravel.jp/)のAPI勉強用に作成したサンプルアプリです。
 
 クエストとかカードとかアイテムとかアチーブメントとかがあるようなソシャゲをイメージして作成しています。  
@@ -11,7 +11,7 @@
     * vagrant-winnfsd - 〃
 
 ## 開発メモ
-トップページにアクセスするとSwagger-UIのAPIページが表示されます。
+VMのトップページにアクセスするとSwagger-UIのAPIページが表示されます。
 
 以下のコマンドが使用可能です（`server` ディレクトリにて実行）。
 
@@ -23,4 +23,4 @@
 * `composer lint` : スタイルチェック
 
 ## ライセンス
-[MIT](https://github.com/ktanakaj/laravel-api-example/blob/master/LICENSE)
+[MIT](https://github.com/ktanakaj/social-game-api-example/blob/master/LICENSE)

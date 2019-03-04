@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'laravel-api-example'),
+    'name' => env('APP_NAME', 'social-game-api-example'),
 
     /*
     |--------------------------------------------------------------------------
