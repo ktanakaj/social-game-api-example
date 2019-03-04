@@ -86,6 +86,20 @@ class UserItem extends Model
     }
 
     /**
+     * 所持数を保存する。
+     * @param mixed $value 値。
+     * @throws EmptyResourceException 所持数が足りない場合。
+     */
+    public function setCountAttribute(int $value) : void
+    {
+        // 保存前にバリデーション実施
+        if ($value < 0) {
+            throw new EmptyResourceException("count = {$value} is invalid", new ObjectInfo(['type' => ObjectType::ITEM, 'id' => $this->item_id, 'count' => abs($value)]));
+        }
+        $this->attributes['count'] = $value;
+    }
+
+    /**
      * アイテムを受け取る。
      * @param int $userId ユーザーID。
      * @param ObjectInfo $info 受け取るアイテム情報。

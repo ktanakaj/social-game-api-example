@@ -10,4 +10,5 @@ METHOD_NOT_ALLOWED,Method Not Allowed,405,debug
 REQUEST_TIMEOUT,Request Timeout,408,debug
 CONFLICT,Conflict,409,debug
 TOO_MANY_REQUESTS,Too Many Requests,429,info
-MAINTENANCE_MODE,Service Unavailable,503,debug
+MAINTENANCE_MODE,Maintenance,503,debug
+EMPTY_RESOURCE,Empty Resource,400,debug

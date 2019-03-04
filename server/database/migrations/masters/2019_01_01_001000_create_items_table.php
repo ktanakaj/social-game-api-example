@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Enums\ItemType;
 
 class CreateItemsTable extends Migration
 {
@@ -14,7 +13,7 @@ class CreateItemsTable extends Migration
     {
         Schema::connection('master')->create('items', function (Blueprint $table) {
             $table->unsignedInteger('id');
-            $table->enum('type', ItemType::values());
+            $table->string('type', 32);
             $table->tinyInteger('rarity');
             $table->string('name_text_id', 64);
             $table->string('help_text_id', 64);

@@ -37,7 +37,6 @@ class CardService
                 }
             }
             $userCard->delete();
-            return $userCard;
         });
         return $userCard;
     }

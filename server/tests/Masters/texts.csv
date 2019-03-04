@@ -21,3 +21,11 @@ CARD_NAME_WOLF,Wolf,狼
 CARD_FLAVOR_WOLF,Wolf is quickly,素早い狼。
 CARD_NAME_CROW,Crow,カラス
 CARD_FLAVOR_CROW,Crow is bird,そこら中にいるカラス。
+QUEST_NAME_1,Hero,勇者の旅立ち
+QUEST_DESC_1,Hero,勇者は冒険にでる
+QUEST_NAME_2,Fighter,戦士との出会い
+QUEST_DESC_2,Fighter,戦士を仲間にする
+QUEST_NAME_3,Goblin,ゴブリンの襲来
+QUEST_DESC_3,Goblin,ゴブリンに襲われる
+QUEST_NAME_101,Goblin Hunt,ゴブリン退治
+QUEST_DESC_101,Goblin Hunt,ゴブリンを退治する

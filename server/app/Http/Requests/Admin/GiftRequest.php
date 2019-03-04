@@ -17,10 +17,10 @@ class GiftRequest extends FormRequest
      */
     public function rules() : array
     {
-        // ※ 現状、object_id の有効性まではチェックしていない
         return [
             'objectType' => [
                 'required',
+                // TODO: 種別はギフト専用じゃないので、種別があっても受け取れないものもありそう
                 Rule::in(ObjectType::values()),
             ],
             'objectId' => 'integer',

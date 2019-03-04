@@ -14,6 +14,6 @@ class InternalServerErrorException extends AppException
      */
     public function __construct(string $message, \Throwable $previous = null)
     {
-        parent::__construct($message, 'INTERNAL_SERVER_ERROR', $previous);
+        parent::__construct($message, 'INTERNAL_SERVER_ERROR', null, $previous);
     }
 }

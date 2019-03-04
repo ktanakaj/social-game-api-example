@@ -9,7 +9,7 @@ use Illuminate\Validation\Validator;
 use App\Models\Masters\Parameter;
 
 /**
- * デッキ作成/更新API用の共通フォームリクエスト。
+ * デッキ作成/更新API用のフォームリクエスト。
  */
 class DeckRequest extends FormRequest
 {

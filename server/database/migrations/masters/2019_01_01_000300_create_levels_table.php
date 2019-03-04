@@ -13,9 +13,9 @@ class CreateLevelsTable extends Migration
     {
         Schema::connection('master')->create('levels', function (Blueprint $table) {
             // ※ id=level
-            $table->unsignedInteger('level');
+            $table->unsignedSmallInteger('level');
             $table->unsignedInteger('exp');
-            $table->smallInteger('max_stamina');
+            $table->unsignedSmallInteger('max_stamina');
 
             $table->primary('level');
             $table->index('exp');

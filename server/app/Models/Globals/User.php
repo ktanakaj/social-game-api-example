@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Enums\ObjectType;
+use App\Exceptions\EmptyResourceException;
 use App\Models\CamelcaseJson;
 use App\Models\Masters\Level;
 use App\Models\Masters\Parameter;
@@ -139,6 +141,49 @@ class User extends Authenticatable
     }
 
     /**
+     * ゲームコインを保存する。
+     * @param mixed $value 値。
+     * @throws EmptyResourceException ゲームコインが足りない場合。
+     */
+    public function setGameCoinsAttribute(int $value) : void
+    {
+        // 保存前にバリデーション実施
+        if ($value < 0) {
+            throw new EmptyResourceException("game_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::GAME_COIN, 'count' => abs($value)]));
+        }
+        $this->attributes['game_coins'] = $value;
+    }
+
+    /**
+     * スペシャルコイン（課金）を保存する。
+     * @param mixed $value 値。
+     * @throws EmptyResourceException スペシャルコインが足りない場合。
+     */
+    public function setSpecialCoinsAttribute(int $value) : void
+    {
+        // TODO: 非課金から先に減らす仕組みを考える（モデル外でやる？ただし課金石専用みたいなものもありえそう）
+        // 保存前にバリデーション実施
+        if ($value < 0) {
+            throw new EmptyResourceException("special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::SPECIAL_COIN, 'count' => abs($value)]));
+        }
+        $this->attributes['special_coins'] = $value;
+    }
+
+    /**
+     * スペシャルコイン（非課金）を保存する。
+     * @param mixed $value 値。
+     * @throws EmptyResourceException スペシャルコインが足りない場合。
+     */
+    public function setFreeSpecialCoinsAttribute(int $value) : void
+    {
+        // 保存前にバリデーション実施
+        if ($value < 0) {
+            throw new EmptyResourceException("free_special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::SPECIAL_COIN, 'count' => abs($value)]));
+        }
+        $this->attributes['free_special_coins'] = $value;
+    }
+
+    /**
      * レベルを保存する。
      * @param mixed $value 値。
      */
@@ -200,9 +245,15 @@ class User extends Authenticatable
     /**
      * スタミナを保存する。
      * @param mixed $value 値。
+     * @throws EmptyResourceException スタミナが足りない場合。
      */
     public function setStaminaAttribute(int $value) : void
     {
+        // 保存前にバリデーション実施
+        if ($value < 0) {
+            throw new EmptyResourceException("stamina = {$value} is invalid", new ObjectInfo(['type' => ObjectType::STAMINA, 'count' => abs($value)]));
+        }
+
         // スタミナが保存されたタイミングで、最終更新時間を更新する
         $this->attributes['stamina'] = $value;
         $this->stamina_updated_at = Carbon::now();

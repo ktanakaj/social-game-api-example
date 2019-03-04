@@ -14,6 +14,8 @@ final class ObjectType
     const SPECIAL_COIN = 'specialCoin';
     /** オブジェクト種別: 経験値 */
     const EXP = 'exp';
+    /** オブジェクト種別: スタミナ */
+    const STAMINA = 'stamina';
     /** オブジェクト種別: カード */
     const CARD = 'card';
     /** オブジェクト種別: アイテム */
@@ -34,6 +36,7 @@ final class ObjectType
             self::GAME_COIN,
             self::SPECIAL_COIN,
             self::EXP,
+            self::STAMINA,
             self::CARD,
             self::ITEM,
         ];

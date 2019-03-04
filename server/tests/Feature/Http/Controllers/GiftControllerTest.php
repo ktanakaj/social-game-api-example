@@ -103,15 +103,15 @@ class GiftControllerTest extends TestCase
         $this->assertGreaterThan(1, count($json));
 
         $received = $json[0];
-        $this->assertEquals('item', $received['type']);
-        $this->assertEquals(100, $received['id']);
-        $this->assertEquals(1, $received['count']);
+        $this->assertSame('item', $received['type']);
+        $this->assertSame(100, $received['id']);
+        $this->assertSame(1, $received['count']);
         $this->assertTrue($received['isNew']);
 
         $received = $json[1];
-        $this->assertEquals('gameCoin', $received['type']);
+        $this->assertSame('gameCoin', $received['type']);
         $this->assertNull($received['id']);
-        $this->assertEquals(10000, $received['count']);
+        $this->assertSame(10000, $received['count']);
         $this->assertFalse($received['isNew']);
 
         $this->assertDatabaseHas('users', [

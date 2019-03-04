@@ -2,6 +2,7 @@
 
 namespace App\Models\Masters;
 
+use App\Enums\ItemType;
 use App\Models\CamelcaseJson;
 
 /**
@@ -17,14 +18,6 @@ use App\Models\CamelcaseJson;
 class Item extends MasterModel
 {
     use CamelcaseJson;
-
-    /**
-     * 属性に設定するデフォルト値。
-     * @var array
-     */
-    protected $attributes = [
-        'effect' => '{}',
-    ];
 
     /**
      * 日付として扱う属性。
@@ -43,6 +36,27 @@ class Item extends MasterModel
         'effect' => 'array',
         'expired_at' => 'timestamp',
     ];
+
+    /**
+     * 属性に設定するデフォルト値。
+     * @var array
+     */
+    protected $attributes = [
+        'effect' => '{}',
+    ];
+
+    /**
+     * アイテム種別を保存する。
+     * @param mixed $value 値。
+     */
+    public function setTypeAttribute($value) : void
+    {
+        // マスタインポート用。アイテム種別をバリデーションする
+        if (!in_array($value, ItemType::values())) {
+            throw new \InvalidArgumentException("type=\"{$value}\" is not found");
+        }
+        $this->attributes['type'] = $value;
+    }
 
     /**
      * アイテム効果を保存する。

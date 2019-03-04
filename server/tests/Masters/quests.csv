@@ -1,0 +1,5 @@
+﻿id,previous_id,type,name_text_id,desc_text_id,open_at,close_at,stamina,first_drop_set_id,retry_drop_set_id
+1,,main,QUEST_NAME_1,QUEST_DESC_1,,,5,101,102
+2,1,main,QUEST_NAME_2,QUEST_DESC_2,,,5,201,202
+3,2,main,QUEST_NAME_3,QUEST_DESC_3,2019-03-01 00:00:00,,6,301,302
+101,,sub,QUEST_NAME_101,QUEST_DESC_101,,,4,10101,10101

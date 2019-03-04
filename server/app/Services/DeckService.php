@@ -110,7 +110,6 @@ class DeckService
                 throw new NotFoundException('The user deck is not belong to this user');
             }
             $userDeck->delete();
-            return $userDeck;
         });
         return $userDeck;
     }

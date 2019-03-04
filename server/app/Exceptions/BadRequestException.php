@@ -14,6 +14,6 @@ class BadRequestException extends AppException
      */
     public function __construct(string $message, \Throwable $previous = null)
     {
-        parent::__construct($message, 'BAD_REQUEST', $previous);
+        parent::__construct($message, 'BAD_REQUEST', null, $previous);
     }
 }

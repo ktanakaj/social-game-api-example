@@ -163,6 +163,11 @@ class DeckController extends Controller
      *     description="未認証",
      *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
+     *   @OA\Response(
+     *     response=404,
+     *     description="未存在",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
      * )
      */
     public function store(DeckRequest $request)
@@ -197,6 +202,11 @@ class DeckController extends Controller
      *     response=200,
      *     description="更新されたデッキ情報",
      *     @OA\JsonContent(ref="#/components/schemas/UserDeck"),
+     *   ),
+     *   @OA\Response(
+     *     response=400,
+     *     description="バリデーションNG",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
      *   ),
      *   @OA\Response(
      *     response=401,
