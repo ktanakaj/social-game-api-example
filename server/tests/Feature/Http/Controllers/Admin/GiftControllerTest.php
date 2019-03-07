@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
+use App\Models\Globals\User;
 
 class GiftControllerTest extends TestCase
 {
@@ -11,13 +12,7 @@ class GiftControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // 一人ユーザーを作成、ギフトを付与
-        $user = $this->createTestUser();
-        $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
-        ]);
+        $user = factory(User::class)->states('allgifts')->create();
 
         // ページング条件なしで取得
         $response = $this->withAdminLogin()->json('GET', "/admin/users/{$user->id}/gifts");
@@ -50,8 +45,7 @@ class GiftControllerTest extends TestCase
      */
     public function testStore() : void
     {
-        // ユーザーを作成、ギフトを付与
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
         $body = [
             'textId' => 'GIFT_MESSAGE_COVERING',
             'objectType' => 'item',
@@ -80,13 +74,8 @@ class GiftControllerTest extends TestCase
      */
     public function testDestroy() : void
     {
-        // 一人ユーザーを作成、ギフトを付与
-        $user = $this->createTestUser();
-        $userGift = $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
-        ]);
+        $user = factory(User::class)->states('allgifts')->create();
+        $userGift = $user->gifts[0];
 
         // ギフトを削除
         $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/gifts/{$userGift->id}");
@@ -97,7 +86,7 @@ class GiftControllerTest extends TestCase
                 'textId' => $userGift->text_id,
                 'objectType' => $userGift->object_type,
                 'objectId' => $userGift->object_id,
-                'count' => 1,
+                'count' => $userGift->count,
             ]);
 
         $json = $response->json();

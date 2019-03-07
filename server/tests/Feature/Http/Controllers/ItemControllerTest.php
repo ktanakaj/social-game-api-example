@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use App\Models\Globals\UserItem;
+use App\Models\Globals\User;
 
 class ItemControllerTest extends TestCase
 {
@@ -12,16 +12,7 @@ class ItemControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // テストデータを作って、それを表示
-        $user = $this->createTestUser();
-        $user->items()->create([
-            'item_id' => 100,
-            'count' => 1,
-        ]);
-        $user->items()->create([
-            'item_id' => 110,
-            'count' => 0,
-        ]);
+        $user = factory(User::class)->states('allitems')->create();
 
         // ページング条件なしで取得
         $response = $this->withLogin($user)->json('GET', "/items");

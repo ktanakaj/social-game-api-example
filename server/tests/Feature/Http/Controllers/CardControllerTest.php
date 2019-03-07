@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use App\Models\Globals\UserCard;
+use App\Models\Globals\User;
 
 class CardControllerTest extends TestCase
 {
@@ -12,11 +12,7 @@ class CardControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // テストデータを作って、それを表示
-        $user = $this->createTestUser();
-        $user->cards()->create([
-            'card_id' => 1000,
-        ]);
+        $user = factory(User::class)->states('allcards')->create();
 
         // ページング条件なしで取得
         $response = $this->withLogin($user)->json('GET', "/cards");

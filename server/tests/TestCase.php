@@ -68,7 +68,7 @@ abstract class TestCase extends BaseTestCase
     protected function withLogin(User $user = null) : TestCase
     {
         if ($user === null) {
-            $user = $this->createTestUser();
+            $user = factory(User::class)->create();
         }
         Auth::login($user);
         return $this;
@@ -86,15 +86,6 @@ abstract class TestCase extends BaseTestCase
         }
         Auth::guard('admin')->login($admin);
         return $this;
-    }
-
-    /**
-     * テスト用ユーザーを生成する。
-     * @return User テスト用ユーザー。
-     */
-    protected function createTestUser() : User
-    {
-        return factory(User::class)->create();
     }
 
     /**

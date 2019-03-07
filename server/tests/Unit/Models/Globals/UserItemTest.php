@@ -3,6 +3,7 @@
 namespace Tests\Unit\Models\Globals;
 
 use Tests\TestCase;
+use App\Models\Globals\User;
 use App\Models\Globals\UserItem;
 use App\Models\Virtual\ObjectInfo;
 
@@ -13,9 +14,8 @@ class UserItemTest extends TestCase
      */
     public function testReceiveTo() : void
     {
-        // テストデータを作って、そこに受け取り
-        // ※ プレイヤーはアイテムを持っていない想定
-        $user = $this->createTestUser();
+        // ※ プレイヤーはid=110のアイテムは持っていない想定
+        $user = factory(User::class)->create();
 
         // 1個受け取り
         $received = UserItem::receiveTo($user->id, new ObjectInfo(['id' => 110]));

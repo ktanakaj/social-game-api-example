@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use App\Models\Globals\UserDeck;
+use App\Models\Globals\User;
 
 class GameControllerTest extends TestCase
 {
@@ -12,20 +12,12 @@ class GameControllerTest extends TestCase
      */
     public function testStartAndEnd() : void
     {
-        // テストデータを作ってクエスト実行
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->create(['userCardId' => $userCard->id, 'position' => 1]);
+        $user = factory(User::class)->create();
 
         // 普通のクエストの初回プレイ開始
         $response = $this->withLogin($user)->json('POST', '/game/start', [
-            'questId' => 1,
-            'deckId' => $userDeck->id,
+            'questId' => 2,
+            'deckId' => $user->last_selected_deck_id,
         ]);
         $response->assertStatus(200);
 
@@ -39,7 +31,7 @@ class GameControllerTest extends TestCase
         $this->assertDatabaseHas('questlogs', [
             'id' => $json['questlogId'],
             'user_id' => $user->id,
-            'quest_id' => 1,
+            'quest_id' => 2,
             'status' => 'started',
         ]);
 
@@ -52,7 +44,7 @@ class GameControllerTest extends TestCase
         $response->assertStatus(200);
 
         $json = $response->json();
-        $this->assertCount(2, $json);
+        $this->assertCount(3, $json);
 
         $received = $json[0];
         $this->assertSame('exp', $received['type']);
@@ -66,15 +58,21 @@ class GameControllerTest extends TestCase
         $this->assertSame(100, $received['count']);
         $this->assertFalse($received['isNew']);
 
+        $received = $json[2];
+        $this->assertSame('card', $received['type']);
+        $this->assertSame(1100, $received['id']);
+        $this->assertSame(1, $received['count']);
+        $this->assertFalse($received['isNew']);
+
         $this->assertDatabaseHas('user_quests', [
             'user_id' => $user->id,
-            'quest_id' => 1,
+            'quest_id' => 2,
             'count' => 1,
         ]);
         $this->assertDatabaseHas('questlogs', [
             'id' => $questlogId,
             'user_id' => $user->id,
-            'quest_id' => 1,
+            'quest_id' => 2,
             'status' => 'succeed',
         ]);
     }

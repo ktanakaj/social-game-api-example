@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
-use App\Models\Globals\UserDeck;
+use App\Models\Globals\User;
 
 class DeckControllerTest extends TestCase
 {
@@ -12,15 +12,8 @@ class DeckControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // 一人ユーザーを作成、デッキを作成して検索
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->create(['userCardId' => $userCard->id, 'position' => 1]);
+        $user = factory(User::class)->create();
+        $userDeck = $user->decks[0];
 
         $response = $this->withAdminLogin()->json('GET', "/admin/users/{$user->id}/decks");
         $response->assertStatus(200);
@@ -38,7 +31,7 @@ class DeckControllerTest extends TestCase
         $this->assertArrayHasKey('updatedAt', $json);
 
         $card = $json['cards'][0];
-        $this->assertSame($userCard->id, $card['userCardId']);
-        $this->assertSame(1, $card['position']);
+        $this->assertSame($userDeck->cards[0]->user_card_id, $card['userCardId']);
+        $this->assertSame($userDeck->cards[0]->position, $card['position']);
     }
 }

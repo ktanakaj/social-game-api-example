@@ -12,10 +12,9 @@ class AuthControllerTest extends TestCase
      */
     public function testLogin() : void
     {
-        // ユーザーを生成してログイン
-        $user = $this->createTestUser();
-        $user->token = bcrypt('TEST_LOGIN_TOKEN');
-        $user->save();
+        $user = factory(User::class)->create([
+            'token' => bcrypt('TEST_LOGIN_TOKEN'),
+        ]);
 
         $response = $this->json('POST', '/login', [
             'id' => $user->id,

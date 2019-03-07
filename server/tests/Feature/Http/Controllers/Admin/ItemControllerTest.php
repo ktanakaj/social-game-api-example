@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
+use App\Models\Globals\User;
 
 class ItemControllerTest extends TestCase
 {
@@ -11,12 +12,7 @@ class ItemControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // 一人ユーザーを作成、アイテムを付与
-        $user = $this->createTestUser();
-        $user->items()->create([
-            'item_id' => 100,
-            'count' => 1,
-        ]);
+        $user = factory(User::class)->states('allitems')->create();
 
         // ページング条件なしで取得
         $response = $this->withAdminLogin()->json('GET', "/admin/users/{$user->id}/items");
@@ -50,10 +46,9 @@ class ItemControllerTest extends TestCase
      */
     public function testStore() : void
     {
-        // ユーザーを作成、アイテムを付与
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
         $body = [
-            'itemId' => 100,
+            'itemId' => 300,
             'count' => 1,
         ];
         $response = $this->withAdminLogin()->json('POST', "/admin/users/{$user->id}/items", $body);
@@ -79,11 +74,8 @@ class ItemControllerTest extends TestCase
      */
     public function testUpdate() : void
     {
-        // 一人ユーザーを作成、アイテムを付与
-        $user = $this->createTestUser();
-        $userItem = $user->items()->create([
-            'item_id' => 100,
-        ]);
+        $user = factory(User::class)->states('allitems')->create();
+        $userItem = $user->items[0];
 
         // アイテムを更新
         $body = [
@@ -113,12 +105,8 @@ class ItemControllerTest extends TestCase
      */
     public function testDestroy() : void
     {
-        // 一人ユーザーを作成、アイテムを付与
-        $user = $this->createTestUser();
-        $userItem = $user->items()->create([
-            'item_id' => 100,
-            'count' => 1,
-        ]);
+        $user = factory(User::class)->states('allitems')->create();
+        $userItem = $user->items[0];
 
         // アイテムを削除
         $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/items/{$userItem->id}");

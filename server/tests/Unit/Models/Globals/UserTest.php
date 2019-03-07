@@ -90,8 +90,7 @@ class UserTest extends TestCase
      */
     public function testReceiveGameCoinTo() : void
     {
-        // テストデータを作って、そこに受け取り
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
 
         $received = User::receiveGameCoinTo($user->id, new ObjectInfo(['count' => 1000]));
 
@@ -111,8 +110,7 @@ class UserTest extends TestCase
      */
     public function testReceiveSpecialCoinTo() : void
     {
-        // テストデータを作って、そこに受け取り
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
 
         $received = User::receiveSpecialCoinTo($user->id, new ObjectInfo(['count' => 1000]));
 
@@ -133,8 +131,7 @@ class UserTest extends TestCase
      */
     public function testReceiveExpTo() : void
     {
-        // テストデータを作って、そこに受け取り
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
 
         $received = User::receiveExpTo($user->id, new ObjectInfo(['count' => 1000]));
 

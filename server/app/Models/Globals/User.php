@@ -141,6 +141,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーのクエスト攻略状態とのリレーション定義。
+     */
+    public function quests() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\UserQuest');
+    }
+
+    /**
      * ゲームコインを保存する。
      * @param mixed $value 値。
      * @throws EmptyResourceException ゲームコインが足りない場合。

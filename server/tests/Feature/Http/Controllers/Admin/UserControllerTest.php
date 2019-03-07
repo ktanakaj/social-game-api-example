@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
+use App\Models\Globals\User;
 
 class UserControllerTest extends TestCase
 {
@@ -11,8 +12,7 @@ class UserControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // 一人ユーザーを作成
-        $this->createTestUser();
+        $user = factory(User::class)->create();
 
         // ページング条件なしで取得
         $response = $this->withAdminLogin()->json('GET', '/admin/users');
@@ -50,7 +50,7 @@ class UserControllerTest extends TestCase
      */
     public function testUpdate() : void
     {
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
         $body = [
             'name' => 'updated by testUpdate()',
             'gameCoins' => 100000,

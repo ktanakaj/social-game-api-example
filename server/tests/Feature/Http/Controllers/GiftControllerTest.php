@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
+use App\Models\Globals\User;
 use App\Models\Globals\UserGift;
 
 class GiftControllerTest extends TestCase
@@ -12,13 +13,7 @@ class GiftControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // テストデータを作って、それを表示
-        $user = $this->createTestUser();
-        $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
-        ]);
+        $user = factory(User::class)->states('allgifts')->create();
 
         // ページング条件なしで取得
         $response = $this->withLogin($user)->json('GET', "/gifts");
@@ -51,26 +46,25 @@ class GiftControllerTest extends TestCase
      */
     public function testReceive() : void
     {
-        // テストデータを作って、それを受け取る
-        $user = $this->createTestUser();
-        $userGift = $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
+        // ※ プレイヤーはid=2200のカードは持っていない想定
+        $user = factory(User::class)->create();
+        $userGift = factory(UserGift::class)->states('card')->make([
+            'object_id' => 2200,
         ]);
+        $user->gifts()->save($userGift);
         $response = $this->withLogin($user)->json('POST', "/gifts/{$userGift->id}/recv");
         $response
             ->assertStatus(200)
             ->assertJson([
-                'type' => 'item',
-                'id' => 100,
-                'count' => 1,
+                'type' => 'card',
+                'id' => $userGift->object_id,
+                'count' => $userGift->count,
                 'isNew' => true,
             ]);
 
-        $this->assertDatabaseHas('user_items', [
+        $this->assertDatabaseHas('user_cards', [
             'user_id' => $user->id,
-            'item_id' => 100,
+            'card_id' => $userGift->object_id,
             'count' => 1,
         ]);
         $this->assertSoftDeleted('user_gifts', [
@@ -83,18 +77,14 @@ class GiftControllerTest extends TestCase
      */
     public function testReceiveAll() : void
     {
-        // テストデータを作って、それを受け取る
-        $user = $this->createTestUser();
-        $userGift1 = $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'item',
-            'object_id' => 100,
+        // ※ プレイヤーはid=2200のカードは持っていない想定
+        $user = factory(User::class)->create();
+        $userGift1 = factory(UserGift::class)->states('card')->make([
+            'object_id' => 2200,
         ]);
-        $userGift2 = $user->gifts()->create([
-            'text_id' => 'GIFT_MESSAGE_COVERING',
-            'object_type' => 'gameCoin',
-            'count' => 10000,
-        ]);
+        $userGift2 = factory(UserGift::class)->states('gameCoin')->make();
+        $user->gifts()->saveMany([$userGift1, $userGift2]);
+
         $response = $this->withLogin($user)->json('POST', '/gifts/recv');
         $response->assertStatus(200);
 
@@ -103,24 +93,24 @@ class GiftControllerTest extends TestCase
         $this->assertGreaterThan(1, count($json));
 
         $received = $json[0];
-        $this->assertSame('item', $received['type']);
-        $this->assertSame(100, $received['id']);
-        $this->assertSame(1, $received['count']);
+        $this->assertSame('card', $received['type']);
+        $this->assertSame($userGift1->object_id, $received['id']);
+        $this->assertSame($userGift1->count, $received['count']);
         $this->assertTrue($received['isNew']);
 
         $received = $json[1];
         $this->assertSame('gameCoin', $received['type']);
         $this->assertNull($received['id']);
-        $this->assertSame(10000, $received['count']);
+        $this->assertSame($userGift2->count, $received['count']);
         $this->assertFalse($received['isNew']);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'game_coins' => $user->game_coins + 10000,
+            'game_coins' => $user->game_coins + $userGift2->count,
         ]);
-        $this->assertDatabaseHas('user_items', [
+        $this->assertDatabaseHas('user_cards', [
             'user_id' => $user->id,
-            'item_id' => 100,
+            'card_id' => $userGift1->object_id,
             'count' => 1,
         ]);
         $this->assertSoftDeleted('user_gifts', [

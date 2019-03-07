@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
-use App\Models\Globals\UserDeck;
+use App\Models\Globals\User;
 
 class CardControllerTest extends TestCase
 {
@@ -12,11 +12,7 @@ class CardControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // 一人ユーザーを作成、カードを付与
-        $user = $this->createTestUser();
-        $user->cards()->create([
-            'card_id' => 1000,
-        ]);
+        $user = factory(User::class)->states('allcards')->create();
 
         // ページング条件なしで取得
         $response = $this->withAdminLogin()->json('GET', "/admin/users/{$user->id}/cards");
@@ -48,10 +44,9 @@ class CardControllerTest extends TestCase
      */
     public function testStore() : void
     {
-        // ユーザーを作成、カードを付与
-        $user = $this->createTestUser();
+        $user = factory(User::class)->create();
         $body = [
-            'cardId' => 1000,
+            'cardId' => 2000,
         ];
         $response = $this->withAdminLogin()->json('POST', "/admin/users/{$user->id}/cards", $body);
         $response
@@ -79,11 +74,8 @@ class CardControllerTest extends TestCase
      */
     public function testUpdate() : void
     {
-        // 一人ユーザーを作成、カードを付与
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
+        $user = factory(User::class)->create();
+        $userCard = $user->cards[0];
 
         // カードを更新
         $body = [
@@ -115,11 +107,14 @@ class CardControllerTest extends TestCase
      */
     public function testDestroy() : void
     {
-        // 一人ユーザーを作成、カードを付与
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
+        // デッキに入っていないカードを削除
+        $user = factory(User::class)->states('allcards')->create();
+        foreach ($user->cards as $c) {
+            if (count($c->decks) === 0) {
+                $userCard = $c;
+                break;
+            }
+        }
 
         // カードを削除
         $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCard->id}");
@@ -129,7 +124,7 @@ class CardControllerTest extends TestCase
                 'id' => $userCard->id,
                 'cardId' => $userCard->card_id,
                 'exp' => $userCard->exp,
-                'count' => 1,
+                'count' => $userCard->count,
             ]);
 
         $json = $response->json();
@@ -146,51 +141,42 @@ class CardControllerTest extends TestCase
      */
     public function testDestroyWithDeck() : void
     {
-        // 一人ユーザーを作成、カードを付与、デッキに登録
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userCard2 = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->createMany([
-            ['userCardId' => $userCard->id, 'position' => 1],
-            ['userCardId' => $userCard2->id, 'position' => 2],
-        ]);
+        // デッキにカードが2枚入っている状態で、入っているカードを削除
+        $user = factory(User::class)->create();
+        $userDeck = $user->decks[0];
+        $userCardId = $userDeck->cards[0]->user_card_id;
+        $userCardId2 = $userDeck->cards[1]->user_card_id;
+        $this->assertCount(2, $userDeck->cards);
 
         // カードを削除するとデッキからも取り除かれる
-        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCard->id}");
+        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCardId}");
         $response->assertStatus(200);
 
         $this->assertDatabaseMissing('user_cards', [
-            'id' => $userCard->id,
+            'id' => $userCardId,
         ]);
         $this->assertDatabaseMissing('user_deck_cards', [
             'user_deck_id' => $userDeck->id,
-            'user_card_id' => $userCard->id,
+            'user_card_id' => $userCardId,
         ]);
         $this->assertDatabaseHas('user_deck_cards', [
             'user_deck_id' => $userDeck->id,
-            'user_card_id' => $userCard2->id,
+            'user_card_id' => $userCardId2,
         ]);
         $this->assertDatabaseHas('user_decks', [
             'id' => $userDeck->id,
         ]);
 
         // デッキが空になるとデッキも消える
-        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCard2->id}");
+        $response = $this->withAdminLogin()->json('DELETE', "/admin/users/{$user->id}/cards/{$userCardId2}");
         $response->assertStatus(200);
 
         $this->assertDatabaseMissing('user_cards', [
-            'id' => $userCard2->id,
+            'id' => $userCardId2,
         ]);
         $this->assertDatabaseMissing('user_deck_cards', [
             'user_deck_id' => $userDeck->id,
-            'user_card_id' => $userCard2->id,
+            'user_card_id' => $userCardId2,
         ]);
         $this->assertDatabaseMissing('user_decks', [
             'id' => $userDeck->id,

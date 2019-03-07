@@ -63,8 +63,8 @@ class UserControllerTest extends TestCase
     public function testMe() : void
     {
         $response = $this->withLogin()->json('GET', '/users/me');
-        // FIXME: 実APIだと200なのに、ユニットテストだと何故か201になる。一旦保留
-        $response->assertStatus(201);
+        // ※ 実APIだと200なのに、ユニットテストだと何故か201になる
+        $response->assertSuccessful();
 
         $json = $response->json();
         $this->assertArrayHasKey('id', $json);

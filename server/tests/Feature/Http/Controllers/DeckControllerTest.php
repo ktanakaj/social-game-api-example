@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use Tests\TestCase;
-use App\Models\Globals\UserDeck;
+use App\Models\Globals\User;
 
 class DeckControllerTest extends TestCase
 {
@@ -12,15 +12,8 @@ class DeckControllerTest extends TestCase
      */
     public function testIndex() : void
     {
-        // テストデータを作って、それを表示
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->create(['userCardId' => $userCard->id, 'position' => 1]);
+        $user = factory(User::class)->create();
+        $userDeck = $user->decks[0];
 
         $response = $this->withLogin($user)->json('GET', "/decks");
         $response->assertStatus(200);
@@ -31,15 +24,15 @@ class DeckControllerTest extends TestCase
 
         $json = $array[0];
         $this->assertArrayHasKey('id', $json);
-        $this->assertSame(1, $json['no']);
+        $this->assertSame($userDeck->no, $json['no']);
         $this->assertInternalType('array', $json['cards']);
         $this->assertGreaterThan(0, count($json['cards']));
         $this->assertArrayHasKey('createdAt', $json);
         $this->assertArrayHasKey('updatedAt', $json);
 
         $card = $json['cards'][0];
-        $this->assertSame($userCard->id, $card['userCardId']);
-        $this->assertSame(1, $card['position']);
+        $this->assertSame($userDeck->cards[0]->user_card_id, $card['userCardId']);
+        $this->assertSame($userDeck->cards[0]->position, $card['position']);
     }
     
     /**
@@ -47,11 +40,8 @@ class DeckControllerTest extends TestCase
      */
     public function testStore() : void
     {
-        // ユーザーを作成、カードを付与
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
+        $user = factory(User::class)->states('allcards')->create();
+        $userCard = $user->cards[0];
         $body = [
             [
                 'userCardId' => $userCard->id,
@@ -64,7 +54,7 @@ class DeckControllerTest extends TestCase
         $response
             ->assertStatus(201)
             ->assertJson([
-                'no' => 1,
+                'no' => 2,
                 'cards' => $body,
             ]);
 
@@ -90,18 +80,10 @@ class DeckControllerTest extends TestCase
      */
     public function testUpdate() : void
     {
-        // テストデータを作って、それを更新
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userCard2 = $user->cards()->create([
-            'card_id' => 2000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->create(['userCardId' => $userCard->id, 'position' => 1]);
+        $user = factory(User::class)->states('allcards')->create();
+        $userCard = $user->cards[0];
+        $userCard2 = $user->cards[1];
+        $userDeck = $user->decks[0];
 
         $body = [
             [
@@ -139,15 +121,8 @@ class DeckControllerTest extends TestCase
      */
     public function testDestroy() : void
     {
-        // テストデータを作って、それを削除
-        $user = $this->createTestUser();
-        $userCard = $user->cards()->create([
-            'card_id' => 1000,
-        ]);
-        $userDeck = new UserDeck();
-        $userDeck->no = 1;
-        $user->decks()->save($userDeck);
-        $userDeck->cards()->create(['userCardId' => $userCard->id, 'position' => 1]);
+        $user = factory(User::class)->create();
+        $userDeck = $user->decks[0];
 
         $response = $this->withLogin($user)->json('DELETE', "/decks/{$userDeck->id}");
         $response
@@ -157,8 +132,8 @@ class DeckControllerTest extends TestCase
                 'no' => $userDeck->no,
                 'cards' => [
                     [
-                        'userCardId' => $userCard->id,
-                        'position' => 1,
+                        'userCardId' => $userDeck->cards[0]->user_card_id,
+                        'position' => $userDeck->cards[0]->position,
                     ],
                 ],
             ]);
