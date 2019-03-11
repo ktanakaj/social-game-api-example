@@ -2,6 +2,8 @@
 
 namespace App\Models\Masters;
 
+use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use App\Models\CamelcaseJson;
 
 /**
@@ -38,6 +40,21 @@ class Quest extends MasterModel
         'first_drop_set_id' => 'integer',
         'retry_drop_set_id' => 'integer',
     ];
+
+    /**
+     * 公開中マスタのみを取得するクエリスコープ。
+     */
+    public function scopeActive(Builder $query) : Builder
+    {
+        return $query->where(function ($query) {
+            $now = Carbon::now();
+            return $query->where(function ($query) use ($now) {
+                $query->whereNull('open_at')->orWhere('open_at', '<=', $now);
+            })->where(function ($query) use ($now) {
+                $query->whereNull('close_at')->orWhere('close_at', '>=', $now);
+            });
+        });
+    }
 
     /**
      * 前クエストIDを保存する。

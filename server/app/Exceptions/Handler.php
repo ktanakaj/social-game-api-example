@@ -73,12 +73,14 @@ class Handler extends ExceptionHandler
 
         if ($request->expectsJson()) {
             // JSONの場合、規定のフォーマットで返す
-            return response()->json([
-                'error' => [
-                    'code' => $appex->getCode(),
-                    'message' => $msg,
-                ],
-            ], $status);
+            $info = [
+                'code' => $appex->getCode(),
+                'message' => $msg,
+            ];
+            if ($appex->getData() !== null) {
+                $info['data'] = $appex->getData();
+            }
+            return response()->json(['error' => $info], $status);
         } elseif (config('app.debug')) {
             // デバッグモードでのWebからのアクセスの場合、開発用に生の例外を出力する
             if ($exception instanceof ValidationException) {

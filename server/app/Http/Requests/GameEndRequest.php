@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Enums\QuestStatus;
 
 /**
  * ゲーム終了API用のフォームリクエスト。
@@ -19,14 +20,11 @@ class GameEndRequest extends FormRequest
             'questlogId' => [
                 'required',
                 'integer',
-                Rule::exists('questlogs', 'id')->where(function ($query) {
-                    return $query->where('status', 'started');
-                }),
+                Rule::exists('questlogs', 'id')->where('status', QuestStatus::STARTED),
             ],
             'status' => [
                 'required',
-                // TODO: enum化する？
-                Rule::in(['succeed', 'failed']),
+                Rule::in([QuestStatus::SUCCEED, QuestStatus::FAILED]),
             ],
         ];
     }

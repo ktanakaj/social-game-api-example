@@ -40,6 +40,7 @@ Route::middleware('throttle:' . config('app.throttle_requests') . ',1')->group(f
         Route::post('decks', 'DeckController@store');
         Route::put('decks/{userDeckId}', 'DeckController@update');
         Route::delete('decks/{userDeckId}', 'DeckController@destroy');
+        Route::get('quests', 'QuestController@index');
         Route::get('achievements', 'AchievementController@index');
         Route::post('achievements/recv', 'AchievementController@receiveAll');
         Route::post('achievements/{userAchievementId}/recv', 'AchievementController@receive');

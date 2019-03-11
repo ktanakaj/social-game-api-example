@@ -35,6 +35,10 @@ Route::middleware('throttle:' . config('app.throttle_requests') . ',1')->group(f
         Route::post('users/{user}/gifts', 'GiftController@store');
         Route::delete('users/{user}/gifts/{userGift}', 'GiftController@destroy');
         Route::get('users/{user}/decks', 'DeckController@index');
+        Route::get('users/{user}/quests', 'QuestController@index');
+        Route::post('users/{user}/quests', 'QuestController@store');
+        Route::get('users/{user}/quests/logs', 'QuestController@logs');
+        Route::delete('users/{user}/quests/{userQuest}', 'QuestController@destroy');
         Route::get('users/{user}/achievements', 'AchievementController@index');
     });
 });

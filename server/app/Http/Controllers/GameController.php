@@ -74,8 +74,14 @@ class GameController extends Controller
      *         type="integer",
      *         description="クエスト履歴ID",
      *       ),
+     *       @OA\Property(
+     *         property="stamina",
+     *         type="integer",
+     *         description="開始後のスタミナ",
+     *       ),
      *       required={
      *         "questlogId",
+     *         "stamina",
      *       },
      *     ),
      *   ),
@@ -98,10 +104,7 @@ class GameController extends Controller
      */
     public function start(GameStartRequest $request)
     {
-        $log = $this->service->start(Auth::id(), $request->input());
-        return [
-            'questlogId' => $log->id,
-        ];
+        return $this->service->start(Auth::id(), $request->input());
     }
 
     /**

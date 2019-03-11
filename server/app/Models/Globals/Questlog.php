@@ -5,6 +5,7 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\QuestStatus;
 use App\Models\CamelcaseJson;
 
 /**
@@ -42,7 +43,7 @@ class Questlog extends Model
      * @var array
      */
     protected $attributes = [
-        'status' => 'started',
+        'status' => QuestStatus::STARTED,
     ];
 
     /**
@@ -53,8 +54,8 @@ class Questlog extends Model
         parent::boot();
 
         // クエスト履歴全般でデフォルトのソート順を設定
-        static::addGlobalScope('sortId', function (Builder $builder) {
-            return $builder->orderBy('id', 'desc');
+        static::addGlobalScope('sortCreatedAt', function (Builder $builder) {
+            return $builder->orderBy('user_id', 'asc')->orderBy('created_at', 'desc')->orderBy('id', 'desc');
         });
     }
 

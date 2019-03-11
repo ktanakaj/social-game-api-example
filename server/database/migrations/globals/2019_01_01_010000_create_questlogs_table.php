@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Enums\QuestStatus;
 use App\Models\MigrationUtils;
 
 class CreateQuestlogsTable extends Migration
@@ -19,11 +20,12 @@ class CreateQuestlogsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('quest_id');
-            $table->enum('status', ['started', 'succeed', 'failed']);
+            $table->enum('status', QuestStatus::values());
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
 
             $table->index(['user_id', 'quest_id']);
+            $table->index(['user_id', 'created_at']);
             $table->index('quest_id');
         });
 

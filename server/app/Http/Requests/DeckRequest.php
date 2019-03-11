@@ -24,9 +24,7 @@ class DeckRequest extends FormRequest
                 'required',
                 'integer',
                 'distinct',
-                Rule::exists('user_cards', 'id')->where(function ($query) {
-                    return $query->where('user_id', Auth::id());
-                }),
+                Rule::exists('user_cards', 'id')->where('user_id', Auth::id()),
             ],
             '*.position' => "required|integer|min:0|max:{$max}|distinct",
         ];

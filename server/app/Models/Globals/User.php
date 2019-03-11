@@ -149,6 +149,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーのクエスト履歴とのリレーション定義。
+     */
+    public function questlogs() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\Questlog');
+    }
+
+    /**
      * ゲームコインを保存する。
      * @param mixed $value 値。
      * @throws EmptyResourceException ゲームコインが足りない場合。

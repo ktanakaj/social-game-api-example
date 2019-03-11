@@ -19,19 +19,23 @@ class GameService
      * ゲームを開始する。
      * @param int $userId ユーザーID。
      * @param array $params ゲーム開始情報。
-     * @return Questlog 開始したゲームの履歴。
+     * @return array ゲーム開始結果。
      */
-    public function start(int $userId, array $params) : Questlog
+    public function start(int $userId, array $params) : array
     {
-        DB::transaction(function () use ($userId, $params, &$questlog) {
+        DB::transaction(function () use ($userId, $params, &$result) {
             // スタミナを消費して履歴を作成
             $quest = Quest::findOrFail($params['questId']);
             $user = User::lockForUpdate()->findOrFail($userId);
             $user->stamina -= $quest->stamina;
             $user->save();
             $questlog = Questlog::create(['user_id' => $userId, 'quest_id' => $quest->id]);
+            $result = [
+                'questlogId' => $questlog->id,
+                'stamina' => $user->stamina,
+            ];
         });
-        return $questlog;
+        return $result;
     }
 
     /**
@@ -46,6 +50,7 @@ class GameService
             $receivedArray = [];
 
             // 履歴を更新して報酬を付与
+            // TODO: 本当はもっといろいろある想定だが、現状仮のインゲームは内容が何もないので履歴と報酬だけ
             $log = Questlog::lockForUpdate()->findOrFail($params['questlogId']);
             $log->status = $params['status'];
             $log->save();
