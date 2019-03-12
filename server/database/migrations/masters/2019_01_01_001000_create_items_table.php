@@ -17,7 +17,7 @@ class CreateItemsTable extends Migration
             $table->tinyInteger('rarity');
             $table->string('name_text_id', 64);
             $table->string('help_text_id', 64);
-            $table->text('effect');
+            $table->text('effect')->nullable();
             $table->dateTime('expired_at')->nullable();
 
             $table->primary('id');

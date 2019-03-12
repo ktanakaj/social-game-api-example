@@ -37,17 +37,6 @@ class Drop extends MasterModel
     ];
 
     /**
-     * グループを保存する。
-     * @param mixed $value 値。
-     */
-    public function setGroupAttribute($value) : void
-    {
-        // マスタインポート用。CSVから空文字列が渡されるとエラーになるので、
-        // nullに読み替え
-        $this->attributes['group'] = $value !== '' ? $value : null;
-    }
-
-    /**
      * オブジェクト種別を保存する。
      * @param mixed $value 値。
      */
@@ -58,28 +47,6 @@ class Drop extends MasterModel
             throw new \InvalidArgumentException("object_type=\"{$value}\" is not found");
         }
         $this->attributes['object_type'] = $value;
-    }
-
-    /**
-     * オブジェクトIDを保存する。
-     * @param mixed $value 値。
-     */
-    public function setObjectIdAttribute($value) : void
-    {
-        // マスタインポート用。CSVから空文字列が渡されるとエラーになるので、
-        // nullに読み替え
-        $this->attributes['object_id'] = $value !== '' ? $value : null;
-    }
-
-    /**
-     * 変動幅を保存する。
-     * @param mixed $value 値。
-     */
-    public function setRangeAttribute($value) : void
-    {
-        // マスタインポート用。CSVから空文字列が渡されるとエラーになるので、
-        // nullに読み替え
-        $this->attributes['range'] = $value !== '' ? $value : null;
     }
 
     /**

@@ -56,6 +56,21 @@ abstract class MasterModel extends Model
     }
 
     /**
+     * プロパティに値を保存する。
+     * @param string $key プロパティ名。
+     * @param mixed $value 値。
+     */
+    public function setAttribute($key, $value) : void
+    {
+        // CSV等からマスタをインポートする都合上、数値型や日付型の項目に空文字列が来て
+        // エラーになることがあるので、その場合は空文字列をnull扱いにする。
+        if ($value === '' && $this->hasCast($key) && $this->getCastType($key) !== 'string') {
+            $value = null;
+        }
+        parent::setAttribute($key, $value);
+    }
+
+    /**
      * マスタを主キーで取得する。
      * @param mixed $id マスタの主キー。複数指定された場合、複数件を一括検索。
      * @param array $columns 取得するカラム。

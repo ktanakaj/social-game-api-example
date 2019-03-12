@@ -68,15 +68,4 @@ class Item extends MasterModel
         // 二重にエスケープされるので、空定義でそれを阻止する
         $this->attributes['effect'] = $value;
     }
-
-    /**
-     * アイテム期限を保存する。
-     * @param mixed $value 値。
-     */
-    public function setExpiredAtAttribute($value) : void
-    {
-        // マスタインポート用。CSVから空文字列が渡されるとエラーになるので、
-        // nullに読み替え
-        $this->attributes['expired_at'] = $value !== '' ? $value : null;
-    }
 }
