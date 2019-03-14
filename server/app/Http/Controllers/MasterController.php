@@ -70,11 +70,16 @@ class MasterController extends Controller
      */
     public function findMaster(string $name)
     {
-        // TODO: open_at, close_at や enable などの列を見て、公開中のもののみ返す
+        // ユーザーに先の予定などが見えてしまわないよう、公開期間などがあるマスタは有効なものだけ返す
+        // （モデル側にactiveスコープという形で実装する）
         $classname = MasterModel::getMasterModel($name);
         if (!$classname) {
             throw new BadRequestException("name={$name} is not found");
         }
-        return $classname::all();
+        if (method_exists($classname, 'scopeActive')) {
+            return $classname::active()->get();
+        } else {
+            return $classname::all();
+        }
     }
 }

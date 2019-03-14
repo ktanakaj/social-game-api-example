@@ -94,13 +94,14 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setTestNow($date) : void
     {
-        // ※ Carbonとリクエスト時間を更新
+        // Carbonとリクエスト時間を更新。
+        // またタイムゾーンをアプリのデフォルトに初期化。
         if (is_object($date)) {
             $now = Carbon::instance($date);
         } else {
             $now = new Carbon($date);
         }
         $_SERVER['REQUEST_TIME'] = $now->timestamp;
-        Carbon::setTestNow($now);
+        Carbon::setTestNow($now->setTimezone(config('app.timezone')));
     }
 }

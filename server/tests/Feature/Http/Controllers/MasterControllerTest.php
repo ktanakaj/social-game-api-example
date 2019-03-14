@@ -26,6 +26,7 @@ class MasterControllerTest extends TestCase
      */
     public function testFindMaster() : void
     {
+        // 通常のマスタ
         $response = $this->json('GET', '/masters/error_codes');
         $response->assertStatus(200);
 
@@ -33,5 +34,10 @@ class MasterControllerTest extends TestCase
         $this->assertInternalType('array', $array);
         $this->assertGreaterThan(0, count($array));
         $this->assertEquals(ErrorCode::findOrFail('BAD_REQUEST')->toArray(), $array[0]);
+
+        // activeスコープを持つマスタ
+        // TODO: 公開中のみ返ることもテストする
+        $response = $this->json('GET', '/masters/quests');
+        $response->assertStatus(200);
     }
 }

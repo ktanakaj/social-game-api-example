@@ -3,7 +3,6 @@
 namespace App\Models\Masters;
 
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
 use App\Models\CamelcaseJson;
 
 /**
@@ -44,7 +43,7 @@ class Quest extends MasterModel
     /**
      * 公開中マスタのみを取得するクエリスコープ。
      */
-    public function scopeActive(Builder $query) : Builder
+    public function scopeActive($query)
     {
         return $query->where(function ($query) {
             $now = Carbon::now();

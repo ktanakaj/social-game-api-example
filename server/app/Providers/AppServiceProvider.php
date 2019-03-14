@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         // Carbonのデフォルトフォーマットを設定
         // ※ SQLの引数にCarbonインスタンスをそのまま渡せるようになど。APIのフォーマットは別途対応
         Carbon::serializeUsing(function (Carbon $carbon) {
-            return $carbon->toDateTimeString();
+            return $carbon->copy()->setTimezone(config('app.timezone'))->toDateTimeString();
         });
 
         // 開発用のSQLログ

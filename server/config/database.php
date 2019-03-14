@@ -46,6 +46,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'timezone' => '+00:00',
         ],
 
         'master' => [
@@ -61,6 +62,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'timezone' => '+00:00',
         ],
 
         'admin' => [
@@ -76,6 +78,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'timezone' => '+00:00',
         ],
 
     ],
