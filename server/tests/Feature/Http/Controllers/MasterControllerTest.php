@@ -16,7 +16,7 @@ class MasterControllerTest extends TestCase
         $response->assertStatus(200);
 
         $array = $response->json();
-        $this->assertInternalType('array', $array);
+        $this->assertIsArray($array);
         $this->assertContains('ErrorCode', $array);
         $this->assertNotContains('MasterModel', $array);
     }
@@ -31,7 +31,7 @@ class MasterControllerTest extends TestCase
         $response->assertStatus(200);
 
         $array = $response->json();
-        $this->assertInternalType('array', $array);
+        $this->assertIsArray($array);
         $this->assertGreaterThan(0, count($array));
         $this->assertEquals(ErrorCode::findOrFail('BAD_REQUEST')->toArray(), $array[0]);
 

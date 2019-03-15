@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\DB;
  */
 abstract class MasterModel extends Model
 {
-    /** デフォルトのキャッシュ保持期間（分） */
-    protected const DEFAULT_TTL = 1440;
-
     /**
      * モデルで使用するコネクション名
      * @var string
@@ -78,7 +75,7 @@ abstract class MasterModel extends Model
      */
     public static function find($id, $columns = ['*'])
     {
-        return Cache::remember(static::makeCacheKey('find', $id, $columns), static::DEFAULT_TTL, static function () use ($id, $columns) {
+        return Cache::remember(static::makeCacheKey('find', $id, $columns), config('cache.master_cache_expire'), static function () use ($id, $columns) {
             // parentだと何故か呼べないので、parentの処理をコピーして対処
             if (is_array($id) || $id instanceof Arrayable) {
                 return static::findMany($id, $columns);

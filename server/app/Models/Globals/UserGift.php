@@ -40,14 +40,6 @@ class UserGift extends Model
     ];
 
     /**
-     * 日付として扱う属性。
-     * @var array
-     */
-    protected $dates = [
-        'deleted_at',
-    ];
-
-    /**
      * ネイティブなタイプへキャストする属性。
      * @var array
      */

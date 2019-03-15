@@ -50,7 +50,6 @@ class User extends Authenticatable
     protected $dates = [
         'stamina_updated_at',
         'last_login',
-        'deleted_at',
     ];
 
     /**

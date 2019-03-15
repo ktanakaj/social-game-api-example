@@ -19,13 +19,13 @@ class DeckControllerTest extends TestCase
         $response->assertStatus(200);
 
         $array = $response->json();
-        $this->assertInternalType('array', $array);
+        $this->assertIsArray($array);
         $this->assertGreaterThan(0, count($array));
 
         $json = $array[0];
         $this->assertArrayHasKey('id', $json);
         $this->assertSame($userDeck->no, $json['no']);
-        $this->assertInternalType('array', $json['cards']);
+        $this->assertIsArray($json['cards']);
         $this->assertGreaterThan(0, count($json['cards']));
         $this->assertArrayHasKey('createdAt', $json);
         $this->assertArrayHasKey('updatedAt', $json);
