@@ -27,19 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register() : void
     {
-        // Carbonのデフォルトフォーマットを設定
-        // ※ SQLの引数にCarbonインスタンスをそのまま渡せるようになど。APIのフォーマットは別途対応
-        Carbon::serializeUsing(function (Carbon $carbon) {
-            return $carbon->copy()->setTimezone(config('app.timezone'))->toDateTimeString();
-        });
-
-        // 開発用のSQLログ
-        if (config('app.debug')) {
-            \DB::listen(function ($query) {
-                \Log::debug('SQL: ' . $query->sql . '; bindings=' . \json_encode($query->bindings) . ' time=' . sprintf("%.2fms", $query->time));
-            });
-        }
-
         // ページング用クラスをアプリ用にカスタマイズしたものに差し替え
         $this->app->bind(
             'Illuminate\Pagination\Paginator',
