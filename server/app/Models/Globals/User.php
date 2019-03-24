@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Enums\ObjectType;
 use App\Exceptions\EmptyResourceException;
 use App\Models\CamelcaseJson;
+use App\Models\Effector;
 use App\Models\Masters\Level;
 use App\Models\Masters\Parameter;
 use App\Models\Virtual\ObjectInfo;
@@ -320,6 +321,40 @@ class User extends Authenticatable
         $user->save();
         $received = new ReceivedInfo($info);
         $received->total = $user->exp;
+        return $received;
+    }
+
+    /**
+     * スタミナのエフェクトを適用する。
+     * @param int $userId ユーザーID。
+     * @param string $effectValue エフェクト設定値。
+     * @return ReceivedInfo 適用結果。
+     */
+    public static function effectStaminaTo(int $userId, string $effectValue) : ReceivedInfo
+    {
+        // スタミナ回復薬+50などを想定。%での回復は現状未対応
+        $user = self::lockForUpdate()->findOrFail($userId);
+        $value = Effector::calcEffect($user->stamina, $effectValue);
+        $received = new ReceivedInfo(['type' => ObjectType::STAMINA, 'count' => $value - $user->stamina, 'total' => $value]);
+        $user->stamina = $value;
+        $user->save();
+        return $received;
+    }
+
+    /**
+     * ユーザー経験値のエフェクトを適用する。
+     * @param int $userId ユーザーID。
+     * @param string $effectValue エフェクト設定値。
+     * @return ReceivedInfo 適用結果。
+     */
+    public static function effectExpTo(int $userId, string $effectValue) : ReceivedInfo
+    {
+        // 経験値+50などを想定
+        $user = self::lockForUpdate()->findOrFail($userId);
+        $value = Effector::calcEffect($user->exp, $effectValue);
+        $received = new ReceivedInfo(['type' => ObjectType::EXP, 'count' => $value - $user->exp, 'total' => $value]);
+        $user->exp = $value;
+        $user->save();
         return $received;
     }
 }

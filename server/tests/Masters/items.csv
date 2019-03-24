@@ -1,5 +1,5 @@
 ﻿id,type,rarity,name_text_id,help_text_id,effect,expired_at
-100,usable,1,ITEM_NAME_STAMINA_S,ITEM_HELP_STAMINA_S,"{""stamina"":50}",
-110,usable,1,ITEM_NAME_EXP_S,ITEM_HELP_EXP_S,"{""exp"":100}",
-200,material,1,ITEM_NAME_MATERIAL_S,ITEM_HELP_MATERIAL_S,"{""cardexp"":100}",
+100,usable,1,ITEM_NAME_STAMINA_S,ITEM_HELP_STAMINA_S,"{""stamina"":""+50""}",
+110,usable,1,ITEM_NAME_EXP_S,ITEM_HELP_EXP_S,"{""exp"":""+100""}",
+200,material,1,ITEM_NAME_MATERIAL_S,ITEM_HELP_MATERIAL_S,"{""cardexp"":""+100""}",
 300,tradable,1,ITEM_NAME_TRADE_MEDAL,ITEM_HELP_TRADE_MEDAL,"",

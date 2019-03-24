@@ -5,7 +5,12 @@ namespace App\Models\Globals;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\ItemType;
+use App\Enums\ObjectType;
+use App\Exceptions\BadRequestException;
+use App\Exceptions\EmptyResourceException;
 use App\Models\CamelcaseJson;
+use App\Models\Effector;
 use App\Models\Virtual\ObjectInfo;
 use App\Models\Virtual\ReceivedInfo;
 
@@ -97,6 +102,19 @@ class UserItem extends Model
             throw new EmptyResourceException("count = {$value} is invalid", new ObjectInfo(['type' => ObjectType::ITEM, 'id' => $this->item_id, 'count' => abs($value)]));
         }
         $this->attributes['count'] = $value;
+    }
+
+    /**
+     * 消費系アイテムを使用する。
+     * @return array 使用結果のReceivedInfo配列。
+     */
+    public function use() : array
+    {
+        if ($this->item->type !== ItemType::USABLE) {
+            throw new BadRequestException("id={$this->id} is not usable");
+        }
+        --$this->count;
+        return Effector::effect($this->user_id, $this->item->effect);
     }
 
     /**

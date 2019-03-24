@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use App\Enums\ObjectType;
+use App\Models\ObjectReceiver;
 
 /**
  * ギフト付与API用のフォームリクエスト。
@@ -20,8 +21,11 @@ class GiftRequest extends FormRequest
         return [
             'objectType' => [
                 'required',
-                // TODO: 種別はギフト専用じゃないので、種別があっても受け取れないものもありそう
-                Rule::in(ObjectType::values()),
+                function ($attribute, $value, $fail) {
+                    if (!ObjectReceiver::isSupported($value)) {
+                        $fail($attribute.' is not supported.');
+                    }
+                },
             ],
             'objectId' => 'integer',
             'count' => 'integer|min:1',

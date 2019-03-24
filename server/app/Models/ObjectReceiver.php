@@ -39,6 +39,16 @@ final class ObjectReceiver
     }
 
     /**
+     * オブジェクト種別が対応している値か？
+     * @param string $type オブジェクト種別。
+     * @return bool 対応している場合true。
+     */
+    public static function isSupported(string $type) : bool
+    {
+        return isset(static::$receiveres[$type]);
+    }
+
+    /**
      * オブジェクトを受け取る。
      * @param int $userId 受け取るユーザーのID。
      * @param object|array $info 受け取るオブジェクト {type, id, count} or {object_type, object_id, count}。
@@ -49,7 +59,7 @@ final class ObjectReceiver
         if (!($info instanceof ObjectInfo)) {
             $info = new ObjectInfo($info);
         }
-        if (!isset(static::$receiveres[$info->type])) {
+        if (!static::isSupported($info->type)) {
             throw new \LogicException("objectType={$info->type} is not supported");
         }
         return call_user_func(static::$receiveres[$info->type], $userId, $info);
