@@ -16,7 +16,7 @@ class GiftControllerTest extends TestCase
         $user = factory(User::class)->states('allgifts')->create();
 
         // ページング条件なしで取得
-        $response = $this->withLogin($user)->json('GET', "/gifts");
+        $response = $this->withLogin($user)->json('GET', '/gifts');
         $response
             ->assertStatus(200)
             ->assertJson([

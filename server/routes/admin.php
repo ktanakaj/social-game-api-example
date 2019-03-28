@@ -40,5 +40,6 @@ Route::middleware('throttle:' . config('app.throttle_requests') . ',1')->group(f
         Route::get('users/{user}/quests/logs', 'QuestController@logs');
         Route::delete('users/{user}/quests/{userQuest}', 'QuestController@destroy');
         Route::get('users/{user}/achievements', 'AchievementController@index');
+        Route::get('users/{user}/gachas/logs', 'GachaController@logs');
     });
 });

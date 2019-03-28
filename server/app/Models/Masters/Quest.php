@@ -2,8 +2,8 @@
 
 namespace App\Models\Masters;
 
-use Carbon\Carbon;
 use App\Models\CamelcaseJson;
+use App\Models\HasPeriod;
 
 /**
  * クエストマスタを表すモデル。
@@ -16,7 +16,7 @@ use App\Models\CamelcaseJson;
  */
 class Quest extends MasterModel
 {
-    use CamelcaseJson;
+    use CamelcaseJson, HasPeriod;
 
     /**
      * 日付として扱う属性。
@@ -39,19 +39,4 @@ class Quest extends MasterModel
         'first_drop_set_id' => 'integer',
         'retry_drop_set_id' => 'integer',
     ];
-
-    /**
-     * 公開中マスタのみを取得するクエリスコープ。
-     */
-    public function scopeActive($query)
-    {
-        return $query->where(function ($query) {
-            $now = Carbon::now();
-            return $query->where(function ($query) use ($now) {
-                $query->whereNull('open_at')->orWhere('open_at', '<=', $now);
-            })->where(function ($query) use ($now) {
-                $query->whereNull('close_at')->orWhere('close_at', '>=', $now);
-            });
-        });
-    }
 }

@@ -1,0 +1,5 @@
+﻿id,gacha_id,object_type,object_id,prices,times,open_at,close_at
+101,1,specialCoin,,10,1,,
+102,1,specialCoin,,100,11,,
+103,1,item,400,1,1,,
+200,2,gameCoin,,100,1,,

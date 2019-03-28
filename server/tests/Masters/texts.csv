@@ -9,6 +9,8 @@ ITEM_NAME_MATERIAL_S,Material (100),強化素材(小)
 ITEM_HELP_MATERIAL_S,Material +100,合成すると経験値を100獲得します。
 ITEM_NAME_TRADE_MEDAL,Trade Medal,メダル
 ITEM_HELP_TRADE_MEDAL,Tradable Medal,アイテムと交換できます。
+ITEM_NAME_GACHA_TICKET,Gacha Ticket,ガチャ券
+ITEM_HELP_GACHA_TICKET,Gacha Ticket,レアガチャが回せます。
 CARD_NAME_HERO,Hero,勇者
 CARD_FLAVOR_HERO,Hero is strong,強い勇者。
 CARD_NAME_FIGHTER,Fighter,戦士
@@ -29,3 +31,7 @@ QUEST_NAME_3,Goblin,ゴブリンの襲来
 QUEST_DESC_3,Goblin,ゴブリンに襲われる
 QUEST_NAME_101,Goblin Hunt,ゴブリン退治
 QUEST_DESC_101,Goblin Hunt,ゴブリンを退治する
+SPECIAL_COIN_GACHA_NAME_1,Special Gacha,レアガチャ
+SPECIAL_COIN_GACHA_DESC_1,A gacha by special coin.,スペシャルコインで回せるガチャです。
+GAME_COIN_GACHA_NAME_2,Coin Gacha,コインガチャ
+GAME_COIN_GACHA_DESC_2,A gacha by game coin.,ゲームコインで回せるガチャです。

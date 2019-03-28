@@ -13,9 +13,6 @@ use Illuminate\Validation\ValidationException;
  */
 class AppException extends \Exception
 {
-    /** SQLコード値: 一意制約違反 */
-    const SQL_STATE_DUP_ENTRY = '23000';
-
     /**
      * エラーごとの追加情報。
      * @var mixed
@@ -66,8 +63,6 @@ class AppException extends \Exception
             return new NotFoundException($ex->getMessage());
         } elseif ($ex instanceof ValidationException) {
             return self::fromValidationException($ex);
-        } elseif ($ex instanceof \PDOException) {
-            return self::fromPDOException($ex);
         }
 
         // その他のエラーは、サーバーエラーに変換
@@ -123,21 +118,5 @@ class AppException extends \Exception
         return new BadRequestException($ex->getMessage() . ' (' . implode(' ', array_map(function ($p) {
             return implode(' ', $p);
         }, $ex->errors())) . ')');
-    }
-
-    /**
-     * DB例外を変換する。
-     * @param \PDOException $ex 変換元の例外。
-     * @return AppException 変換後の例外。
-     */
-    private static function fromPDOException(\PDOException $ex) : AppException
-    {
-        // UNIQUE制約だけConflictExceptionにしてみる
-        // ※ ただし、UNIQUE制約違反はプログラム上のミスなどで起きる可能性もあるので、
-        //    システム上こちらの可能性が高いようなら全部サーバーエラーなどにする
-        if (!empty($ex->errorInfo) && $ex->errorInfo[0] === self::SQL_STATE_DUP_ENTRY) {
-            return new ConflictException($ex->getMessage());
-        }
-        return new InternalServerErrorException($ex->getMessage(), $ex);
     }
 }

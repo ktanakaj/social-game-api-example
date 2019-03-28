@@ -15,7 +15,7 @@ class CreateCardsTable extends Migration
             $table->unsignedInteger('id');
             $table->tinyInteger('rarity');
             $table->string('name_text_id', 64);
-            $table->string('flavor_text_id', 64);
+            $table->string('desc_text_id', 64);
             $table->unsignedInteger('max_hp');
             $table->unsignedInteger('attack');
             $table->unsignedInteger('defense');

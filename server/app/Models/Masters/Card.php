@@ -5,7 +5,7 @@ namespace App\Models\Masters;
 use App\Models\CamelcaseJson;
 
 /**
- * カードのマスタを表すモデル。
+ * カードマスタを表すモデル。
  *
  * カードはユーザーが所持するもので、ユーザーはカードでデッキを組んで敵と戦う。
  * （味方キャラクターや召喚獣などのイメージ。）

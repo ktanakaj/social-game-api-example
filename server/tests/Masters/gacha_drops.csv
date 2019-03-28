@@ -1,0 +1,10 @@
+﻿gacha_id,object_type,object_id,count,weight,open_at,close_at
+1,card,1000,1,1,,
+1,card,1100,1,1,,
+1,card,1200,1,1,,
+2,card,2000,1,10,,
+2,card,2100,1,10,,
+2,card,2200,1,10,,
+2,card,1100,1,1,,
+2,card,1200,1,1,,
+2,item,200,1,10,,

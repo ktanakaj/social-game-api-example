@@ -157,6 +157,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーのガチャ履歴とのリレーション定義。
+     */
+    public function gachalogs() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\Gachalog');
+    }
+
+    /**
      * ゲームコインを保存する。
      * @param mixed $value 値。
      * @throws EmptyResourceException ゲームコインが足りない場合。

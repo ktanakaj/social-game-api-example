@@ -45,6 +45,8 @@ Route::middleware('throttle:' . config('app.throttle_requests') . ',1')->group(f
         Route::post('achievements/recv', 'AchievementController@receiveAll');
         Route::post('achievements/{userAchievementId}/recv', 'AchievementController@receive');
         Route::get('gachas', 'GachaController@index');
+        Route::get('gachas/logs', 'GachaController@logs');
+        Route::get('gachas/{gachaId}', 'GachaController@show');
         Route::post('gachas', 'GachaController@lot');
         Route::post('game/start', 'GameController@start');
         Route::post('game/end', 'GameController@end');

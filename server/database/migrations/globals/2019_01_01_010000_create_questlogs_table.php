@@ -24,9 +24,10 @@ class CreateQuestlogsTable extends Migration
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
 
-            $table->index(['user_id', 'quest_id']);
+            $table->index(['user_id', 'quest_id', 'created_at']);
             $table->index(['user_id', 'created_at']);
-            $table->index('quest_id');
+            $table->index(['quest_id', 'created_at']);
+            $table->index('created_at');
         });
 
         // 時系列で肥大化する想定なのでパーティション化する

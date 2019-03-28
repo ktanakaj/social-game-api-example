@@ -15,7 +15,7 @@ class DeckControllerTest extends TestCase
         $user = factory(User::class)->create();
         $userDeck = $user->decks[0];
 
-        $response = $this->withLogin($user)->json('GET', "/decks");
+        $response = $this->withLogin($user)->json('GET', '/decks');
         $response->assertStatus(200);
 
         $array = $response->json();
@@ -50,7 +50,7 @@ class DeckControllerTest extends TestCase
         ];
 
         // デッキを作成
-        $response = $this->withLogin($user)->json('POST', "/decks", $body);
+        $response = $this->withLogin($user)->json('POST', '/decks', $body);
         $response
             ->assertStatus(201)
             ->assertJson([

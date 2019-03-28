@@ -15,7 +15,7 @@ class CardControllerTest extends TestCase
         $user = factory(User::class)->states('allcards')->create();
 
         // ページング条件なしで取得
-        $response = $this->withLogin($user)->json('GET', "/cards");
+        $response = $this->withLogin($user)->json('GET', '/cards');
         $response
             ->assertStatus(200)
             ->assertJson([

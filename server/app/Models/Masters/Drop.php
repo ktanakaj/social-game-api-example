@@ -60,8 +60,9 @@ class Drop extends MasterModel
         $dropsByGroups = static::where('drop_set_id', $dropSetId)->orderBy('group', 'asc')->get()->groupBy('group');
         $infoArray = [];
         foreach ($dropsByGroups as $drops) {
-            // 同一グループ内でランダムに確率を元に抽選。どれかが当たれば辺り
-            // ※ 積み上げ式なので、グループに50%のものが二つあればどちらかは当たる
+            // 同一グループ内でランダムに確率を元に抽選。どれかが当たれば当たり
+            // ※ 積み上げ式なので、グループに50%のものが二つあればどちらかは当たる。
+            //    合計が100%未満の場合は何も当たらない場合もある。
             $rnd = random_int(0, 100);
             $rate = 0;
             $dropped = null;

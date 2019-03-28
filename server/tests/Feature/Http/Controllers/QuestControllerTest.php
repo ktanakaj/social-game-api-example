@@ -13,7 +13,7 @@ class QuestControllerTest extends TestCase
     public function testIndex() : void
     {
         // ページング条件なしで取得
-        $response = $this->withLogin()->json('GET', "/quests");
+        $response = $this->withLogin()->json('GET', '/quests');
         $response
             ->assertStatus(200)
             ->assertJson([

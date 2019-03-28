@@ -24,7 +24,7 @@ class GameController extends Controller
 
     /**
      * サービスをDIしてコントローラを作成する。
-     * @param GameService $gameService デッキ関連サービス。
+     * @param GameService $gameService ゲーム関連サービス。
      */
     public function __construct(GameService $gameService)
     {
