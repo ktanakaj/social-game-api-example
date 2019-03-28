@@ -7,8 +7,8 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
-use App\Models\Globals\User;
 use App\Models\Admins\Administrator;
+use App\Models\Globals\User;
 
 /**
  * 全テスト共通の処理用の抽象クラス。

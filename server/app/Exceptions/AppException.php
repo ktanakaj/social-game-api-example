@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
@@ -62,6 +63,8 @@ class AppException extends \Exception
             return self::fromHttpException($ex);
         } elseif ($ex instanceof AuthenticationException) {
             return new UnauthorizedException($ex->getMessage());
+        } elseif ($ex instanceof AuthorizationException) {
+            return new ForbiddenException($ex->getMessage());
         } elseif ($ex instanceof ModelNotFoundException) {
             return new NotFoundException($ex->getMessage());
         } elseif ($ex instanceof ValidationException) {

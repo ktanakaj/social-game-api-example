@@ -3,6 +3,8 @@
 namespace Tests\Feature\Http\Controllers\Admin;
 
 use Tests\TestCase;
+use App\Enums\AdminRole;
+use App\Models\Admins\Administrator;
 use App\Models\Globals\User;
 
 class GiftControllerTest extends TestCase
@@ -67,6 +69,29 @@ class GiftControllerTest extends TestCase
             'object_type' => 'item',
             'object_id' => 100,
         ]);
+    }
+
+    /**
+     * ギフト付与（権限無し）のテスト。
+     */
+    public function testStoreWhenHasNotRole() : void
+    {
+        // ロールが読み取り専用の管理者アカウントで呼び出し
+        $admin = factory(Administrator::class)->create(['role' => AdminRole::READONLY]);
+        $user = factory(User::class)->create();
+        $response = $this->withAdminLogin($admin)->json('POST', "/admin/users/{$user->id}/gifts", [
+            'textId' => 'GIFT_MESSAGE_COVERING',
+            'objectType' => 'item',
+            'objectId' => 100,
+        ]);
+        $response
+            ->assertStatus(403)
+            ->assertExactJson([
+                'error' => [
+                    'code' => 'FORBIDDEN',
+                    'message' => 'This action is unauthorized.',
+                ],
+            ]);
     }
 
     /**
