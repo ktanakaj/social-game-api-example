@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use App\Enums\ExitCode;
 use App\Models\Masters\MasterModel;
 
 /**
@@ -34,14 +35,14 @@ class ImportMasters extends Command
         $dir = $this->argument('directory');
         if (!is_dir($dir)) {
             $this->warn("\"{$dir}\" is not directory.");
-            return 128;
+            return ExitCode::DATAERR;
         }
 
         // マスタファイル一覧を取得
         $files = glob("{$dir}/*.csv");
         if (empty($files)) {
             $this->warn("\"{$dir}\" is empty.");
-            return 128;
+            return ExitCode::NOINPUT;
         }
 
         // マスタファイルをインポート

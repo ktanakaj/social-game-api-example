@@ -31,7 +31,7 @@ class CreateUserGiftsTable extends Migration
 
         // 時系列で肥大化する想定なのでパーティション化する
         MigrationUtils::changePrimaryKey('user_gifts', ['id', 'created_at']);
-        MigrationUtils::createDatePartition('user_gifts', 'created_at');
+        MigrationUtils::createMonthlyPartitions('user_gifts', 'created_at');
     }
 
     /**

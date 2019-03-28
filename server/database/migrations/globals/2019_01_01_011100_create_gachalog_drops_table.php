@@ -27,7 +27,7 @@ class CreateGachalogDropsTable extends Migration
 
         // 時系列で肥大化する想定なのでパーティション化する
         MigrationUtils::changePrimaryKey('gachalog_drops', ['id', 'created_at']);
-        MigrationUtils::createDatePartition('gachalog_drops', 'created_at');
+        MigrationUtils::createMonthlyPartitions('gachalog_drops', 'created_at');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
@@ -55,6 +56,8 @@ class AppException extends \Exception
             return $ex;
         } elseif ($ex instanceof MaintenanceModeException) {
             return new AppException($ex->getMessage(), 'MAINTENANCE_MODE', null, $ex);
+        } elseif ($ex instanceof RuntimeException) {
+            return new AppException($ex->getMessage(), 'CONSOLE_ERROR', null, $ex);
         } elseif ($ex instanceof HttpException) {
             return self::fromHttpException($ex);
         } elseif ($ex instanceof AuthenticationException) {

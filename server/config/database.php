@@ -134,4 +134,34 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | 履歴系データ保持期間
+    |--------------------------------------------------------------------------
+    |
+    | 履歴系データの保持期間。履歴系データは月単位のパーティションを切る想定なので、
+    | 期間が過ぎたものは順次パーティションをDROPする。
+    | （消さない場合は以下に定義しない。）
+    |
+    */
+
+    'expire_logs_months' => [
+        [
+            'model' => \App\Models\Globals\UserGift::class,
+            'expire' => env('EXPIRE_LOGS_MONTHS_USER_GIFT', 12),
+        ],
+        [
+            'model' => \App\Models\Globals\Questlog::class,
+            'expire' => env('EXPIRE_LOGS_MONTHS_QUESTLOG', 6),
+        ],
+        [
+            'model' => \App\Models\Globals\Gachalog::class,
+            'expire' => env('EXPIRE_LOGS_MONTHS_GACHALOG', 12),
+        ],
+        [
+            'model' => \App\Models\Globals\GachalogDrop::class,
+            'expire' => env('EXPIRE_LOGS_MONTHS_GACHALOG', 12),
+        ],
+    ],
+
 ];

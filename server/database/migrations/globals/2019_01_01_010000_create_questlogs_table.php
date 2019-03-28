@@ -32,7 +32,7 @@ class CreateQuestlogsTable extends Migration
 
         // 時系列で肥大化する想定なのでパーティション化する
         MigrationUtils::changePrimaryKey('questlogs', ['id', 'created_at']);
-        MigrationUtils::createDatePartition('questlogs', 'created_at');
+        MigrationUtils::createMonthlyPartitions('questlogs', 'created_at');
     }
 
     /**

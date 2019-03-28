@@ -52,4 +52,9 @@
       chdir: "{{ app_svr_dir }}"
     when: env_copy_result is changed
 
+  - name: Creates a crontab entry for Laravel scheduler
+    cron:
+      name: "Laravel scheduler"
+      job: "cd {{ app_svr_dir }} && php artisan schedule:run >> /dev/null 2>&1"
+
   become: false
