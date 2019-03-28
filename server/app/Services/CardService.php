@@ -21,10 +21,7 @@ class CardService
     public function delete(int $userId, int $userCardId) : UserCard
     {
         DB::transaction(function () use ($userId, $userCardId, &$userCard) {
-            $userCard = UserCard::lockForUpdate()->with('decks')->findOrFail($userCardId);
-            if ($userCard->user_id !== $userId) {
-                throw new NotFoundException('The user card is not belong to this user');
-            }
+            $userCard = UserCard::lockForUpdate()->where('user_id', $userId)->with('decks')->findOrFail($userCardId);
             // デッキで使用中の場合、削除でデッキが空になるならデッキも消す
             $userCard->decks->load(['deck' => function ($query) {
                 return $query->withCount('cards');

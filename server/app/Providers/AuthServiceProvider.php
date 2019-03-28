@@ -9,11 +9,10 @@ use App\Enums\AdminRole;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The policy mappings for the application.
+     * アプリケーションに対するポリシーマッピング。
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**

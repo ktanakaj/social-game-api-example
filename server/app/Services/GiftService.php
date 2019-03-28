@@ -22,10 +22,7 @@ class GiftService
     public function receive(int $userId, int $userGiftId) : ReceivedInfo
     {
         DB::transaction(function () use ($userId, $userGiftId, &$received) {
-            $userGift = UserGift::lockForUpdate()->findOrFail($userGiftId);
-            if ($userGift->user_id != $userId) {
-                throw new NotFoundException('The user gift is not belong to me');
-            }
+            $userGift = UserGift::lockForUpdate()->where('user_id', $userId)->findOrFail($userGiftId);
             $received = $userGift->receive();
         });
         return $received;

@@ -21,10 +21,7 @@ class ItemService
     public function use(int $userId, int $userItemId) : array
     {
         DB::transaction(function () use ($userId, $userItemId, &$received) {
-            $userItem = UserItem::lockForUpdate()->findOrFail($userItemId);
-            if ($userItem->user_id != $userId) {
-                throw new NotFoundException('The user item is not belong to me');
-            }
+            $userItem = UserItem::lockForUpdate()->where('user_id', $userId)->findOrFail($userItemId);
             $received = $userItem->use();
             $userItem->save();
         });

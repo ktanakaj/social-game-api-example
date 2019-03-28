@@ -105,10 +105,7 @@ class DeckService
     public function delete(int $userId, int $userDeckId) : UserDeck
     {
         DB::transaction(function () use ($userId, $userDeckId, &$userDeck) {
-            $userDeck = UserDeck::lockForUpdate()->with('cards')->findOrFail($userDeckId);
-            if ($userDeck->user_id !== $userId) {
-                throw new NotFoundException('The user deck is not belong to this user');
-            }
+            $userDeck = UserDeck::lockForUpdate()->where('user_id', $userId)->with('cards')->findOrFail($userDeckId);
             $userDeck->delete();
         });
         return $userDeck;
