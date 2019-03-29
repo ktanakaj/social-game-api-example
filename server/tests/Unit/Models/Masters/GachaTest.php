@@ -12,9 +12,9 @@ class GachaTest extends TestCase
      */
     public function testLot() : void
     {
-        // 何度も回して、weight通りの確率で出ることを確認する
+        // 単純なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する
         $gacha = Gacha::findOrFail(1);
-        $count = 10000;
+        $count = 300;
         $rates = [];
         for ($i = 0; $i < $count; $i++) {
             $info = $gacha->lot();
@@ -26,8 +26,34 @@ class GachaTest extends TestCase
         }
 
         // レアガチャは3枚が均等なので、33%前後で出てればOK
-        $this->assertEquals(0.333, floatval($rates['card:1000:1']) / $count, 0.03);
-        $this->assertEquals(0.333, floatval($rates['card:1100:1']) / $count, 0.03);
-        $this->assertEquals(0.333, floatval($rates['card:1200:1']) / $count, 0.03);
+        $this->assertEqualsWithDelta(0.333, floatval($rates['card:1000:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.333, floatval($rates['card:1100:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.333, floatval($rates['card:1200:1']) / $count, 0.06);
+    }
+
+    /**
+     * ガチャの排出物を抽選のテスト2。
+     */
+    public function testLot2() : void
+    {
+        // 複雑なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する
+        $gacha = Gacha::findOrFail(2);
+        $count = 500;
+        $rates = [];
+        for ($i = 0; $i < $count; $i++) {
+            $info = $gacha->lot();
+            $key = "{$info->type}:{$info->id}:{$info->count}";
+            if (!isset($rates[$key])) {
+                $rates[$key] = 0;
+            }
+            ++$rates[$key];
+        }
+
+        $this->assertEqualsWithDelta(0.238, floatval($rates['card:2000:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.238, floatval($rates['card:2100:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.238, floatval($rates['card:2200:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.023, floatval($rates['card:1100:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.023, floatval($rates['card:1200:1']) / $count, 0.06);
+        $this->assertEqualsWithDelta(0.238, floatval($rates['item:200:1']) / $count, 0.06);
     }
 }

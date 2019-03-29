@@ -25,6 +25,7 @@ class Card extends MasterModel
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'rarity' => 'integer',
         'max_hp' => 'integer',
         'attack' => 'integer',

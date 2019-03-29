@@ -32,6 +32,7 @@ class Item extends MasterModel
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'rarity' => 'integer',
         'effect' => 'array',
         'expired_at' => 'timestamp',

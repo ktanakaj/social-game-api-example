@@ -30,6 +30,7 @@ class GachaPrice extends MasterModel
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'gacha_id' => 'integer',
         'object_id' => 'integer',
         'prices' => 'integer',

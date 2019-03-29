@@ -16,13 +16,30 @@ class GachaControllerTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        // ユーザーが実施可能なガチャの一覧が返る
+        // 有効なガチャの一覧が返る
         $response = $this->withLogin($user)->json('GET', '/gachas');
         $response
             ->assertStatus(200);
 
         $json = $response->json();
-        // TODO: 未実装
+        $this->assertGreaterThan(0, count($json));
+
+        $gacha = $json[0];
+        $this->assertArrayHasKey('id', $gacha);
+        $this->assertArrayHasKey('nameTextId', $gacha);
+        $this->assertArrayHasKey('descTextId', $gacha);
+        $this->assertArrayNotHasKey('drops', $gacha);
+        $this->assertGreaterThan(0, count($gacha['prices']));
+
+        $price = $gacha['prices'][0];
+        $this->assertArrayHasKey('id', $price);
+        $this->assertArrayHasKey('gachaId', $price);
+        $this->assertArrayHasKey('objectType', $price);
+        $this->assertArrayHasKey('objectId', $price);
+        $this->assertArrayHasKey('prices', $price);
+        $this->assertArrayHasKey('times', $price);
+        $this->assertArrayHasKey('openAt', $price);
+        $this->assertArrayHasKey('closeAt', $price);
     }
 
     /**
@@ -36,7 +53,32 @@ class GachaControllerTest extends TestCase
             ->assertStatus(200);
 
         $json = $response->json();
-        // TODO: 未実装
+        $this->assertSame(2, $json['id']);
+        $this->assertArrayHasKey('nameTextId', $json);
+        $this->assertArrayHasKey('descTextId', $json);
+        $this->assertGreaterThan(0, count($json['prices']));
+        $this->assertGreaterThan(0, count($json['drops']));
+
+        $price = $json['prices'][0];
+        $this->assertArrayHasKey('id', $price);
+        $this->assertArrayHasKey('gachaId', $price);
+        $this->assertArrayHasKey('objectType', $price);
+        $this->assertArrayHasKey('objectId', $price);
+        $this->assertArrayHasKey('prices', $price);
+        $this->assertArrayHasKey('times', $price);
+        $this->assertArrayHasKey('openAt', $price);
+        $this->assertArrayHasKey('closeAt', $price);
+
+        $drop = $json['drops'][0];
+        $this->assertArrayHasKey('id', $drop);
+        $this->assertArrayHasKey('gachaId', $drop);
+        $this->assertArrayHasKey('objectType', $drop);
+        $this->assertArrayHasKey('objectId', $drop);
+        $this->assertArrayHasKey('count', $drop);
+        $this->assertArrayHasKey('rate', $drop);
+        $this->assertArrayHasKey('openAt', $drop);
+        $this->assertArrayHasKey('closeAt', $drop);
+        $this->assertArrayNotHasKey('weight', $drop);
     }
 
     /**
@@ -75,7 +117,7 @@ class GachaControllerTest extends TestCase
     public function testLogs() : void
     {
         $user = factory(User::class)->create();
-        $user->gachalogs()->save(factory(Gachalog::class)->make());
+        factory(Gachalog::class)->create(['user_id' => $user->id]);
 
         // ページング条件なしで取得
         $response = $this->withLogin($user)->json('GET', "/gachas/logs");
@@ -100,6 +142,13 @@ class GachaControllerTest extends TestCase
         $this->assertArrayHasKey('gachaPriceId', $log);
         $this->assertArrayHasKey('createdAt', $log);
 
-        // TODO: 未実装
+        $this->assertGreaterThan(0, count($log['drops']));
+        $dropped = $log['drops'][0];
+        $this->assertArrayHasKey('objectType', $dropped);
+        $this->assertArrayHasKey('objectId', $dropped);
+        $this->assertArrayHasKey('count', $dropped);
+        $this->assertArrayNotHasKey('id', $dropped);
+        $this->assertArrayNotHasKey('gachalogId', $dropped);
+        $this->assertArrayNotHasKey('createdAt', $dropped);
     }
 }

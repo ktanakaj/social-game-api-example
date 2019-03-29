@@ -7,6 +7,7 @@ use App\Enums\ObjectType;
 use App\Models\Globals\Gachalog;
 use App\Models\Globals\User;
 use App\Models\Globals\UserItem;
+use App\Models\Masters\Gacha;
 use App\Models\Masters\GachaPrice;
 use App\Models\ObjectReceiver;
 
@@ -22,8 +23,15 @@ class GachaService
      */
     public function findGachas(int $userId) : array
     {
-        // TODO: 未実装
-        return [];
+        // 有効なガチャを返す
+        // TODO: 出来ればユーザーが実行可能なガチャのみを絞り込んで返す。
+        //       初回無料とかをサーバー側で判定することを意図しているが、
+        //       ただ課金コインとかは所持数が足りなくても表示したいので、
+        //       もうちょっと課題の整理が必要かも？
+        //       （everytime=trueのものは有効なら引けなくても常時返すとか？）
+        return Gacha::active()->with(['prices' => function ($query) {
+            return $query->active();
+        }])->get()->all();
     }
 
     /**
@@ -33,8 +41,13 @@ class GachaService
      */
     public function findGacha(int $gachaId) : array
     {
-        // TODO: 未実装
-        return [];
+        // 基本は有効なガチャマスタを返すだけだが、ガチャ排出物だけ確率計算したものを取得する
+        $gacha = Gacha::active()->with(['prices' => function ($query) {
+            return $query->active();
+        }])->findOrFail($gachaId);
+        $result = $gacha->toArray();
+        $result['drops'] = $gacha->getRates()->makeHidden('weight');
+        return $result;
     }
 
     /**

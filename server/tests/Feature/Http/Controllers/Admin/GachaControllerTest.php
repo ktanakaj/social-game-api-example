@@ -14,7 +14,7 @@ class GachaControllerTest extends TestCase
     public function testLogs() : void
     {
         $user = factory(User::class)->create();
-        $user->gachalogs()->save(factory(Gachalog::class)->make());
+        factory(Gachalog::class)->create(['user_id' => $user->id]);
 
         // ページング条件なしで取得
         $response = $this->withAdminLogin()->json('GET', "/admin/users/{$user->id}/gachas/logs");
@@ -39,6 +39,13 @@ class GachaControllerTest extends TestCase
         $this->assertArrayHasKey('gachaPriceId', $log);
         $this->assertArrayHasKey('createdAt', $log);
 
-        // TODO: 未実装
+        $this->assertGreaterThan(0, count($log['drops']));
+        $dropped = $log['drops'][0];
+        $this->assertArrayHasKey('objectType', $dropped);
+        $this->assertArrayHasKey('objectId', $dropped);
+        $this->assertArrayHasKey('count', $dropped);
+        $this->assertArrayNotHasKey('id', $dropped);
+        $this->assertArrayNotHasKey('gachalogId', $dropped);
+        $this->assertArrayNotHasKey('createdAt', $dropped);
     }
 }

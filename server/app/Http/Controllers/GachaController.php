@@ -24,8 +24,137 @@ use App\Services\GachaService;
  *     description="ガチャID",
  *     type="integer",
  *   ),
+ *   @OA\Property(
+ *     property="nameTextId",
+ *     description="ガチャ名テキストID",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="descTextId",
+ *     description="ガチャ説明テキストID",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="prices",
+ *     description="価格",
+ *     type="array",
+ *     @OA\Items(ref="#/components/schemas/GachaPrice")
+ *   ),
  *   required={
  *     "id",
+ *     "nameTextId",
+ *     "descTextId",
+ *     "prices",
+ *   },
+ * )
+ *
+ * @OA\Schema(
+ *   schema="GachaPrice",
+ *   type="object",
+ *   @OA\Property(
+ *     property="id",
+ *     description="ガチャ価格ID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="gachaId",
+ *     description="ガチャID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="objectType",
+ *     description="オブジェクト種別",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="objectId",
+ *     description="オブジェクトID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="prices",
+ *     description="価格",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="times",
+ *     description="n連回数",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="openAt",
+ *     description="有効期間開始",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="closeAt",
+ *     description="有効期間終了",
+ *     type="integer",
+ *   ),
+ *   required={
+ *     "id",
+ *     "gachaId",
+ *     "objectType",
+ *     "objectId",
+ *     "prices",
+ *     "times",
+ *     "openAt",
+ *     "closeAt",
+ *   },
+ * )
+ *
+ * @OA\Schema(
+ *   schema="GachaDrop",
+ *   type="object",
+ *   @OA\Property(
+ *     property="id",
+ *     description="ガチャ排出物ID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="gachaId",
+ *     description="ガチャID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="objectType",
+ *     description="オブジェクト種別",
+ *     type="string",
+ *   ),
+ *   @OA\Property(
+ *     property="objectId",
+ *     description="オブジェクトID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="count",
+ *     description="個数",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="rate",
+ *     description="排出率",
+ *     type="number",
+ *   ),
+ *   @OA\Property(
+ *     property="openAt",
+ *     description="有効期間開始",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="closeAt",
+ *     description="有効期間終了",
+ *     type="integer",
+ *   ),
+ *   required={
+ *     "id",
+ *     "gachaId",
+ *     "objectType",
+ *     "objectId",
+ *     "count",
+ *     "rate",
+ *     "openAt",
+ *     "closeAt",
  *   },
  * )
  *
@@ -53,6 +182,34 @@ use App\Services\GachaService;
  *     type="integer",
  *   ),
  *   @OA\Property(
+ *     property="drops",
+ *     description="排出物",
+ *     type="array",
+ *     @OA\Items(
+ *       type="object",
+ *       @OA\Property(
+ *         property="objectType",
+ *         description="オブジェクト種別",
+ *         type="string",
+ *       ),
+ *       @OA\Property(
+ *         property="objectId",
+ *         description="オブジェクトID",
+ *         type="integer",
+ *       ),
+ *       @OA\Property(
+ *         property="count",
+ *         description="個数",
+ *         type="integer",
+ *       ),
+ *       required={
+ *         "objectType",
+ *         "objectId",
+ *         "count",
+ *       },
+ *     )
+ *   ),
+ *   @OA\Property(
  *     property="createdAt",
  *     description="ガチャ実施日時",
  *     type="integer",
@@ -62,6 +219,7 @@ use App\Services\GachaService;
  *     "userId",
  *     "gachaId",
  *     "gachaPriceId",
+ *     "drops",
  *     "createdAt",
  *   },
  * )
@@ -86,7 +244,7 @@ class GachaController extends Controller
      * @OA\Get(
      *   path="/gachas",
      *   summary="ガチャ一覧",
-     *   description="認証中のユーザーが実行可能なガチャの一覧を取得する。",
+     *   description="認証中のユーザーが利用可能なガチャの一覧を取得する。",
      *   tags={
      *     "Gachas",
      *   },
@@ -135,7 +293,19 @@ class GachaController extends Controller
      *     response=200,
      *     description="ガチャ詳細",
      *     @OA\JsonContent(
-     *       ref="#/components/schemas/Gacha"
+     *       type="object",
+     *       allOf={
+     *         @OA\Schema(ref="#components/schemas/Gacha"),
+     *         @OA\Schema(
+     *           type="object",
+     *           @OA\Property(
+     *             property="drops",
+     *             description="ガチャ排出物",
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/GachaDrop")
+     *           ),
+     *         ),
+     *       }
      *     ),
      *   ),
      *   @OA\Response(

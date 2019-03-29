@@ -28,6 +28,16 @@ class GachalogDrop extends Model
     ];
 
     /**
+     * JSONへの変換結果に含めないカラム。
+     * @var array
+     */
+    protected $hidden = [
+        'id',
+        'gachalog_id',
+        'created_at',
+    ];
+
+    /**
      * ネイティブなタイプへキャストする属性。
      * @var array
      */

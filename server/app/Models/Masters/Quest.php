@@ -32,6 +32,7 @@ class Quest extends MasterModel
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'previous_id' => 'integer',
         'open_at' => 'timestamp',
         'close_at' => 'timestamp',
