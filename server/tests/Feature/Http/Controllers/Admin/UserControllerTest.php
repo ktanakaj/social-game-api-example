@@ -35,7 +35,7 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('name', $user);
         $this->assertArrayHasKey('gameCoins', $user);
         $this->assertArrayHasKey('specialCoins', $user);
-        $this->assertArrayHasKey('freeSpecialCoins', $user);
+        $this->assertArrayHasKey('paidSpecialCoins', $user);
         $this->assertArrayHasKey('exp', $user);
         $this->assertArrayHasKey('stamina', $user);
         $this->assertArrayHasKey('lastLogin', $user);
@@ -54,8 +54,8 @@ class UserControllerTest extends TestCase
         $body = [
             'name' => 'updated by testUpdate()',
             'gameCoins' => 100000,
-            'specialCoins' => 100,
-            'freeSpecialCoins' => 1000,
+            'specialCoins' => 1000,
+            'paidSpecialCoins' => 100,
             'exp' => 10000,
             'stamina' => 150,
         ];
@@ -74,7 +74,7 @@ class UserControllerTest extends TestCase
             'name' => $json['name'],
             'game_coins' => $json['gameCoins'],
             'special_coins' => $json['specialCoins'],
-            'free_special_coins' => $json['freeSpecialCoins'],
+            'paid_special_coins' => $json['paidSpecialCoins'],
             'exp' => $json['exp'],
             'stamina' => $json['stamina'],
         ]);

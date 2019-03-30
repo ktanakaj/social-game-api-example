@@ -72,8 +72,7 @@ class GachaService
                     break;
                 case ObjectType::SPECIAL_COIN:
                     $user = User::lockForUpdate()->findOrFail($userId);
-                    // FIXME: 課金/非課金のコイン両方を見る
-                    $user->free_special_coins -= $gachaPrice->prices * $params['count'];
+                    $user->special_coins -= $gachaPrice->prices * $params['count'];
                     $user->save();
                     break;
                 case ObjectType::ITEM:

@@ -12,6 +12,8 @@ final class ObjectType
     const GAME_COIN = 'gameCoin';
     /** オブジェクト種別: 課金コイン */
     const SPECIAL_COIN = 'specialCoin';
+    /** オブジェクト種別: 有償課金コイン */
+    const PAID_SPECIAL_COIN = 'paidSpecialCoin';
     /** オブジェクト種別: 経験値 */
     const EXP = 'exp';
     /** オブジェクト種別: スタミナ */

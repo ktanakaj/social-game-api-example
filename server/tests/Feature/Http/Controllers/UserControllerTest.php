@@ -21,7 +21,7 @@ class UserControllerTest extends TestCase
         $this->assertArrayHasKey('id', $json);
         $this->assertSame('(noname)', $json['name']);
         $this->assertSame(10000, $json['gameCoins']);
-        $this->assertSame(100, $json['freeSpecialCoins']);
+        $this->assertSame(100, $json['specialCoins']);
         $this->assertArrayHasKey('createdAt', $json);
         $this->assertArrayHasKey('updatedAt', $json);
         $this->assertArrayNotHasKey('token', $json);
@@ -31,7 +31,7 @@ class UserControllerTest extends TestCase
             'id' => $json['id'],
             'name' => $json['name'],
             'game_coins' => $json['gameCoins'],
-            'free_special_coins' => $json['freeSpecialCoins'],
+            'special_coins' => $json['specialCoins'],
         ]);
         $this->assertDatabaseHas('user_cards', [
             'user_id' => $json['id'],

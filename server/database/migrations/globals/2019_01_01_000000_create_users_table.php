@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->string('name', 191);
             $table->unsignedBigInteger('game_coins');
             $table->unsignedInteger('special_coins');
-            $table->unsignedInteger('free_special_coins');
+            $table->unsignedInteger('paid_special_coins');
             $table->unsignedSmallInteger('level');
             $table->unsignedBigInteger('exp');
             $table->unsignedInteger('stamina');

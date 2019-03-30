@@ -29,8 +29,8 @@ use App\Models\Globals\User;
  *     type="integer",
  *   ),
  *   @OA\Property(
- *     property="freeSpecialCoins",
- *     description="無償課金コイン",
+ *     property="paidSpecialCoins",
+ *     description="有償課金コイン",
  *     type="integer",
  *   ),
  *   @OA\Property(
@@ -87,7 +87,7 @@ use App\Models\Globals\User;
  *         "name",
  *         "gameCoins",
  *         "specialCoins",
- *         "freeSpecialCoins",
+ *         "paidSpecialCoins",
  *         "exp",
  *         "stamina",
  *         "createdAt",
@@ -250,7 +250,7 @@ class UserController extends Controller
         $request->validate([
             'gameCoins' => 'integer|min:0',
             'specialCoins' => 'integer|min:0',
-            'freeSpecialCoins' => 'integer|min:0',
+            'paidSpecialCoins' => 'integer|min:0',
             'exp' => 'integer|min:0',
             'stamina' => 'integer|min:0',
         ]);

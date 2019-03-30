@@ -1,5 +1,5 @@
 ﻿id,type,value,comment
-INITIAL_USER_DATA,json,"{""name"":""(noname)"",""game_coins"":10000,""game_coins"":10000,""free_special_coins"":100}",ユーザーの初期データ
+INITIAL_USER_DATA,json,"{""name"":""(noname)"",""game_coins"":10000,""game_coins"":10000,""special_coins"":100}",ユーザーの初期データ
 INITIAL_USER_CARDS,json,"[{""card_id"":1000}]",ユーザーの初期カード
 INITIAL_USER_ITEMS,json,"[{""item_id"":100,""count"":1}]",ユーザーの初期アイテム
 MAX_DECKS,integer,4,デッキの最大数

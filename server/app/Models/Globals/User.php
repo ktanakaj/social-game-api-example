@@ -30,7 +30,7 @@ class User extends Authenticatable
         'name',
         'game_coins',
         'special_coins',
-        'free_special_coins',
+        'paid_special_coins',
         'exp',
         'stamina',
     ];
@@ -60,7 +60,7 @@ class User extends Authenticatable
     protected $casts = [
         'game_coins' => 'integer',
         'special_coins' => 'integer',
-        'free_special_coins' => 'integer',
+        'paid_special_coins' => 'integer',
         'level' => 'integer',
         'exp' => 'integer',
         'stamina' => 'integer',
@@ -79,7 +79,7 @@ class User extends Authenticatable
     protected $attributes = [
         'game_coins' => 0,
         'special_coins' => 0,
-        'free_special_coins' => 0,
+        'paid_special_coins' => 0,
         'level' => 1,
         'exp' => 0,
         'stamina' => 0,
@@ -179,32 +179,36 @@ class User extends Authenticatable
     }
 
     /**
-     * スペシャルコイン（課金）を保存する。
+     * スペシャルコインを保存する。
      * @param mixed $value 値。
      * @throws EmptyResourceException スペシャルコインが足りない場合。
      */
     public function setSpecialCoinsAttribute(int $value) : void
     {
-        // TODO: 非課金から先に減らす仕組みを考える（モデル外でやる？ただし課金石専用みたいなものもありえそう）
         // 保存前にバリデーション実施
         if ($value < 0) {
-            throw new EmptyResourceException("special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::SPECIAL_COIN, 'count' => abs($value)]));
+            // 減らす場合は、有償分があればそちらから減らして補う
+            if ($this->paid_special_coins + $value < 0) {
+                throw new EmptyResourceException("special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::SPECIAL_COIN, 'count' => abs($value)]));
+            }
+            $this->paid_special_coins += $value;
+            $value = 0;
         }
         $this->attributes['special_coins'] = $value;
     }
 
     /**
-     * スペシャルコイン（非課金）を保存する。
+     * スペシャルコイン（有償）を保存する。
      * @param mixed $value 値。
      * @throws EmptyResourceException スペシャルコインが足りない場合。
      */
-    public function setFreeSpecialCoinsAttribute(int $value) : void
+    public function setPaidSpecialCoinsAttribute(int $value) : void
     {
         // 保存前にバリデーション実施
         if ($value < 0) {
-            throw new EmptyResourceException("free_special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::SPECIAL_COIN, 'count' => abs($value)]));
+            throw new EmptyResourceException("paid_special_coins = {$value} is invalid", new ObjectInfo(['type' => ObjectType::PAID_SPECIAL_COIN, 'count' => abs($value)]));
         }
-        $this->attributes['free_special_coins'] = $value;
+        $this->attributes['paid_special_coins'] = $value;
     }
 
     /**
@@ -307,12 +311,12 @@ class User extends Authenticatable
      */
     public static function receiveSpecialCoinTo(int $userId, ObjectInfo $info) : ReceivedInfo
     {
-        // このメソッドで受け取った分は、非課金コインとして加算する
+        // このメソッドで受け取った分は、無償コインとして加算する
         $user = self::lockForUpdate()->findOrFail($userId);
-        $user->free_special_coins += $info->count;
+        $user->special_coins += $info->count;
         $user->save();
         $received = new ReceivedInfo($info);
-        $received->total = $user->special_coins + $user->free_special_coins;
+        $received->total = $user->special_coins + $user->paid_special_coins;
         return $received;
     }
 

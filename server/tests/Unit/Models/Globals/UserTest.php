@@ -3,11 +3,81 @@
 namespace Tests\Unit\Models\Globals;
 
 use Tests\TestCase;
+use App\Exceptions\EmptyResourceException;
 use App\Models\Globals\User;
 use App\Models\Virtual\ObjectInfo;
 
 class UserTest extends TestCase
 {
+    /**
+     * 課金コイン更新のテスト。
+     */
+    public function testSpecialCoins() : void
+    {
+        $user = new User();
+
+        // 通常は普通のプロパティとして機能
+        $this->assertSame(0, $user->special_coins);
+        $this->assertSame(0, $user->paid_special_coins);
+
+        $user->special_coins = 1000;
+        $user->paid_special_coins = 100;
+        $this->assertSame(1000, $user->special_coins);
+        $this->assertSame(100, $user->paid_special_coins);
+
+        $user->special_coins = 200;
+        $this->assertSame(200, $user->special_coins);
+        $this->assertSame(100, $user->paid_special_coins);
+
+        $user->paid_special_coins = 40;
+        $this->assertSame(200, $user->special_coins);
+        $this->assertSame(40, $user->paid_special_coins);
+
+        // 値を減らす場合、無償分で足りなければ、自動的に有償分から減らす
+        $user->special_coins = -30;
+        $this->assertSame(0, $user->special_coins);
+        $this->assertSame(10, $user->paid_special_coins);
+
+        $user->special_coins = -10;
+        $this->assertSame(0, $user->special_coins);
+        $this->assertSame(0, $user->paid_special_coins);
+    }
+
+    /**
+     * 課金コイン更新のテスト（マイナス値）。
+     */
+    public function testSpecialCoinsAtMinusValue() : void
+    {
+        // 値がマイナスになる場合は例外
+        $this->expectException(EmptyResourceException::class);
+        $user = new User();
+        $user->special_coins = -1;
+    }
+
+    /**
+     * 課金コイン更新のテスト（マイナス値）。
+     */
+    public function testSpecialCoinsAtMinusValueWithPaid() : void
+    {
+        // 有償があっても、マイナスになる場合はNG
+        $this->expectException(EmptyResourceException::class);
+        $user = new User();
+        $user->special_coins = 200;
+        $user->paid_special_coins = 40;
+        $user->special_coins = -41;
+    }
+
+    /**
+     * 有償課金コイン更新のテスト（マイナス値）。
+     */
+    public function testPaidSpecialCoinsAtMinusValue() : void
+    {
+        // 値がマイナスになる場合は例外
+        $this->expectException(EmptyResourceException::class);
+        $user = new User();
+        $user->paid_special_coins = -1;
+    }
+
     /**
      * レベル更新のテスト。
      */
@@ -86,6 +156,17 @@ class UserTest extends TestCase
     }
 
     /**
+     * スタミナ更新のテスト（マイナス値）。
+     */
+    public function testStaminaAtMinusValue() : void
+    {
+        // 値がマイナスになる場合は例外
+        $this->expectException(EmptyResourceException::class);
+        $user = new User();
+        $user->stamina = -1;
+    }
+
+    /**
      * ゲームコインを受け取るのテスト。
      */
     public function testReceiveGameCoinTo() : void
@@ -116,13 +197,13 @@ class UserTest extends TestCase
 
         $this->assertNull($received->id);
         $this->assertSame(1000, $received->count);
-        $this->assertSame($user->special_coins + $user->free_special_coins + 1000, $received->total);
+        $this->assertSame($user->special_coins + $user->paid_special_coins + 1000, $received->total);
         $this->assertFalse($received->is_new);
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'free_special_coins' => $user->free_special_coins + 1000,
-            'special_coins' => $user->special_coins,
+            'special_coins' => $user->special_coins + 1000,
+            'paid_special_coins' => $user->paid_special_coins,
         ]);
     }
 
