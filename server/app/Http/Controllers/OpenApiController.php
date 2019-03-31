@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
  *
  * @OA\Info(
  *   title="social-game-api-example API",
- *   version="0.1.0",
+ *   version="0.2.0",
  *   description="Laravel 5勉強用ソシャゲAPIサンプルアプリ。"
  * ),
  * @OA\Server(
