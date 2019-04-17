@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Enums\QuestStatus;
@@ -14,7 +12,7 @@ class CreateQuestlogsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('questlogs', function (Blueprint $table) {
+        \Schema::create('questlogs', function (Blueprint $table) {
             // TODO: 本当は使用したデッキの情報やインゲームのスコアや時間、獲得した報酬などを残したいが、
             //       とりあえず現状はプレイ中か完了済みかの記録のみ。
             $table->bigIncrements('id');
@@ -40,6 +38,6 @@ class CreateQuestlogsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('questlogs');
+        \Schema::dropIfExists('questlogs');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Connection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * マイグレーション用の共通処理。
@@ -32,7 +31,7 @@ final class MigrationUtils
     public static function createMonthlyPartitions(string $table, string $column, string $conn = null) : void
     {
         // サポートしていないDBでは無視する（主にユニットテストで違うDBを使う場合などを想定）
-        $connection = DB::connection($conn);
+        $connection = \DB::connection($conn);
         $driver = $connection->getDriverName();
         switch ($driver) {
             case 'mysql':
@@ -71,7 +70,7 @@ final class MigrationUtils
     public static function dropMonthlyPartition(string $table, \DateTimeInterface $date, string $conn = null) : bool
     {
         // サポートしていないDBでは無視する（主にユニットテストで違うDBを使う場合などを想定）
-        $connection = DB::connection($conn);
+        $connection = \DB::connection($conn);
         $driver = $connection->getDriverName();
         switch ($driver) {
             case 'mysql':
@@ -128,7 +127,7 @@ final class MigrationUtils
     public static function changePrimaryKey(string $table, $column, string $conn = null) : void
     {
         // DBの種類によって構文が違うので振り分け
-        $connection = DB::connection($conn);
+        $connection = \DB::connection($conn);
         $driver = $connection->getDriverName();
         switch ($driver) {
             case 'mysql':

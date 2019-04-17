@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Globals\User;
 use App\Services\UserService;
 
@@ -71,7 +70,7 @@ class UserController extends Controller
         // ユーザーを新規登録して認証済みにする
         $request->validate(['token' => 'required']);
         $user = $this->service->create($request->input('token'));
-        Auth::login($user);
+        \Auth::login($user);
         return $user;
     }
 
@@ -100,6 +99,6 @@ class UserController extends Controller
      */
     public function me()
     {
-        return Auth::user();
+        return \Auth::user();
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateUserDecksTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('user_decks', function (Blueprint $table) {
+        \Schema::create('user_decks', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedTinyInteger('no');
@@ -22,7 +21,7 @@ class CreateUserDecksTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
         });
 
-        Schema::table('users', function (Blueprint $table) {
+        \Schema::table('users', function (Blueprint $table) {
             $table->foreign('last_selected_deck_id')->references('id')->on('user_decks')->onDelete('set null');
         });
     }
@@ -32,9 +31,9 @@ class CreateUserDecksTable extends Migration
      */
     public function down() : void
     {
-        Schema::table('users', function (Blueprint $table) {
+        \Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['last_selected_deck_id']);
         });
-        Schema::dropIfExists('user_decks');
+        \Schema::dropIfExists('user_decks');
     }
 }

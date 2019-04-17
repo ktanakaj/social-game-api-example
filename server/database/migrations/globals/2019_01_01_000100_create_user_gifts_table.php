@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Models\MigrationUtils;
@@ -13,7 +11,7 @@ class CreateUserGiftsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('user_gifts', function (Blueprint $table) {
+        \Schema::create('user_gifts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
             $table->string('text_id', 64);
@@ -39,6 +37,6 @@ class CreateUserGiftsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('user_gifts');
+        \Schema::dropIfExists('user_gifts');
     }
 }

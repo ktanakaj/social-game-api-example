@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotFoundException;
 use App\Models\Globals\UserGift;
 use App\Models\Virtual\ReceivedInfo;
@@ -21,7 +20,7 @@ class GiftService
      */
     public function receive(int $userId, int $userGiftId) : ReceivedInfo
     {
-        DB::transaction(function () use ($userId, $userGiftId, &$received) {
+        \DB::transaction(function () use ($userId, $userGiftId, &$received) {
             $userGift = UserGift::lockForUpdate()->where('user_id', $userId)->findOrFail($userGiftId);
             $received = $userGift->receive();
         });
@@ -35,7 +34,7 @@ class GiftService
      */
     public function receiveAll(int $userId) : array
     {
-        DB::transaction(function () use ($userId, &$receivedArray) {
+        \DB::transaction(function () use ($userId, &$receivedArray) {
             $receivedArray = UserGift::lockForUpdate()->where('user_id', $userId)->get()->map(function ($m) {
                 return $m->receive();
             })->all();

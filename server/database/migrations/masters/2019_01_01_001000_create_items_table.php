@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateItemsTable extends Migration
      */
     public function up() : void
     {
-        Schema::connection('master')->create('items', function (Blueprint $table) {
+        \Schema::connection('master')->create('items', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->string('type', 32);
             $table->tinyInteger('rarity');
@@ -30,6 +29,6 @@ class CreateItemsTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('master')->dropIfExists('items');
+        \Schema::connection('master')->dropIfExists('items');
     }
 }

@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use App\Enums\ExitCode;
 use App\Models\Masters\MasterModel;
 
@@ -47,14 +45,14 @@ class ImportMasters extends Command
 
         // マスタファイルをインポート
         foreach ($files as $file) {
-            DB::connection('master')->transaction(function () use ($file) {
+            \DB::connection('master')->transaction(function () use ($file) {
                 $this->importMaster($file);
             });
         }
 
         // マスタキャッシュをリセット
         // ※ 現状、マスタキャッシュ以外のキャッシュも全て消している
-        Cache::flush();
+        \Cache::flush();
     }
 
     /**

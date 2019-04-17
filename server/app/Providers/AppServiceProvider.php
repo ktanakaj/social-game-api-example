@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
 use App\Enums\EffectType;
 use App\Enums\ObjectType;
 use App\Models\Globals\User;
@@ -21,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot() : void
     {
         // DBのインデックス長の設定
-        Schema::defaultStringLength(191);
+        \Schema::defaultStringLength(191);
     }
 
     /**

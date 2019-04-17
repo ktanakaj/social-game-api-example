@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateUserDeckCardsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('user_deck_cards', function (Blueprint $table) {
+        \Schema::create('user_deck_cards', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_deck_id');
             $table->unsignedInteger('user_card_id');
@@ -31,6 +30,6 @@ class CreateUserDeckCardsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('user_deck_cards');
+        \Schema::dropIfExists('user_deck_cards');
     }
 }

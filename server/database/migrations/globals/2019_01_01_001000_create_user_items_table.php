@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateUserItemsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('user_items', function (Blueprint $table) {
+        \Schema::create('user_items', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('item_id');
@@ -30,6 +29,6 @@ class CreateUserItemsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('user_items');
+        \Schema::dropIfExists('user_items');
     }
 }

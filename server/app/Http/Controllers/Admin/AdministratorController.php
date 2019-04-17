@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
 /**
@@ -104,6 +103,6 @@ class AdministratorController extends Controller
      */
     public function me()
     {
-        return Auth::guard('admin')->user();
+        return \Auth::guard('admin')->user();
     }
 }

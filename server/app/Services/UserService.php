@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Globals\User;
 use App\Models\Masters\Parameter;
 
@@ -32,7 +31,7 @@ class UserService
      */
     public function create(string $token) : User
     {
-        DB::transaction(function () use ($token, &$user) {
+        \DB::transaction(function () use ($token, &$user) {
             // 新規ユーザーを作成し、マスタで定義された初期データを設定する
             $user = new User();
             if ($data = Parameter::get('INITIAL_USER_DATA')) {

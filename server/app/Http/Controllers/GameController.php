@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GameStartRequest;
 use App\Http\Requests\GameEndRequest;
 use App\Services\GameService;
@@ -104,7 +103,7 @@ class GameController extends Controller
      */
     public function start(GameStartRequest $request)
     {
-        return $this->service->start(Auth::id(), $request->input());
+        return $this->service->start(\Auth::id(), $request->input());
     }
 
     /**
@@ -167,6 +166,6 @@ class GameController extends Controller
      */
     public function end(GameEndRequest $request)
     {
-        return $this->service->end(Auth::id(), $request->input());
+        return $this->service->end(\Auth::id(), $request->input());
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use App\Models\Masters\Parameter;
@@ -24,7 +23,7 @@ class DeckRequest extends FormRequest
                 'required',
                 'integer',
                 'distinct',
-                Rule::exists('user_cards', 'id')->where('user_id', Auth::id()),
+                Rule::exists('user_cards', 'id')->where('user_id', \Auth::id()),
             ],
             '*.position' => "required|integer|min:0|max:{$max}|distinct",
         ];

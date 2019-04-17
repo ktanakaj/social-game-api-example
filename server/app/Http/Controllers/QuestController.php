@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\UserQuest;
 
@@ -74,6 +73,6 @@ class QuestController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return UserQuest::where('user_id', Auth::id())->paginate($request->input('max', 20));
+        return UserQuest::where('user_id', \Auth::id())->paginate($request->input('max', 20));
     }
 }

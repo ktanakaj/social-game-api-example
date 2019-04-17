@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use App\Models\Globals\UserQuest;
@@ -47,7 +46,7 @@ class GameStartRequest extends FormRequest
 
             $quest = Quest::findOrFail($this->input('questId'));
             if ($quest->previous_id) {
-                if (UserQuest::where('user_id', Auth::id())->where('quest_id', $quest->previous_id)->where('count', '>', 0)->doesntExist()) {
+                if (UserQuest::where('user_id', \Auth::id())->where('quest_id', $quest->previous_id)->where('count', '>', 0)->doesntExist()) {
                     // ※ 現在汎用のバリデーションエラーとメッセージに乗っている。分けた方がよいかも？
                     $validator->addFailure('previousId', 'exists:user_quests,quest_id');
                 }

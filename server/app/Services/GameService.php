@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Globals\Questlog;
 use App\Models\Globals\User;
 use App\Models\Globals\UserQuest;
@@ -23,7 +22,7 @@ class GameService
      */
     public function start(int $userId, array $params) : array
     {
-        DB::transaction(function () use ($userId, $params, &$result) {
+        \DB::transaction(function () use ($userId, $params, &$result) {
             // スタミナを消費して履歴を作成
             $quest = Quest::findOrFail($params['questId']);
             $user = User::lockForUpdate()->findOrFail($userId);
@@ -46,7 +45,7 @@ class GameService
      */
     public function end(int $userId, array $params) : array
     {
-        DB::transaction(function () use ($userId, $params, &$receivedArray) {
+        \DB::transaction(function () use ($userId, $params, &$receivedArray) {
             $receivedArray = [];
 
             // 履歴を更新して報酬を付与

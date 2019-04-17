@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotFoundException;
 use App\Models\Globals\User;
 use App\Models\Globals\UserDeck;
@@ -21,7 +20,7 @@ class DeckService
      */
     public function create(int $userId, array $cards) : UserDeck
     {
-        DB::transaction(function () use ($userId, $cards, &$userDeck) {
+        \DB::transaction(function () use ($userId, $cards, &$userDeck) {
             // デッキ番号を自動採番して作成
             $user = User::lockForUpdate()->findOrFail($userId);
             $userDeck = new UserDeck();
@@ -66,7 +65,7 @@ class DeckService
      */
     public function update(int $userId, int $userDeckId, array $cards) : UserDeck
     {
-        DB::transaction(function () use ($userId, $userDeckId, $cards, &$userDeck) {
+        \DB::transaction(function () use ($userId, $userDeckId, $cards, &$userDeck) {
             // カード情報を新しく渡されたものに全て置き換える
             $user = User::lockForUpdate()->findOrFail($userId);
             $userDeck = $user->decks()->lockForUpdate()->findOrFail($userDeckId);
@@ -104,7 +103,7 @@ class DeckService
      */
     public function delete(int $userId, int $userDeckId) : UserDeck
     {
-        DB::transaction(function () use ($userId, $userDeckId, &$userDeck) {
+        \DB::transaction(function () use ($userId, $userDeckId, &$userDeck) {
             $userDeck = UserDeck::lockForUpdate()->where('user_id', $userId)->with('cards')->findOrFail($userDeckId);
             $userDeck->delete();
         });

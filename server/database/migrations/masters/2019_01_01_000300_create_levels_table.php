@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateLevelsTable extends Migration
      */
     public function up() : void
     {
-        Schema::connection('master')->create('levels', function (Blueprint $table) {
+        \Schema::connection('master')->create('levels', function (Blueprint $table) {
             // ※ id=level
             $table->unsignedSmallInteger('level');
             $table->unsignedInteger('exp');
@@ -27,6 +26,6 @@ class CreateLevelsTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('master')->dropIfExists('levels');
+        \Schema::connection('master')->dropIfExists('levels');
     }
 }

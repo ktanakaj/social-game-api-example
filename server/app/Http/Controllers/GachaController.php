@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GachaRequest;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\Gachalog;
@@ -268,7 +267,7 @@ class GachaController extends Controller
      */
     public function index()
     {
-        return $this->service->findGachas(Auth::id());
+        return $this->service->findGachas(\Auth::id());
     }
 
     /**
@@ -380,7 +379,7 @@ class GachaController extends Controller
      */
     public function lot(GachaRequest $request)
     {
-        return $this->service->lot(Auth::id(), $request->input());
+        return $this->service->lot(\Auth::id(), $request->input());
     }
 
     /**
@@ -441,6 +440,6 @@ class GachaController extends Controller
     public function logs(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return Gachalog::where('user_id', Auth::id())->with('drops')->paginate($request->input('max', 20));
+        return Gachalog::where('user_id', \Auth::id())->with('drops')->paginate($request->input('max', 20));
     }
 }

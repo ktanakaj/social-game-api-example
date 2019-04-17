@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\UserGift;
 use App\Services\GiftService;
@@ -89,7 +88,7 @@ class GiftController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return UserGift::where('user_id', Auth::id())->paginate($request->input('max', 20));
+        return UserGift::where('user_id', \Auth::id())->paginate($request->input('max', 20));
     }
 
     /**
@@ -134,7 +133,7 @@ class GiftController extends Controller
      */
     public function receive(int $userGiftId)
     {
-        return $this->service->receive(Auth::id(), $userGiftId);
+        return $this->service->receive(\Auth::id(), $userGiftId);
     }
 
     /**
@@ -170,6 +169,6 @@ class GiftController extends Controller
      */
     public function receiveAll()
     {
-        return $this->service->receiveAll(Auth::id());
+        return $this->service->receiveAll(\Auth::id());
     }
 }

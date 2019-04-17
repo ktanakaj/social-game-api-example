@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Models\MigrationUtils;
@@ -13,7 +11,7 @@ class CreateGachalogsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('gachalogs', function (Blueprint $table) {
+        \Schema::create('gachalogs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
             // ※ gacha_id は gacha_price_id から辿れるが、集計の便宜上定義
@@ -37,6 +35,6 @@ class CreateGachalogsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('gachalogs');
+        \Schema::dropIfExists('gachalogs');
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Exceptions\BadRequestException;
 use App\Http\Controllers\Controller;
 
@@ -61,13 +60,13 @@ class AuthController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-        if (!Auth::guard('admin')->attempt([
+        if (!\Auth::guard('admin')->attempt([
             'email' => $request->input('email'),
             'password' => $request->input('password'),
         ])) {
             throw new BadRequestException('email or password is incorrect');
         }
-        return Auth::guard('admin')->user();
+        return \Auth::guard('admin')->user();
     }
 
     /**
@@ -86,6 +85,6 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        Auth::guard('admin')->logout();
+        \Auth::guard('admin')->logout();
     }
 }

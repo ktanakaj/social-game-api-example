@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\DeckRequest;
 use App\Models\Globals\UserDeck;
 use App\Services\DeckService;
@@ -129,7 +128,7 @@ class DeckController extends Controller
      */
     public function index()
     {
-        return UserDeck::where('user_id', Auth::id())->with('cards')->get();
+        return UserDeck::where('user_id', \Auth::id())->with('cards')->get();
     }
 
     /**
@@ -172,7 +171,7 @@ class DeckController extends Controller
      */
     public function store(DeckRequest $request)
     {
-        return $this->service->create(Auth::id(), $request->input());
+        return $this->service->create(\Auth::id(), $request->input());
     }
 
     /**
@@ -222,7 +221,7 @@ class DeckController extends Controller
      */
     public function update(DeckRequest $request, int $userDeckId)
     {
-        return $this->service->update(Auth::id(), $userDeckId, $request->input());
+        return $this->service->update(\Auth::id(), $userDeckId, $request->input());
     }
 
     /**
@@ -262,6 +261,6 @@ class DeckController extends Controller
      */
     public function destroy(int $userDeckId)
     {
-        return $this->service->delete(Auth::id(), $userDeckId);
+        return $this->service->delete(\Auth::id(), $userDeckId);
     }
 }

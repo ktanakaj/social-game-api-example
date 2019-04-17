@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Exceptions\BadRequestException;
 
 /**
@@ -64,13 +63,13 @@ class AuthController extends Controller
             'id' => 'required|integer',
             'token' => 'required',
         ]);
-        if (!Auth::attempt([
+        if (!\Auth::attempt([
             'id' => $request->input('id'),
             'password' => $request->input('token'),
         ])) {
             throw new BadRequestException('id or token is incorrect');
         }
-        return Auth::user();
+        return \Auth::user();
     }
 
     /**
@@ -89,6 +88,6 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        Auth::logout();
+        \Auth::logout();
     }
 }

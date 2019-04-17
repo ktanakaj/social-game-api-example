@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\UserItem;
 use App\Services\ItemService;
@@ -89,7 +88,7 @@ class ItemController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return UserItem::where('user_id', Auth::id())->notEmpty()->paginate($request->input('max', 20));
+        return UserItem::where('user_id', \Auth::id())->notEmpty()->paginate($request->input('max', 20));
     }
 
     /**
@@ -133,6 +132,6 @@ class ItemController extends Controller
     public function use(int $userItemId)
     {
         // TODO: 一度に複数個のアイテムを使用できるようにする（スタミナ回復薬x3とか）。パラメータもいろいろ変わりそう
-        return $this->service->use(Auth::id(), $userItemId);
+        return $this->service->use(\Auth::id(), $userItemId);
     }
 }

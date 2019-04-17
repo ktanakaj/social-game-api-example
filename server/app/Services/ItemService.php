@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Exceptions\NotFoundException;
 use App\Models\Globals\UserItem;
 
@@ -20,7 +19,7 @@ class ItemService
      */
     public function use(int $userId, int $userItemId) : array
     {
-        DB::transaction(function () use ($userId, $userItemId, &$received) {
+        \DB::transaction(function () use ($userId, $userItemId, &$received) {
             $userItem = UserItem::lockForUpdate()->where('user_id', $userId)->findOrFail($userItemId);
             $received = $userItem->use();
             $userItem->save();

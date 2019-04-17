@@ -6,8 +6,6 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 /**
  * マスタモデル抽象クラス。
@@ -75,7 +73,7 @@ abstract class MasterModel extends Model
      */
     public static function find($id, $columns = ['*'])
     {
-        return Cache::remember(static::makeCacheKey('find', $id, $columns), config('cache.master_cache_expire'), static function () use ($id, $columns) {
+        return \Cache::remember(static::makeCacheKey('find', $id, $columns), config('cache.master_cache_expire'), static function () use ($id, $columns) {
             // parentだと何故か呼べないので、parentの処理をコピーして対処
             if (is_array($id) || $id instanceof Arrayable) {
                 return static::findMany($id, $columns);

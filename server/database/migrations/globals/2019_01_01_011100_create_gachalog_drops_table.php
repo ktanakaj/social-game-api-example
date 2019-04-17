@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Models\MigrationUtils;
@@ -13,7 +11,7 @@ class CreateGachalogDropsTable extends Migration
      */
     public function up() : void
     {
-        Schema::create('gachalog_drops', function (Blueprint $table) {
+        \Schema::create('gachalog_drops', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('gachalog_id');
             $table->string('object_type', 32);
@@ -35,6 +33,6 @@ class CreateGachalogDropsTable extends Migration
      */
     public function down() : void
     {
-        Schema::dropIfExists('gachalog_drops');
+        \Schema::dropIfExists('gachalog_drops');
     }
 }

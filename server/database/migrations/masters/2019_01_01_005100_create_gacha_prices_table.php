@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateGachaPricesTable extends Migration
      */
     public function up() : void
     {
-        Schema::connection('master')->create('gacha_prices', function (Blueprint $table) {
+        \Schema::connection('master')->create('gacha_prices', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->unsignedInteger('gacha_id');
             $table->string('object_type', 32);
@@ -31,6 +30,6 @@ class CreateGachaPricesTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('master')->dropIfExists('gacha_prices');
+        \Schema::connection('master')->dropIfExists('gacha_prices');
     }
 }

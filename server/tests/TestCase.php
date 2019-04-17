@@ -4,9 +4,6 @@ namespace Tests;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redis;
 use App\Models\Admins\Administrator;
 use App\Models\Globals\User;
 
@@ -32,7 +29,7 @@ abstract class TestCase extends BaseTestCase
         // 初回実行時にDBとRedisを初期化する
         // ※ 他の場所 (ExtensionやsetUpBeforeClass) も検討したが、Laravelが初期化されていなくて面倒なのでここでやる
         if (!self::$initialized) {
-            Redis::flushdb();
+            \Redis::flushdb();
             $this->migrateDb();
             self::$initialized = true;
         }
@@ -51,13 +48,13 @@ abstract class TestCase extends BaseTestCase
             if ($conn['driver'] === 'sqlite' && $file !== ':memory:') {
                 file_put_contents($file, '');
             }
-            Artisan::call('migrate:refresh', [
+            \Artisan::call('migrate:refresh', [
                 '--path' => 'database/migrations/' . str_plural($name),
                 '--database' => $name,
             ]);
         }
-        Artisan::call('master:import', ['directory' => 'tests/Masters']);
-        Artisan::call('db:seed');
+        \Artisan::call('master:import', ['directory' => 'tests/Masters']);
+        \Artisan::call('db:seed');
     }
 
     /**
@@ -70,7 +67,7 @@ abstract class TestCase extends BaseTestCase
         if ($user === null) {
             $user = factory(User::class)->create();
         }
-        Auth::login($user);
+        \Auth::login($user);
         return $this;
     }
 
@@ -84,7 +81,7 @@ abstract class TestCase extends BaseTestCase
         if ($admin === null) {
             $admin = Administrator::where('email', 'admin')->firstOrFail();
         }
-        Auth::guard('admin')->login($admin);
+        \Auth::guard('admin')->login($admin);
         return $this;
     }
 

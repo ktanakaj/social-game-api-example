@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -34,13 +33,13 @@ class EventServiceProvider extends ServiceProvider
                 //    実際にSQLで使用される値と一致しないログが出ることもあるので、注意。
                 \Log::debug("DB({$ev->connectionName}): {$ev->sql}; bindings=" . \json_encode($ev->connection->prepareBindings($ev->bindings)) . ' time=' . sprintf("%.2fms", $ev->time));
             });
-            Event::listen('Illuminate\Database\Events\TransactionBeginning', function ($ev) {
+            \Event::listen('Illuminate\Database\Events\TransactionBeginning', function ($ev) {
                 \Log::debug("DB({$ev->connectionName}): start transaction");
             });
-            Event::listen('Illuminate\Database\Events\TransactionCommitted', function ($ev) {
+            \Event::listen('Illuminate\Database\Events\TransactionCommitted', function ($ev) {
                 \Log::debug("DB({$ev->connectionName}): commit");
             });
-            Event::listen('Illuminate\Database\Events\TransactionRolledBack', function ($ev) {
+            \Event::listen('Illuminate\Database\Events\TransactionRolledBack', function ($ev) {
                 \Log::debug("DB({$ev->connectionName}): rollback");
             });
         }

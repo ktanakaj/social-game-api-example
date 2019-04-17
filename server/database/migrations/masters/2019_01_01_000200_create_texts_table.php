@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateTextsTable extends Migration
      */
     public function up() : void
     {
-        Schema::connection('master')->create('texts', function (Blueprint $table) {
+        \Schema::connection('master')->create('texts', function (Blueprint $table) {
             $table->string('id', 64);
             $table->string('text_en');
             $table->string('text_ja');
@@ -25,6 +24,6 @@ class CreateTextsTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('master')->dropIfExists('texts');
+        \Schema::connection('master')->dropIfExists('texts');
     }
 }

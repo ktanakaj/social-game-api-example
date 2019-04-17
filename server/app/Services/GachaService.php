@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
 use App\Enums\ObjectType;
 use App\Models\Globals\Gachalog;
 use App\Models\Globals\User;
@@ -58,7 +57,7 @@ class GachaService
      */
     public function lot(int $userId, array $params) : array
     {
-        DB::transaction(function () use ($userId, $params, &$receivedArray) {
+        \DB::transaction(function () use ($userId, $params, &$receivedArray) {
             $gachaPrice = GachaPrice::active()->findOrFail($params['gachaPriceId']);
             $gacha = $gachaPrice->gacha;
 

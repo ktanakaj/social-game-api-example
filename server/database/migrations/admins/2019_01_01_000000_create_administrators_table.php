@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -11,7 +10,7 @@ class CreateAdministratorsTable extends Migration
      */
     public function up() : void
     {
-        Schema::connection('admin')->create('administrators', function (Blueprint $table) {
+        \Schema::connection('admin')->create('administrators', function (Blueprint $table) {
             $table->increments('id');
             $table->string('email', 191)->unique();
             $table->string('password')->nullable();
@@ -28,6 +27,6 @@ class CreateAdministratorsTable extends Migration
      */
     public function down() : void
     {
-        Schema::connection('admin')->dropIfExists('administrators');
+        \Schema::connection('admin')->dropIfExists('administrators');
     }
 }
