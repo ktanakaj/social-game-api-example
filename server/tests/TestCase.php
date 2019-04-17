@@ -4,6 +4,7 @@ namespace Tests;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Redis;
 use App\Models\Admins\Administrator;
 use App\Models\Globals\User;
 
@@ -29,7 +30,7 @@ abstract class TestCase extends BaseTestCase
         // 初回実行時にDBとRedisを初期化する
         // ※ 他の場所 (ExtensionやsetUpBeforeClass) も検討したが、Laravelが初期化されていなくて面倒なのでここでやる
         if (!self::$initialized) {
-            \Redis::flushdb();
+            Redis::flushdb();
             $this->migrateDb();
             self::$initialized = true;
         }
