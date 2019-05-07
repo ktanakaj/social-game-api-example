@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use GeneaLabs\LaravelModelCaching\CachedBuilder;
 
 /**
  * 有効期間を持つモデルを扱うためのTrait。
@@ -21,7 +22,12 @@ trait HasPeriod
      */
     public function scopeActive($query, \DateTimeInterface $date = null)
     {
+        // ※ 現在時刻で検索するスコープのため、キャッシュは使用不可。
+        //    キャッシュを優先する場合は、all()->active() などでPHP側で処理してください（Collection::activeはisActiveのラッパー）。
         $date = $date ?? Carbon::now();
+        if ($query instanceof CachedBuilder) {
+            $query = $query->disableCache();
+        }
         return $query->where(function ($query) use ($date) {
             $openAtColumn = $this->getOpenAtColumn();
             $closeAtColumn = $this->getCloseAtColumn();

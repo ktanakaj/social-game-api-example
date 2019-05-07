@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use App\Enums\EffectType;
 use App\Enums\ObjectType;
@@ -28,6 +29,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register() : void
     {
+        // コレクションに有効期限チェックのマクロを登録
+        Collection::macro('active', function (\DateTimeInterface $date = null) {
+            return $this->filter(function ($model) use ($date) {
+                return $model->isActive($date);
+            });
+        });
+
         // ページング用クラスをアプリ用にカスタマイズしたものに差し替え
         $this->app->bind(
             'Illuminate\Pagination\Paginator',

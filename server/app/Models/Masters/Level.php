@@ -3,6 +3,7 @@
 namespace App\Models\Masters;
 
 use Illuminate\Database\Eloquent\Builder;
+use App\Exceptions\InternalServerErrorException;
 use App\Models\CamelcaseJson;
 
 /**
@@ -49,11 +50,29 @@ class Level extends MasterModel
      * 経験値から該当するレベルを取得する。
      * @param int $exp 経験値。
      * @return Level 該当するレベル。
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException マスタにレベルが存在しない場合。
+     * @throws InternalServerErrorException マスタにレベルが存在しない場合。
      */
     public static function findByExp(int $exp) : Level
     {
-        // ※ レベルマスタには、最低でも経験値0のレベル1が登録されている想定
-        return self::withoutGlobalScope('sortId')->where('exp', '<=', $exp)->orderBy('level', 'desc')->firstOrFail();
+        // EXPをWHERE句に指定して検索するとキャッシュが効かないので、全件取得してPHP側で探索する。
+        // （レベルマスタは件数が少ない前提。かつ、マスタキャッシュに加えリクエスト中は読み込み済みの配列を使い回す。）
+        $all = \Cache::store('array')->rememberForever(self::class . ':arrayall', function () {
+            return self::all();
+        });
+
+        $before = null;
+        foreach ($all as $level) {
+            if ($level->exp > $exp) {
+                break;
+            }
+            $before = $level;
+        }
+
+        // ※ 最低でも経験値0のレベル1が登録されている想定
+        if ($before) {
+            return $before;
+        } else {
+            throw new InternalServerErrorException("Level is not found (exp=${exp})");
+        }
     }
 }

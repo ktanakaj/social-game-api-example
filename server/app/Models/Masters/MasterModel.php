@@ -6,12 +6,15 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 /**
  * マスタモデル抽象クラス。
  */
 abstract class MasterModel extends Model
 {
+    use Cachable;
+
     /**
      * モデルで使用するコネクション名
      * @var string
@@ -66,31 +69,43 @@ abstract class MasterModel extends Model
     }
 
     /**
-     * マスタを主キーで取得する。
-     * @param mixed $id マスタの主キー。複数指定された場合、複数件を一括検索。
-     * @param array $columns 取得するカラム。
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null マスタインスタンス。※キャッシュ有
+     * マスタの全データを取得する。
+     * ※ キャッシュ用オーバーライド。
+     * @param array|mixed $columns 取得するカラム。
+     * @return \Illuminate\Database\Eloquent\Collection|static[] マスタインスタンスコレクション。※キャッシュ有
      */
-    public static function find($id, $columns = ['*'])
+    public static function all($columns = ['*'])
     {
-        return \Cache::remember(static::makeCacheKey('find', $id, $columns), config('cache.master_cache_expire'), static function () use ($id, $columns) {
-            // parentだと何故か呼べないので、parentの処理をコピーして対処
-            if (is_array($id) || $id instanceof Arrayable) {
-                return static::findMany($id, $columns);
-            }
-            return static::whereKey($id)->first($columns);
-        });
+        // ※ laravel-model-cachingのメソッドを改造して、有効期限を指定するようにしたバージョン
+        if (config('laravel-model-caching.disabled')) {
+            return parent::all($columns);
+        }
+
+        $class = get_called_class();
+        $instance = new $class;
+        $tags = $instance->makeCacheTags();
+        $key = $instance->makeCacheKey();
+
+        return $instance->cache($tags)
+            ->remember($key, config('cache.master_cache_expire'), function () use ($columns) {
+                return parent::all($columns);
+            });
     }
 
     /**
-     * メソッドキャッシュのキーを生成する。
-     * @param string $method メソッド名。
-     * @param array $params メソッド引数。
-     * @return string キー。
+     * 新しいクエリビルダーを生成する。
+     * ※ キャッシュ用オーバーライド。
+     * @param \Illuminate\Database\Query\Builder $query 元となるクエリビルダー。
+     * @return Builder 生成したクエリビルダー。
      */
-    protected static function makeCacheKey(string $method, ...$params) : string
+    public function newEloquentBuilder($query)
     {
-        return get_called_class() . ':' . $method . ':' . json_encode($params);
+        // ※ laravel-model-cachingのメソッドを改造して、有効期限を指定するビルダーを使うようにしたバージョン
+        if (!$this->isCachable()) {
+            $this->isCachable = false;
+            return new Builder($query);
+        }
+        return new MasterCachedBuilder($query);
     }
 
     /**
