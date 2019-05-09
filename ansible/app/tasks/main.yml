@@ -9,7 +9,7 @@
   - name: Create the web application logging directory
     file: path={{ app_log_dir }} state=directory mode=1777
   - name: Create the web application database
-    mysql_db: name={{ item }} encoding=utf8 state=present
+    mysql_db: name={{ item }} encoding=utf8mb4 collation=utf8mb4_bin state=present
     with_items: "{{ app_db }}"
     register: app_db_created
   - name: Craete the web application db user
