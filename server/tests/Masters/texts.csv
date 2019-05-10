@@ -35,3 +35,5 @@ SPECIAL_COIN_GACHA_NAME_1,Special Gacha,レアガチャ
 SPECIAL_COIN_GACHA_DESC_1,A gacha by special coin.,スペシャルコインで回せるガチャです。
 GAME_COIN_GACHA_NAME_2,Coin Gacha,コインガチャ
 GAME_COIN_GACHA_DESC_2,A gacha by game coin.,ゲームコインで回せるガチャです。
+ACHIEVEMENT_LEVEL,LV {level},Lv {level} 到達
+ACHIEVEMENT_ANY_QUESTS,Clear any quests at {anyQuests} times,クエストを {anyQuests} 回クリア
