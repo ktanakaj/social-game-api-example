@@ -2,9 +2,12 @@
 
 namespace App\Models\Globals;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\AchievementType;
+use App\Exceptions\BadRequestException;
 use App\Models\CamelcaseJson;
 use App\Models\ObjectReceiver;
 use App\Models\Virtual\ReceivedInfo;
@@ -82,5 +85,63 @@ class UserAchievement extends Model
     public function achievement() : BelongsTo
     {
         return $this->belongsTo('App\Models\Masters\Achievement');
+    }
+
+    /**
+     * スコアを保存する。
+     * @param mixed $value 値。
+     */
+    public function setScoreAttribute(int $value) : void
+    {
+        // 最大スコアで判定するので、値が減るような更新は保存しない。また最大値を超える場合は最大値に切り捨て。
+        // （後者は入れてもいいが、中途半端なデータが見えると変なので。）
+        if ($value < $this->attributes['score']) {
+            return;
+        }
+        $this->attributes['score'] = $value > $this->achievement->score ? $this->achievement->score : $value;
+    }
+
+    /**
+     * アチーブメント達成済みか？
+     * @return bool 達成済みの場合true。
+     */
+    public function isAchieved() : bool
+    {
+        return $this->score >= $this->achievement->score;
+    }
+
+    /**
+     * アチーブメントは期限切れか？
+     * @return bool 期限切れの場合true。
+     */
+    public function isExpired(): bool
+    {
+        // マスタが期限切れか、デイリー/ウィークリーで期間終了
+        if (!$this->achievement->isActive()) {
+            return false;
+        }
+        switch ($this->achievement->type) {
+            case AchievementType::DAILY:
+                return Carbon::createFromTimestamp($this->created_at)->isToday();
+            case AchievementType::WEEKLY:
+                return Carbon::createFromTimestamp($this->created_at)->isCurrentWeek();
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * 達成済みアチーブメントの報酬を受け取る。
+     * @return ReceivedInfo アチーブメント報酬の受け取り結果。
+     */
+    public function receive() : ReceivedInfo
+    {
+        if ($this->received || !$this->isExpired() || !$this->isAchieved()) {
+            throw new BadRequestException("id={$this->id} can't be received");
+        }
+        $result = ObjectReceiver::receive($this->user_id, $this->achievement);
+        $this->received = true;
+        $this->save();
+        return $result;
     }
 }

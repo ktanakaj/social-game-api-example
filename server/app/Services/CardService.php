@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\NotFoundException;
-use App\Models\Globals\User;
 use App\Models\Globals\UserCard;
 
 /**

@@ -1,6 +1,6 @@
-﻿id,type,text_id,condition,object_type,object_id,count,open_at,close_at
-1,normal,ACHIEVEMENT_LEVEL,"{""level"":5}",gameCoin,,500,,
-2,normal,ACHIEVEMENT_LEVEL,"{""level"":10}",gameCoin,,1000,,
-3,normal,ACHIEVEMENT_LEVEL,"{""level"":20}",specialCoin,,10,,
-10000,daily,ACHIEVEMENT_ANY_QUESTS,"{""anyQuests"":10}",gameCoin,,500,,
-20000,weekly,ACHIEVEMENT_ANY_QUESTS,"{""anyQuests"":100}",specialCoin,,10,,
+﻿id,type,text_id,condition,score,options,object_type,object_id,count,open_at,close_at
+1,normal,ACHIEVEMENT_LEVEL,level,5,,gameCoin,,500,,
+2,normal,ACHIEVEMENT_LEVEL,level,10,,gameCoin,,1000,,
+3,normal,ACHIEVEMENT_LEVEL,level,20,,specialCoin,,10,,
+10000,daily,ACHIEVEMENT_ANY_QUESTS,anyQuests,10,,gameCoin,,500,,
+20000,weekly,ACHIEVEMENT_ANY_QUESTS,anyQuests,100,,specialCoin,,10,,

@@ -33,7 +33,8 @@ class Achievement extends MasterModel
      */
     protected $casts = [
         'id' => 'integer',
-        'condition' => 'array',
+        'score' => 'integer',
+        'options' => 'array',
         'object_id' => 'integer',
         'count' => 'integer',
         'open_at' => 'timestamp',
@@ -41,14 +42,14 @@ class Achievement extends MasterModel
     ];
 
     /**
-     * アチーブメント条件を保存する。
+     * アチーブメント追加条件を保存する。
      * @param mixed $value 値。
      */
-    public function setConditionAttribute($value) : void
+    public function setOptionsAttribute($value) : void
     {
         // マスタインポート用。ミューテタが無いとJSON文字列が$castsで
         // 二重にエスケープされるので、空定義でそれを阻止する
-        $this->attributes['condition'] = $value;
+        $this->attributes['options'] = $value;
     }
 
     /**

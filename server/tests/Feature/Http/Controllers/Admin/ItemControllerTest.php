@@ -40,7 +40,6 @@ class ItemControllerTest extends TestCase
         // TODO: 0個のアイテムが参照されないこともテストする
     }
 
-
     /**
      * アイテム付与のテスト。
      */

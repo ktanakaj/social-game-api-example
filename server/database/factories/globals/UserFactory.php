@@ -3,6 +3,7 @@
 use Faker\Generator as Faker;
 use Carbon\Carbon;
 use App\Models\Globals\User;
+use App\Models\Globals\UserAchievement;
 use App\Models\Globals\UserCard;
 use App\Models\Globals\UserDeck;
 use App\Models\Globals\UserGift;
@@ -28,6 +29,7 @@ $factory->afterCreating(User::class, function (User $user, Faker $faker) {
     $user->cards()->save(factory(UserCard::class)->make());
     $user->items()->save(factory(UserItem::class)->states('stamina')->make());
     $user->quests()->save(factory(UserQuest::class)->make());
+    $user->achievements()->save(factory(UserAchievement::class)->make());
     $userDeck = factory(UserDeck::class)->create(['user_id' => $user->id]);
     $user->last_selected_deck_id = $userDeck->id;
     $user->save();

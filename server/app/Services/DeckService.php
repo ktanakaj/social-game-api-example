@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Exceptions\NotFoundException;
+use App\Exceptions\BadRequestException;
 use App\Models\Globals\User;
 use App\Models\Globals\UserDeck;
 use App\Models\Masters\Parameter;

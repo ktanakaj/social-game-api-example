@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Enums\AchievementType;
 
 class CreateAchievementsTable extends Migration
 {
@@ -12,9 +13,11 @@ class CreateAchievementsTable extends Migration
     {
         \Schema::connection('master')->create('achievements', function (Blueprint $table) {
             $table->unsignedInteger('id');
-            $table->enum('type', ['normal', 'daily', 'weekly']);
+            $table->enum('type', AchievementType::values());
             $table->string('text_id', 64);
-            $table->text('condition');
+            $table->string('condition', 32);
+            $table->unsignedInteger('score');
+            $table->text('options')->nullable();
             $table->string('object_type', 32);
             $table->unsignedInteger('object_id')->nullable();
             $table->unsignedInteger('count');
@@ -22,7 +25,7 @@ class CreateAchievementsTable extends Migration
             $table->dateTime('close_at')->nullable();
 
             $table->primary('id');
-            $table->index(['type']);
+            $table->index(['type', 'condition']);
             $table->index(['open_at', 'close_at']);
         });
     }

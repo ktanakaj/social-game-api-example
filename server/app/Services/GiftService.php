@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\NotFoundException;
 use App\Models\Globals\UserGift;
 use App\Models\Virtual\ReceivedInfo;
 
@@ -16,7 +15,6 @@ class GiftService
      * @param int $userId ユーザーID。
      * @param int $userGiftId 受け取るプレゼントのID。
      * @return ReceivedInfo 受け取り結果。
-     * @throws NotFoundException プレゼントがユーザーのものとして存在しない場合。
      */
     public function receive(int $userId, int $userGiftId) : ReceivedInfo
     {

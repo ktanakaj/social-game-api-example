@@ -49,6 +49,24 @@ trait HasPeriod
     }
 
     /**
+     * モデルが有効期間内か？
+     * @param \DateTimeInterface $date 現在日時ではなく指定された日時で判定する場合その値。
+     * @return bool 有効期間内の場合true。
+     */
+    public function isActive(\DateTimeInterface $date = null) : bool
+    {
+        $timestamp = ($date ?? Carbon::now())->getTimestamp();
+        $openAtAndCloseAt = [null, null];
+        foreach ([$this->getOpenAtColumn(), $this->getCloseAtColumn()] as $i => $column) {
+            // ※ open_at/close_at列はDateTimeInterfaceかintのタイムスタンプの想定
+            if ($column && $this->{$column} !== null) {
+                $openAtAndCloseAt[$i] = $this->{$column} instanceof \DateTimeInterface ? $this->{$column}->getTimestamp() : $this->{$column};
+            }
+        }
+        return (!$openAtAndCloseAt[0] || $openAtAndCloseAt[0] <= $timestamp) && (!$openAtAndCloseAt[1] || $openAtAndCloseAt[1] >= $timestamp);
+    }
+
+    /**
      * 有効期間の開始列名を取得する。
      * @return string 列名。デフォルトは open_at。nullの場合開始列無し。
      */

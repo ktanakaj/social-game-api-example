@@ -21,6 +21,12 @@ class RouteServiceProvider extends ServiceProvider
     public function boot() : void
     {
         \Route::pattern('id', '[0-9]+');
+        \Route::pattern('userItemId', '[0-9]+');
+        \Route::pattern('userCardId', '[0-9]+');
+        \Route::pattern('userGiftId', '[0-9]+');
+        \Route::pattern('userDeckId', '[0-9]+');
+        \Route::pattern('userAchievementId', '[0-9]+');
+        \Route::pattern('gachaId', '[0-9]+');
 
         parent::boot();
     }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\NotFoundException;
 use App\Models\Globals\UserItem;
 
 /**
@@ -15,7 +14,6 @@ class ItemService
      * @param int $userId ユーザーID。
      * @param int $userItemId 使用するアイテムのID。
      * @return array 使用結果のReceivedInfo配列。
-     * @throws NotFoundException アイテムがユーザーのものとして存在しない場合。
      */
     public function use(int $userId, int $userItemId) : array
     {
