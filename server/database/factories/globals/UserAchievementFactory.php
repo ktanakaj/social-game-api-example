@@ -16,3 +16,8 @@ $factory->state(UserAchievement::class, 'level5', [
     'achievement_id' => 1,
     'score' => 5,
 ]);
+
+$factory->state(UserAchievement::class, 'level10', [
+    'achievement_id' => 2,
+    'score' => 10,
+]);

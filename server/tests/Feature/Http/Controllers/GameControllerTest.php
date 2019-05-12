@@ -15,6 +15,8 @@ class GameControllerTest extends TestCase
     public function testStartAndEnd() : void
     {
         $user = factory(User::class)->create();
+        $userAchievement1 = $user->achievements->where('achievement_id', 10000)->first();
+        $userAchievement2 = $user->achievements->where('achievement_id', 20000)->first();
 
         // 普通のクエストの初回プレイ開始
         $response = $this->withLogin($user)->json('POST', '/game/start', [
@@ -77,6 +79,19 @@ class GameControllerTest extends TestCase
             'user_id' => $user->id,
             'quest_id' => 2,
             'status' => 'succeed',
+        ]);
+        // アチーブメントデータは、ランダム分によってばらつきがあるのでそれを加味して比較
+        $score = $userAchievement1 ? $userAchievement1->score : 0;
+        $this->assertDatabaseHas('user_achievements', [
+            'user_id' => $user->id,
+            'achievement_id' => 10000,
+            'score' => $score >= 10 ? 10 : $score + 1,
+        ]);
+        $score = $userAchievement2 ? $userAchievement2->score : 0;
+        $this->assertDatabaseHas('user_achievements', [
+            'user_id' => $user->id,
+            'achievement_id' => 20000,
+            'score' => $score >= 100 ? 100 : $score + 1,
         ]);
     }
 

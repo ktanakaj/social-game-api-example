@@ -74,11 +74,11 @@ class AchievementControllerTest extends TestCase
      */
     public function testReceiveAll() : void
     {
-        // ※ レベルを上げることで、level=10までの2つのアチーブメントを達成する
-        //    （この他に、factoryのランダムデータでデイリーやウィークリーも達成済みになることがある）
+        // ※ この他に、factoryのランダムデータでデイリーやウィークリーも達成済みになることがある
         $user = factory(User::class)->create();
-        $user->exp = 3400;
-        $user->save();
+        $userAchievement1 = factory(UserAchievement::class)->states('level5')->make();
+        $userAchievement2 = factory(UserAchievement::class)->states('level10')->make();
+        $user->achievements()->saveMany([$userAchievement1, $userAchievement2]);
 
         $response = $this->withLogin($user)->json('POST', '/achievements/recv');
         $response->assertStatus(200);
@@ -102,11 +102,11 @@ class AchievementControllerTest extends TestCase
         $this->assertGreaterThanOrEqual($user->game_coins + 1500, $afterUser->game_coins);
 
         $this->assertDatabaseHas('user_achievements', [
-            'achievement_id' => 1,
+            'id' => $userAchievement1->id,
             'received' => 1,
         ]);
         $this->assertDatabaseHas('user_achievements', [
-            'achievement_id' => 2,
+            'id' => $userAchievement2->id,
             'received' => 1,
         ]);
     }

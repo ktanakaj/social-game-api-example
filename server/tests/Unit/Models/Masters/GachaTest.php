@@ -12,7 +12,8 @@ class GachaTest extends TestCase
      */
     public function testLot() : void
     {
-        // 単純なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する
+        // 単純なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する。
+        // ※ 仕組み上、稀にテスト失敗になる可能性があり。
         $gacha = Gacha::findOrFail(1);
         $count = 300;
         $rates = [];
@@ -36,7 +37,8 @@ class GachaTest extends TestCase
      */
     public function testLot2() : void
     {
-        // 複雑なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する
+        // 複雑なガチャでの検証。何度も回して、weight通りの確率で出ることを確認する。
+        // ※ 仕組み上、稀にテスト失敗になる可能性があり。
         $gacha = Gacha::findOrFail(2);
         $count = 500;
         $rates = [];

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\QuestStatus;
+use App\Events\QuestlogSaved;
 use App\Models\CamelcaseJson;
 
 /**
@@ -56,6 +57,11 @@ class Questlog extends Model
         // クエスト履歴全般でデフォルトのソート順を設定
         static::addGlobalScope('sortCreatedAt', function (Builder $builder) {
             return $builder->orderBy('user_id', 'asc')->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+        });
+
+        // 更新イベントを登録
+        self::saving(function ($log) {
+            event(new QuestlogSaved($log, $log->original));
         });
     }
 

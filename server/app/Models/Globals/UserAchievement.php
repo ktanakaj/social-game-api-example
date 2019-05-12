@@ -4,20 +4,22 @@ namespace App\Models\Globals;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\AchievementType;
 use App\Exceptions\BadRequestException;
 use App\Models\CamelcaseJson;
 use App\Models\ObjectReceiver;
+use App\Models\Masters\Achievement;
 use App\Models\Virtual\ReceivedInfo;
 
 /**
- * アチーブメントデータを表すモデル。
+ * ユーザーのアチーブメントデータを表すモデル。
  *
  * アチーブメントデータとしては、「通常」「デイリー」「ウィークリー」
  * の現在値と報酬受取済かを保存する。
- * 「デイリー」「ウィークリー」の場合、過去のものは削除して再生成される。
+ * 「デイリー」「ウィークリー」の場合、期限切れのレコードはリセットして再使用される。
  *
  * アチーブメントの現在値は一つのみ保持する。
  * 複数の条件を持つアチーブメント（例、ゴブリン10体とスライム10匹を倒せ）は想定しない。
@@ -122,9 +124,9 @@ class UserAchievement extends Model
         }
         switch ($this->achievement->type) {
             case AchievementType::DAILY:
-                return Carbon::createFromTimestamp($this->created_at)->isToday();
+                return Carbon::createFromTimestamp($this->updated_at)->isToday();
             case AchievementType::WEEKLY:
-                return Carbon::createFromTimestamp($this->created_at)->isCurrentWeek();
+                return Carbon::createFromTimestamp($this->updated_at)->isCurrentWeek();
             default:
                 return true;
         }
@@ -143,5 +145,35 @@ class UserAchievement extends Model
         $this->received = true;
         $this->save();
         return $result;
+    }
+
+    /**
+     * 現在有効なアチーブメント一覧を取得する。存在しない場合新規作成する。
+     * @param int $userId ユーザーID。
+     * @param string $condition アチーブメントを条件で絞り込む場合その種別。
+     * @return Collection UserAchievementコレクション。
+     */
+    public static function findActiveOrNew(int $userId, string $condition = null) : Collection
+    {
+        // マスタを元に現在有効なアチーブメントの一覧を取得する。
+        // デイリーやウィークリーの古いアチーブメントはこのタイミングでリセットする。
+        $query = Achievement::query();
+        if ($condition) {
+            $query = $query->where('condition', $condition);
+        }
+        $all = $query->get()->active();
+        $userAchievementByIds = self::lockForUpdate()->where('user_id', $userId)->whereIn('achievement_id', $all->pluck('id'))->get()->keyBy('achievement_id');
+        foreach ($all as $achievement) {
+            if ($userAchievement = $userAchievementByIds->get($achievement->id)) {
+                // ※ デイリー/ウィークリーを判定していないが、通常アチーブメントの期限切れは↑のactiveで除かれている想定
+                if ($userAchievement->isExpired()) {
+                    $userAchievement->score = 0;
+                    $userAchievement->received = false;
+                }
+            } else {
+                $userAchievementByIds->put($achievement->id, new UserAchievement(['user_id' => $userId, 'achievement_id' => $achievement->id]));
+            }
+        }
+        return $userAchievementByIds->values();
     }
 }
