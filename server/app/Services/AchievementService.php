@@ -33,7 +33,7 @@ class AchievementService
                 $userAchievement->save();
             }
         });
-        return $userAchievements->all();
+        return $userAchievements->makeHidden(['user', 'achievement'])->all();
     }
 
     /**

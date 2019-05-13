@@ -103,11 +103,7 @@ class UserAchievement extends Model
      */
     public function setScoreAttribute(int $value) : void
     {
-        // 最大スコアで判定するので、値が減るような更新は保存しない。また最大値を超える場合は最大値に切り捨て。
-        // （後者は入れてもいいが、中途半端なデータが見えると変なので。）
-        if ($value < $this->attributes['score']) {
-            return;
-        }
+        // 最大値を超える場合は最大値に切り捨て（入れてもいいが、中途半端なデータが見えると変なので）
         $this->attributes['score'] = $value > $this->achievement->score ? $this->achievement->score : $value;
     }
 
@@ -128,15 +124,15 @@ class UserAchievement extends Model
     {
         // マスタが期限切れか、デイリー/ウィークリーで期間終了
         if (!$this->achievement->isActive()) {
-            return false;
+            return true;
         }
         switch ($this->achievement->type) {
             case AchievementType::DAILY:
-                return Carbon::createFromTimestamp($this->updated_at)->isToday();
+                return $this->updated_at && !Carbon::createFromTimestamp($this->updated_at)->isToday();
             case AchievementType::WEEKLY:
-                return Carbon::createFromTimestamp($this->updated_at)->isCurrentWeek();
+                return $this->updated_at && !Carbon::createFromTimestamp($this->updated_at)->isCurrentWeek();
             default:
-                return true;
+                return false;
         }
     }
 
@@ -146,7 +142,7 @@ class UserAchievement extends Model
      */
     public function receive() : ReceivedInfo
     {
-        if ($this->received || !$this->isExpired() || !$this->isAchieved()) {
+        if ($this->received || $this->isExpired() || !$this->isAchieved()) {
             throw new BadRequestException("id={$this->id} can't be received");
         }
         $result = ObjectReceiver::receive($this->user_id, $this->achievement);

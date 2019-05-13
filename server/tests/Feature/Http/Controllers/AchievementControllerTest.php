@@ -40,8 +40,6 @@ class AchievementControllerTest extends TestCase
         }
         $this->assertNotNull($userAchievement);
         $this->assertTrue($user->level === $userAchievement['score'] || 5 === $userAchievement['score']);
-
-        // TODO: デイリー/ウィークリーの旧データ上書きも確認する
     }
 
     /**
