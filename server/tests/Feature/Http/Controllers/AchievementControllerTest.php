@@ -41,7 +41,7 @@ class AchievementControllerTest extends TestCase
         $this->assertNotNull($userAchievement);
         $this->assertTrue($user->level === $userAchievement['score'] || 5 === $userAchievement['score']);
 
-        // TODO: デイリー/ウィークリーの旧データ削除も確認する
+        // TODO: デイリー/ウィークリーの旧データ上書きも確認する
     }
 
     /**
@@ -66,6 +66,10 @@ class AchievementControllerTest extends TestCase
         $this->assertDatabaseHas('user_achievements', [
             'id' => $userAchievement->id,
             'received' => 1,
+        ]);
+        $this->assertDatabaseHas('achievementlogs', [
+            'user_id' => $userAchievement->user_id,
+            'achievement_id' => $userAchievement->achievement_id,
         ]);
     }
 
@@ -105,9 +109,17 @@ class AchievementControllerTest extends TestCase
             'id' => $userAchievement1->id,
             'received' => 1,
         ]);
+        $this->assertDatabaseHas('achievementlogs', [
+            'user_id' => $userAchievement1->user_id,
+            'achievement_id' => $userAchievement1->achievement_id,
+        ]);
         $this->assertDatabaseHas('user_achievements', [
             'id' => $userAchievement2->id,
             'received' => 1,
+        ]);
+        $this->assertDatabaseHas('achievementlogs', [
+            'user_id' => $userAchievement2->user_id,
+            'achievement_id' => $userAchievement2->achievement_id,
         ]);
     }
 }

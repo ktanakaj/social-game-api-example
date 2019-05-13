@@ -56,6 +56,36 @@ use App\Models\Globals\User;
  *     "updatedAt",
  *   },
  * )
+ *
+ * @OA\Schema(
+ *   schema="Achievementlog",
+ *   @OA\Property(
+ *     property="id",
+ *     description="アチーブメント履歴ID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="userId",
+ *     description="ユーザーID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="achievementId",
+ *     description="アチーブメントID",
+ *     type="integer",
+ *   ),
+ *   @OA\Property(
+ *     property="createdAt",
+ *     description="達成日時",
+ *     type="integer",
+ *   ),
+ *   required={
+ *     "id",
+ *     "userId",
+ *     "achievementId",
+ *     "createdAt",
+ *   },
+ * )
  */
 class AchievementController extends Controller
 {
@@ -125,5 +155,73 @@ class AchievementController extends Controller
     {
         // ※ pageはpaginate内部で勝手に参照される模様
         return $user->achievements()->paginate($request->input('max', 20));
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/admin/users/{id}/achievements/logs",
+     *   summary="アチーブメント達成履歴",
+     *   description="ユーザーのアチーブメント達成履歴を取得する。",
+     *   tags={
+     *     "Admin",
+     *   },
+     *   security={
+     *     {"SessionId":{}}
+     *   },
+     *   @OA\Parameter(
+     *     in="path",
+     *     name="id",
+     *     description="ユーザーID",
+     *     required=true,
+     *     @OA\Schema(type="integer"),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="page",
+     *     description="ページ番号（先頭ページが1）",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=1,
+     *     ),
+     *   ),
+     *   @OA\Parameter(
+     *     in="query",
+     *     name="max",
+     *     description="1ページ辺りの取得件数",
+     *     @OA\Schema(
+     *       type="integer",
+     *       default=20,
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="アチーブメント達成履歴",
+     *     @OA\JsonContent(
+     *       type="object",
+     *       allOf={
+     *         @OA\Schema(ref="#components/schemas/Pagination"),
+     *         @OA\Schema(
+     *           type="object",
+     *           @OA\Property(
+     *             property="data",
+     *             description="アチーブメント達成履歴配列",
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Achievementlog")
+     *           ),
+     *         ),
+     *       }
+     *     ),
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="未認証",
+     *     @OA\JsonContent(ref="#components/schemas/Error"),
+     *   ),
+     * )
+     */
+    public function logs(PagingRequest $request, User $user)
+    {
+        // ※ pageはpaginate内部で勝手に参照される模様
+        return $user->achievementlogs()->paginate($request->input('max', 20));
     }
 }

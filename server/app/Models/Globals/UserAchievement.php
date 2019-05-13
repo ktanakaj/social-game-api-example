@@ -71,6 +71,14 @@ class UserAchievement extends Model
         static::addGlobalScope('sortId', function (Builder $builder) {
             return $builder->orderBy('user_id', 'asc')->orderBy('achievement_id', 'asc');
         });
+
+        // アチーブメント達成時に、達成履歴を登録
+        self::saving(function ($userAchievement) {
+            // ※ 達成の判定は受け取りで実施（達成したけど受け取っていないケースは無視）
+            if ($userAchievement->received && !$userAchievement->original['received']) {
+                Achievementlog::create($userAchievement->toArray());
+            }
+        });
     }
 
     /**

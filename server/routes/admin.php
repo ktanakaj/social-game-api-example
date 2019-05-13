@@ -29,6 +29,7 @@ Route::middleware('throttle:' . config('app.throttle_requests') . ',1')->group(f
         Route::get('users/{user}/quests', 'QuestController@index');
         Route::get('users/{user}/quests/logs', 'QuestController@logs');
         Route::get('users/{user}/achievements', 'AchievementController@index');
+        Route::get('users/{user}/achievements/logs', 'AchievementController@logs');
         Route::get('users/{user}/gachas/logs', 'GachaController@logs');
 
         // 更新系APIはロールをチェック

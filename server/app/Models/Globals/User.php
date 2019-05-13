@@ -165,6 +165,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーのアチーブメント達成履歴とのリレーション定義。
+     */
+    public function achievementlogs() : HasMany
+    {
+        return $this->hasMany('App\Models\Globals\Achievementlog');
+    }
+
+    /**
      * ユーザーのガチャ履歴とのリレーション定義。
      */
     public function gachalogs() : HasMany
