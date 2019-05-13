@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -16,7 +15,7 @@ class AccessLog
      * @param \Closure $next 次のリクエストハンドラー。
      * @return mixed レスポンス。
      */
-    public function handle($request, Closure $next)
+    public function handle($request, \Closure $next)
     {
         // アクセス開始時の時間を記録して処理実行、ログ出力
         $starttime = microtime(true);
