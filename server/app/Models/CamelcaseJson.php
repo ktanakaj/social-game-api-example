@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * モデルでキャメルケースのJSONデータを扱うためのTrait。
@@ -24,12 +25,12 @@ trait CamelcaseJson
         $converted = [];
         foreach ($attributes as $key => $value) {
             if (strpos($key, '_') !== false) {
-                $converted[snake_case($key)] = $value;
+                $converted[Str::snake($key)] = $value;
             }
         }
         foreach ($attributes as $key => $value) {
             if (strpos($key, '_') === false) {
-                $converted[snake_case($key)] = $value;
+                $converted[Str::snake($key)] = $value;
             }
         }
         return parent::fill($converted);
@@ -44,7 +45,7 @@ trait CamelcaseJson
         // キーがスネークケースの場合、キャメルケースに変換して返す
         $converted = [];
         foreach (parent::toArray() as $key => $value) {
-            $converted[camel_case($key)] = $value;
+            $converted[Str::camel($key)] = $value;
         }
         return $converted;
     }

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 /**
@@ -116,7 +117,7 @@ abstract class MasterModel extends Model
     public static function getMasterModel(string $name) : ?string
     {
         $class = (new \ReflectionClass(self::class));
-        $classname = $class->getNamespaceName() . '\\' . str_singular(studly_case($name));
+        $classname = $class->getNamespaceName() . '\\' . Str::singular(Str::studly($name));
         if (!class_exists($classname) || !is_subclass_of($classname, self::class)) {
             return null;
         }

@@ -2,6 +2,8 @@
 
 namespace App\Models\Virtual;
 
+use Illuminate\Support\Str;
+
 /**
  * 任意のオブジェクト（アイテムやカード、コインや経験値等）の情報を扱うモデル。
  */
@@ -38,7 +40,7 @@ class ObjectInfo implements \JsonSerializable
             // ※ インスタンスの場合には変換していない。必要なら検討
             $params = new \stdClass();
             foreach ($attributes as $key => $value) {
-                $key = snake_case($key);
+                $key = Str::snake($key);
                 $params->{$key} = $value;
             }
         }
@@ -68,7 +70,7 @@ class ObjectInfo implements \JsonSerializable
         // キーをキャメルケースに変換して返す
         $json = [];
         foreach (get_object_vars($this) as $key => $value) {
-            $json[camel_case($key)] = $value;
+            $json[Str::camel($key)] = $value;
         }
         return $json;
     }

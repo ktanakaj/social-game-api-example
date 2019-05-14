@@ -88,7 +88,7 @@ class ImportMasters extends Command
             // また、UTF-8のBOMが付いている場合除去する。
             if (empty($headers)) {
                 $row[0] = self::trimBOM($row[0]);
-                $headers = array_map('snake_case', $row);
+                $headers = array_map('\Illuminate\Support\Str::snake', $row);
                 continue;
             }
             try {

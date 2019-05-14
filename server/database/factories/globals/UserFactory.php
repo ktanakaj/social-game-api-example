@@ -2,6 +2,7 @@
 
 use Faker\Generator as Faker;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Models\Globals\User;
 use App\Models\Globals\UserAchievement;
 use App\Models\Globals\UserCard;
@@ -12,7 +13,7 @@ use App\Models\Globals\UserQuest;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'token' => str_random(10),
+        'token' => Str::random(10),
         'name' => $faker->name,
         'game_coins' => $faker->numberBetween(1000, 1000000),
         'special_coins' => $faker->numberBetween(0, 1000),

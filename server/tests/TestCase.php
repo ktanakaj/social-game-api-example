@@ -5,6 +5,7 @@ namespace Tests;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 use App\Models\Admins\Administrator;
 use App\Models\Globals\User;
 
@@ -50,7 +51,7 @@ abstract class TestCase extends BaseTestCase
                 file_put_contents($file, '');
             }
             \Artisan::call('migrate:refresh', [
-                '--path' => 'database/migrations/' . str_plural($name),
+                '--path' => 'database/migrations/' . Str::plural($name),
                 '--database' => $name,
             ]);
         }
