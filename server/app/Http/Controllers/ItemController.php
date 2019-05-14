@@ -88,7 +88,7 @@ class ItemController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return UserItem::where('user_id', \Auth::id())->notEmpty()->paginate($request->input('max', 20));
+        return UserItem::where('user_id', \Auth::id())->notEmpty()->paginate($request->input('max'));
     }
 
     /**

@@ -157,7 +157,7 @@ class UserController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return User::orderBy('name')->paginate($request->input('max', 100));
+        return User::orderBy('name')->paginate($request->input('max'));
     }
 
     /**

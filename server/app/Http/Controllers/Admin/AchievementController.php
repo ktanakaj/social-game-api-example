@@ -154,7 +154,7 @@ class AchievementController extends Controller
     public function index(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->achievements()->paginate($request->input('max', 20));
+        return $user->achievements()->paginate($request->input('max'));
     }
 
     /**
@@ -222,6 +222,6 @@ class AchievementController extends Controller
     public function logs(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->achievementlogs()->paginate($request->input('max', 20));
+        return $user->achievementlogs()->paginate($request->input('max'));
     }
 }

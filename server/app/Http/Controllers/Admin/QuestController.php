@@ -178,7 +178,7 @@ class QuestController extends Controller
     public function index(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->quests()->paginate($request->input('max', 20));
+        return $user->quests()->paginate($request->input('max'));
     }
 
     /**
@@ -384,6 +384,6 @@ class QuestController extends Controller
     public function logs(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->questlogs()->paginate($request->input('max', 20));
+        return $user->questlogs()->paginate($request->input('max'));
     }
 }

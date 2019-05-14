@@ -23,6 +23,12 @@ class User extends Authenticatable
     use SoftDeletes, CamelcaseJson;
 
     /**
+     * ページングのデフォルト件数。
+     * @var int
+     */
+    protected $perPage = 100;
+
+    /**
      * 複数代入可能なプロパティ。
      * @var array
      */

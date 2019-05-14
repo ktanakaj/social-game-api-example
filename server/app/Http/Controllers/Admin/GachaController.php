@@ -77,6 +77,6 @@ class GachaController extends Controller
     public function logs(PagingRequest $request, User $user)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return $user->gachalogs()->with('drops')->paginate($request->input('max', 20));
+        return $user->gachalogs()->with('drops')->paginate($request->input('max'));
     }
 }

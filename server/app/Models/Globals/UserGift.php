@@ -28,6 +28,12 @@ class UserGift extends Model
     public $timestamps = false;
 
     /**
+     * ページングのデフォルト件数。
+     * @var int
+     */
+    protected $perPage = 20;
+
+    /**
      * 複数代入する属性。
      * @var array
      */

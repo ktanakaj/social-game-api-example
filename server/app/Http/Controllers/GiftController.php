@@ -88,7 +88,7 @@ class GiftController extends Controller
     public function index(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return UserGift::where('user_id', \Auth::id())->paginate($request->input('max', 20));
+        return UserGift::where('user_id', \Auth::id())->paginate($request->input('max'));
     }
 
     /**

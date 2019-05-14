@@ -440,6 +440,6 @@ class GachaController extends Controller
     public function logs(PagingRequest $request)
     {
         // ※ pageはpaginate内部で勝手に参照される模様
-        return Gachalog::where('user_id', \Auth::id())->with('drops')->paginate($request->input('max', 20));
+        return Gachalog::where('user_id', \Auth::id())->with('drops')->paginate($request->input('max'));
     }
 }
