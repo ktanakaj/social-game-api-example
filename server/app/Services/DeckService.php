@@ -69,24 +69,7 @@ class DeckService
             // カード情報を新しく渡されたものに全て置き換える
             $user = User::lockForUpdate()->findOrFail($userId);
             $userDeck = $user->decks()->lockForUpdate()->findOrFail($userDeckId);
-            $cardsByPositions = collect($cards)->keyBy('position');
-            // ※ 差分更新しようとすると、カードIDが入れ替わるパターンでUNIQUE制約に引っかかる恐れがあるので、
-            //    差分があるものは全て一度deleteして再登録
-            foreach ($userDeck->cards()->lockForUpdate()->get() as $userDeckCard) {
-                $input = $cardsByPositions->get($userDeckCard->position);
-                if (!$input) {
-                    $userDeckCard->delete();
-                    continue;
-                }
-
-                $userDeckCard->fill($input);
-                if ($userDeckCard->isDirty()) {
-                    $userDeckCard->delete();
-                } else {
-                    $cardsByPositions->forget($userDeckCard->position);
-                }
-            }
-            $userDeck->cards = $userDeck->cards()->createMany($cardsByPositions->values()->all());
+            $userDeck->cards = $userDeck->updateOrCreateCards($cards);
 
             // 更新したデッキを選択中にする
             $user->last_selected_deck_id = $userDeck->id;

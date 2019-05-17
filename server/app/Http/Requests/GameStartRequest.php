@@ -23,9 +23,7 @@ class GameStartRequest extends FormRequest
                 'required',
                 'integer',
                 // 公開中のクエストのみ許可する
-                Rule::exists('master.quests', 'id')->where(function ($query) {
-                    return (new Quest)->scopeActive($query);
-                }),
+                Rule::in(Quest::all()->active()->pluck('id')->all()),
             ],
             'deckId' => 'required|integer|exists:user_decks,id',
         ];

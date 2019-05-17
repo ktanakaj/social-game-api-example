@@ -20,9 +20,7 @@ class GachaRequest extends FormRequest
             'gachaPriceId' => [
                 'required',
                 'integer',
-                Rule::exists('master.gacha_prices', 'id')->where(function ($query) {
-                    return (new GachaPrice)->scopeActive($query);
-                }),
+                Rule::in(GachaPrice::all()->active()->pluck('id')->all()),
             ],
             'count' => 'integer|min:1',
         ];

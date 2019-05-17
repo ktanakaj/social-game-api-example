@@ -6,7 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use App\Enums\ObjectType;
+use App\Models\Masters\Card;
+use App\Models\Masters\Item;
+use App\Models\Masters\Text;
 use App\Models\ObjectReceiver;
+use App\Rules\ExistsByEloquent;
 
 /**
  * ギフト付与API用のフォームリクエスト。
@@ -29,7 +33,7 @@ class GiftRequest extends FormRequest
             ],
             'objectId' => 'integer',
             'count' => 'integer|min:1',
-            'textId' => 'required|exists:master.texts,id',
+            'textId' => ['required', new ExistsByEloquent(Text::class)],
         ];
     }
 
@@ -39,11 +43,20 @@ class GiftRequest extends FormRequest
      */
     public function withValidator(Validator $validator) : void
     {
-        $validator->sometimes('objectId', 'required|exists:master.items,id', function ($input) {
-            return $input->objectType === ObjectType::ITEM;
-        });
-        $validator->sometimes('objectId', 'required|exists:master.cards,id', function ($input) {
-            return $input->objectType === ObjectType::CARD;
-        });
+        // オブジェクト種別に応じてマスタIDをチェックする
+        $validator->sometimes('objectId', ['required', new ExistsByEloquent(Item::class)], $this->checkObjectType(ObjectType::ITEM));
+        $validator->sometimes('objectId', ['required', new ExistsByEloquent(Card::class)], $this->checkObjectType(ObjectType::CARD));
+    }
+
+    /**
+     * オブジェクト種別をチェックするクロージャを生成する。
+     * @param int $type オブジェクト種別。
+     * @return \Closure チェック用のクロージャ。
+     */
+    private function checkObjectType(string $type) : \Closure
+    {
+        return function ($input) use ($type) {
+            return $input->objectType === $type;
+        };
     }
 }
