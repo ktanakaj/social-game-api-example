@@ -8,14 +8,20 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", type: "dhcp"
   # ゲストPCのポートをホストPCに転送
   config.vm.network "forwarded_port", guest: 80, host: 80, auto_correct: true
+  config.vm.network "forwarded_port", guest: 3306, host: 3306, auto_correct: true
 
   # ホストPCのこのフォルダをマウント
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
 
-  # CPU数/メモリサイズ
+  # VM環境設定
+  config.vm.provider "hyperv" do |vb, override|
+    vb.cpus = 2
+    vb.memory = "2048"
+    override.vm.synced_folder ".", "/vagrant", type: "smb", mount_options: ["dir_mode=0777,file_mode=0777"]
+  end
   config.vm.provider "virtualbox" do |vb|
-      vb.cpus = 2
-      vb.memory = "2048"
+    vb.cpus = 2
+    vb.memory = "2048"
   end
 
   # ゲストPCにansibleをインストールし共有フォルダのプレイブックを実行
@@ -27,6 +33,6 @@ Vagrant.configure(2) do |config|
 
   # DHCPで割り当てられたIPアドレスを表示
   config.vm.provision "shell", run: "always" do |s|
-    s.inline = "ip a show dev eth1"
+    s.inline = "ip addr"
   end
 end

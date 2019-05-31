@@ -5,10 +5,10 @@
 スマホアプリで、管理画面があって…みたいな想定だけど、お勉強用なので一部APIしかありません。
 
 ## 開発環境
-* Vagrant 2.2.x - 仮想環境管理
-    * VirtualBox 5.2.x - 仮想環境
-    * vagrant-vbguest - Vagrantプラグイン
-    * vagrant-winnfsd - 〃
+* [Vagrant](https://www.vagrantup.com/) 2.2.4 - 仮想環境管理
+    * Hyper-V (Windows 10 Pro) - 仮想環境
+
+※ [VirtualBox](https://www.virtualbox.org/) + [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest) + [vagrant-winnfsd](https://github.com/winnfsd/vagrant-winnfsd)プラグイン等でも動作します。
 
 ## 開発メモ
 VMのトップページにアクセスするとSwagger-UIのAPIページが表示されます。

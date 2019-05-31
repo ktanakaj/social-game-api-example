@@ -26,20 +26,20 @@
       no_dev: no
       working_dir: "{{ app_svr_dir }}"
 
+  - name: Check configuration file copied
+    stat: path={{ app_svr_dir }}/.env
+    register: env_status
   - name: Copy configuration file for the server application
-    copy:
-      src: "{{ app_svr_dir }}/.env.example"
-      dest: "{{ app_svr_dir }}/.env"
-      force: no
-    register: env_copy_result
+    shell: cp -p {{ app_svr_dir }}/.env.example {{ app_svr_dir }}/.env
+    when: not env_status.stat.exists
   - name: Generate application key to the configuration file
     shell: php artisan key:generate
     args:
       chdir: "{{ app_svr_dir }}"
-    when: env_copy_result is changed
+    when: not env_status.stat.exists
 
   - name: Create tables to the db
-    shell: composer migrate
+    shell: composer run migrate --timeout=0
     args:
       chdir: "{{ app_svr_dir }}"
   - name: Import the test master data
@@ -50,7 +50,7 @@
     shell: php artisan db:seed
     args:
       chdir: "{{ app_svr_dir }}"
-    when: env_copy_result is changed
+    when: not env_status.stat.exists
 
   - name: Creates a crontab entry for Laravel scheduler
     cron:
