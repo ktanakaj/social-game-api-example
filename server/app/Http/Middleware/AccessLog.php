@@ -41,31 +41,37 @@ class AccessLog
                 $level = 'error';
             }
 
-            // ※ 以下、CombinedLogに+αのデバッグ情報を載せて出力しています。
-            //    現状のフォーマットは適当にデバッグ用途メインに決めたものなので、
-            //    KPIなどにアクセスログが欲しい場合は、丸々置き換えてしまって構いません。
-
-            // 基本のアクセスログ
-            $resBody = $res->getContent();
-            $contentLength = strlen($resBody);
-            $log = "{$req->ip()} - - \"{$req->method()} {$req->fullUrl()}"
-                . " {$req->server->get('SERVER_PROTOCOL')}\" {$res->getStatusCode()}"
-                . " {$contentLength} \"{$req->server->get('HTTP_REFERER')}\""
-                . " \"{$req->userAgent()}\"";
+            // アクセスログの成形はフォーマッターが行うため、以下ここでは出力データの収集のみを行う
+            $context = [
+                'req' => [
+                    'ip' => $req->ip(),
+                    'method' => $req->method(),
+                    'url' => $req->fullUrl(),
+                    'protocol' => $req->server->get('SERVER_PROTOCOL'),
+                    'referrer' => $req->server->get('HTTP_REFERER'),
+                    'userAgent' => $req->userAgent(),
+                ],
+                'res' => [
+                    'status' => $res->getStatusCode(),
+                ],
+            ];
 
             // 処理時間
             if ($starttime !== null) {
-                $log .= ' ' . round((microtime(true) - $starttime) * 1000) . 'ms';
+                $context['times'] = round((microtime(true) - $starttime) * 1000);
             }
 
             // ユーザーID/管理者ID
             // ※ どちらが入っているかはURLから分かるので現状区別しない
             $user = $req->user();
             if ($user) {
-                $log .= ' id=' . $user->id;
+                $context['userId'] = $user->id;
             }
 
             // リクエストボディ/レスポンスボディ
+            // ※ StreamedResponseなどのcontentが取れないレスポンスは現状空扱い。contentLengthも0になる。
+            $resBody = $res->getContent();
+            $context['res']['contentLength'] = strlen($resBody);
             if (config('app.debug')) {
                 $reqBody = $req->getContent();
                 if ($req->isJson()) {
@@ -74,10 +80,11 @@ class AccessLog
                 if ($res instanceof JsonResponse) {
                     $resBody = self::hidePasswordLog($resBody);
                 }
-                $log .= " req={$reqBody} res={$resBody}";
+                $context['req']['content'] = $reqBody;
+                $context['res']['content'] = $resBody;
             }
 
-            \Log::channel('access')->{$level}($log);
+            \Log::channel('access')->{$level}('', $context);
         } catch (\Throwable $ex) {
             \Log::error($ex);
         }

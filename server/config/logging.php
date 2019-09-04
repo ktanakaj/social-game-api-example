@@ -79,6 +79,7 @@ return [
             'level' => env('LOG_ACCESS_LEVEL', 'info'),
             'days' => env('LOG_ACCESS_DAYS', 14),
             'permission' => 0666,
+            'tap' => [App\Logging\AccessLogFormatterTapper::class],
         ],
     ],
 
