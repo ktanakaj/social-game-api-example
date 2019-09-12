@@ -26,7 +26,13 @@ class MasterCachedBuilder extends CachedBuilder
         // （ライブラリ的には、有効期限ではなく、キャッシュ用のRedisにmax memory policyを変えて運用する想定らしいが、
         //   セッション等と1台のRedisを共用する場合にポリシーを分けられないので、期限を付ける。
         //   https://github.com/GeneaLabs/laravel-model-caching/issues/243 ）
-        $this->checkCooldownAndRemoveIfExpired($this->model);
+        if (property_exists($this, 'model')) {
+            $this->checkCooldownAndRemoveIfExpired($this->model);
+        }
+
+        if (method_exists($this, 'getModel')) {
+            $this->checkCooldownAndRemoveIfExpired($this->getModel());
+        }
 
         return $this->cache($cacheTags)
             ->remember(
@@ -34,8 +40,8 @@ class MasterCachedBuilder extends CachedBuilder
                 config('cache.master_cache_expire'),
                 function () use ($arguments, $cacheKey, $method) {
                     return [
-                        "key" => $cacheKey,
-                        "value" => EloquentBuilder::{$method}(...$arguments),
+                        'key' => $cacheKey,
+                        'value' => EloquentBuilder::{$method}(...$arguments),
                     ];
                 }
             );

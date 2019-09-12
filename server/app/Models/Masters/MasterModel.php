@@ -78,7 +78,7 @@ abstract class MasterModel extends Model
     public static function all($columns = ['*'])
     {
         // ※ laravel-model-cachingのメソッドを改造して、有効期限を指定するようにしたバージョン
-        if (config('laravel-model-caching.disabled')) {
+        if (!config('laravel-model-caching.enabled')) {
             return parent::all($columns);
         }
 
