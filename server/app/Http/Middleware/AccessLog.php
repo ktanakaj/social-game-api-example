@@ -36,7 +36,7 @@ class AccessLog
             // ステータスコードによってログレベルを切り替え
             $level = 'info';
             if ($res->isClientError()) {
-                $level = 'warn';
+                $level = 'warning';
             } elseif ($res->isServerError()) {
                 $level = 'error';
             }

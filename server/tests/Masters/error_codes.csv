@@ -11,5 +11,5 @@ REQUEST_TIMEOUT,Request Timeout,408,debug
 CONFLICT,Conflict,409,debug
 TOO_MANY_REQUESTS,Too Many Requests,429,info
 MAINTENANCE_MODE,Maintenance,503,debug
-CONSOLE_ERROR,Console Error,500,warn
+CONSOLE_ERROR,Console Error,500,warning
 EMPTY_RESOURCE,Empty Resource,400,debug
