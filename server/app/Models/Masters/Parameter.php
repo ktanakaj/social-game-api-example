@@ -12,6 +12,12 @@ namespace App\Models\Masters;
 class Parameter extends MasterModel
 {
     /**
+     * 主キーの「タイプ」。
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * 値を設定する。
      * @param mixed $value オリジナルの値。
      */

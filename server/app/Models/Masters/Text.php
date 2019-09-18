@@ -12,4 +12,10 @@ use App\Models\CamelcaseJson;
 class Text extends MasterModel
 {
     use CamelcaseJson;
+
+    /**
+     * 主キーの「タイプ」。
+     * @var string
+     */
+    protected $keyType = 'string';
 }
