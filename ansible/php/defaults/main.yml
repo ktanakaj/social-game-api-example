@@ -4,6 +4,7 @@ php_packages:
   - php-mysqlnd
   - php-mbstring
   - php-xml
+  - php-pecl-redis
   - php-pecl-xdebug
 
 phpfpm_conf_dest: "/etc/php-fpm.d/www.conf"
