@@ -3,6 +3,7 @@
   become: true
   roles:
   - timezone
+  - ramdisk
   - selinux/disable
   - firewalld
   - git
