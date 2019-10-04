@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
@@ -288,12 +287,9 @@ class CardController extends Controller
      *   ),
      * )
      */
-    public function update(Request $request, int $userId, UserCard $userCard)
+    public function update(Request $request, User $user, UserCard $userCard)
     {
-        // 一応ユーザーIDとカードのIDが一致しているかチェック
-        if ($userCard->user_id !== $userId) {
-            throw new NotFoundException('The user card is not belong to this user');
-        }
+        $this->authorizeForUser($user, 'update', $userCard);
         $request->validate([
             'count' => 'integer|min:1',
             'exp' => 'integer|min:0',

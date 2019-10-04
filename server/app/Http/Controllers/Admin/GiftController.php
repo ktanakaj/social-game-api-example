@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GiftRequest;
 use App\Http\Requests\PagingRequest;
@@ -258,12 +257,9 @@ class GiftController extends Controller
      *   ),
      * )
      */
-    public function destroy(int $userId, UserGift $userGift)
+    public function destroy(User $user, UserGift $userGift)
     {
-        // 一応ユーザーIDとギフトのIDが一致しているかチェック
-        if ($userGift->user_id !== $userId) {
-            throw new NotFoundException('The user gift is not belong to this user');
-        }
+        $this->authorizeForUser($user, 'delete', $userGift);
         $userGift->delete();
         return $userGift;
     }

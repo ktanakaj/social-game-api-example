@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
@@ -268,12 +267,9 @@ class ItemController extends Controller
      *   ),
      * )
      */
-    public function update(Request $request, int $userId, UserItem $userItem)
+    public function update(Request $request, User $user, UserItem $userItem)
     {
-        // 一応ユーザーIDとアイテムのIDが一致しているかチェック
-        if ($userItem->user_id !== $userId) {
-            throw new NotFoundException('The user item is not belong to this user');
-        }
+        $this->authorizeForUser($user, 'update', $userItem);
         $request->validate([
             'count' => 'integer|min:1',
         ]);
@@ -329,13 +325,10 @@ class ItemController extends Controller
      *   ),
      * )
      */
-    public function destroy(int $userId, UserItem $userItem)
+    public function destroy(User $user, UserItem $userItem)
     {
-        // 一応ユーザーIDとアイテムのIDが一致しているかチェック
-        if ($userItem->user_id !== $userId) {
-            throw new NotFoundException('The user item is not belong to this user');
-        }
         // レコードは消さず、所持数0にして更新
+        $this->authorizeForUser($user, 'delete', $userItem);
         $userItem->count = 0;
         $userItem->save();
         return $userItem;

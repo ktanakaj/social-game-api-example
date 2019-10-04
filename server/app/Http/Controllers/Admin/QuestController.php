@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PagingRequest;
 use App\Models\Globals\User;
@@ -309,12 +308,9 @@ class QuestController extends Controller
      *   ),
      * )
      */
-    public function destroy(int $userId, UserQuest $userQuest)
+    public function destroy(User $user, UserQuest $userQuest)
     {
-        // 一応ユーザーIDとクエストのIDが一致しているかチェック
-        if ($userQuest->user_id !== $userId) {
-            throw new NotFoundException('The user quest is not belong to this user');
-        }
+        $this->authorizeForUser($user, 'delete', $userQuest);
         $userQuest->delete();
         return $userQuest;
     }
