@@ -52,7 +52,7 @@ final class MigrationUtils
     {
         $max = new Carbon(self::MAX_DATE);
         $sql = "alter table `{$table}` partition by range columns(`{$column}`) (";
-        for ($date = Carbon::today('UTC')->addMonth()->startOfMonth(); $date < $max; $date->addMonth()) {
+        for ($date = Carbon::today('UTC')->addMonthsNoOverflow()->startOfMonth(); $date < $max; $date->addMonthsNoOverflow()) {
             // ※ p201903パーティションには2019年3月末までのデータが入るイメージ
             $sql .= "partition " . self::makeMonthlyPartitionName($date->copy()->subMonth()) . " values less than ('{$date->format('Y-m-d H:i:s')}'), ";
         }

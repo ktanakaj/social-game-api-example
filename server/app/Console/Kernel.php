@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
 
         // 古い履歴データの削除
         foreach (config('database.expire_logs_months') as $info) {
-            $schedule->command('partition:drop ' . $now->copy()->subMonths($info['expire'])->format('Y m'), [$info['model']])->monthlyOn(1, '00:20')->appendOutputTo($log);
+            $schedule->command('partition:drop ' . $now->copy()->subMonthsNoOverflow($info['expire'])->format('Y m'), [$info['model']])->monthlyOn(1, '00:20')->appendOutputTo($log);
         }
     }
 
