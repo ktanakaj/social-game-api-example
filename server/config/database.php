@@ -34,6 +34,8 @@ return [
     */
 
     'connections' => [
+        // MySQLのトランザクションレベルを、デッドロック対策としてREPEATABLE READからREAD COMMITTEDに変更。
+        // （MySQL以外のDBのデフォルトに相当。ギャップロックが発生しなくなる代わりに、存在しないレコードはロックされなくなるので注意。）
 
         'global' => [
             'driver' => env('DB_GLOBAL_DRIVER', 'mysql'),
@@ -52,6 +54,7 @@ return [
             'timezone' => '+00:00',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'set session transaction isolation level read committed',
             ]) : [],
         ],
 
@@ -72,6 +75,7 @@ return [
             'timezone' => '+00:00',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'set session transaction isolation level read committed',
             ]) : [],
         ],
 
@@ -92,6 +96,7 @@ return [
             'timezone' => '+00:00',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'set session transaction isolation level read committed',
             ]) : [],
         ],
 
