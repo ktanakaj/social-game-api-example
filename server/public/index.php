@@ -1,5 +1,22 @@
 <?php
 
+// Xhprofでの分析用コード。
+// php.ini で tideways_xhprof を有効にすると、実行されるようになります。
+if (function_exists('tideways_xhprof_enable')) {
+    tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_CPU);
+    register_shutdown_function(function () {
+        // ※ 出力先のディレクトリは事前に手動で作成しておいてください
+        $filename = '/var/xhprof/' . uniqid() . '.vision-server';
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $filename .= preg_replace('/\?.*$/', '', str_replace('/', '_', $_SERVER['REQUEST_URI']));
+        }
+        $filename .= '_' . date('YmdHis') . '.xhprof';
+        if (file_put_contents($filename, serialize(tideways_xhprof_disable())) === false) {
+            error_log("{$filename} output failed");
+        }
+    });
+}
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
