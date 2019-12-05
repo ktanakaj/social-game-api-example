@@ -33,6 +33,18 @@ class DropMonthlyPartitions extends Command
      */
     public function handle()
     {
+        $validator = \Validator::make($this->argument(), [
+            'year' => 'required|integer|min:1|max:9999',
+            'month' => 'required|integer|min:1|max:12',
+            'classname' => 'required',
+        ]);
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $this->warn($error);
+            }
+            return ExitCode::DATAERR;
+        }
+
         $year = $this->argument('year');
         $month = $this->argument('month');
         $classname = $this->argument('classname');

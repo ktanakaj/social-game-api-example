@@ -25,9 +25,11 @@ class Kernel extends ConsoleKernel
         $log = config('logging.batchlog');
         $now = Carbon::now();
 
+        // ※ 月や日は0埋め無しでformatしないとバリデーションエラーになるので注意（'Y m d'の代わりに'Y n j'を使う）。
+
         // 古い履歴データの削除
         foreach (config('database.expire_logs_months') as $info) {
-            $schedule->command('partition:drop ' . $now->copy()->subMonthsNoOverflow($info['expire'])->format('Y m'), [$info['model']])->monthlyOn(1, '00:20')->appendOutputTo($log);
+            $schedule->command('partition:drop ' . $now->copy()->subMonthsNoOverflow($info['expire'])->format('Y n'), [$info['model']])->monthlyOn(1, '00:20')->appendOutputTo($log);
         }
     }
 
